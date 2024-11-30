@@ -9,7 +9,7 @@ import RegisterDriver from './pages/RegisterDriver';
 import RegisterUser from './pages/RegisterUser';
 import UserDashboard from './pages/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import MapboxRouting from './components/MapboxRouting';
 function App() {
   return (
     <Router>
@@ -20,7 +20,7 @@ function App() {
         <Route path="/login-driver" element={<LoginDriver />} />
         <Route path="/register-driver" element={<RegisterDriver />} />
         <Route path="/register-user" element={<RegisterUser />} />
-
+        <Route path='/Map' element={<MapboxRouting/>}></Route>
         {/* Protected Routes */}
         <Route
           path="/admin-dashboard"
