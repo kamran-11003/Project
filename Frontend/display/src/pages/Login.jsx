@@ -8,7 +8,7 @@ function LoginPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000); // Adjust the duration as needed
+    }, 3000); // Adjust the duration as needed
 
     return () => clearTimeout(timer);
   }, []);
@@ -16,7 +16,8 @@ function LoginPage() {
   if (isLoading) {
     return (
       <div className="loading-screen">
-        <div className="text-logo">My Awesome Logo</div>
+        <div className="text-logo">Rahgeer</div>
+
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, UserCheck } from 'lucide-react';
 
 function LoginForm({ type }) {
   const [email, setEmail] = useState('');
@@ -60,31 +61,66 @@ function LoginForm({ type }) {
   };
 
   return (
-    <form className="login-form" onSubmit={handleSubmit}>
-      <h1>{type.charAt(0).toUpperCase() + type.slice(1)} Login</h1>
-      {error && <p className="error-message">{error}</p>}
-      <div className="form-group">
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+    
+ 
+
+    <div className="login-container">
+    {/* Animated Background */}
+    <div className="login-background">
+      <div className="bg-overlay"></div>
+      <div className="bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+        <div className="shape shape-3"></div>
       </div>
-      <div className="form-group">
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Login</button>
-    </form>
+    </div>
+
+    {/* Login Form */}
+    <div className="login-wrapper">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <div className="form-header">
+          <UserCheck size={40} className="login-icon" />
+          <h1>{type.charAt(0).toUpperCase() + type.slice(1)} Login</h1>
+        </div>
+
+        {error && <p className="error-message">{error}</p>}
+
+        <div className="form-group">
+          <Mail size={20} className="input-icon" />
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <Lock size={20} className="input-icon" />
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit" className="login-button">
+          Login
+        </button>
+
+        <div className="form-footerlog">
+          <a href="#" className="forgot-password">Forgot Password?</a>
+          <a href="#" className="create-account">Create Account</a>
+        </div>
+      </form>
+    </div>
+  </div>
+    
   );
 }
 
