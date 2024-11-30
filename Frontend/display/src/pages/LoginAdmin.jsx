@@ -1,9 +1,10 @@
 import React from 'react'
-
+import '../Styles/Login.css';
+import LoginForm from '../components/LoginForm';
 const LoginAdmin = () => {
   return (
-    <div>
-      <h1>Login Admin</h1> 
+    <div className="login-container">
+       <LoginForm type="admin" />
     </div>
   )
 }

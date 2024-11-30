@@ -1,9 +1,10 @@
 import React from 'react'
-
+import '../Styles/Login.css';
+import LoginForm from '../components/LoginForm';
 const LoginDriver = () => {
   return (
-    <div>
-      <h1>Login Driver</h1>
+    <div className="login-container">
+       <LoginForm type="driver" />
     </div>
   )
 }

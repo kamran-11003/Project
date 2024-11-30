@@ -1,11 +1,32 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import '../Styles/Login.css';
+import LoginForm from '../components/LoginForm';
 
-const Login = () => {
+function LoginPage() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Adjust the duration as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="text-logo">My Awesome Logo</div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="login-container">
+       <LoginForm type="user" />
     </div>
-  )
+  );
 }
 
-export default Login
+export default LoginPage;
+
