@@ -10,6 +10,7 @@ import RegisterUser from './pages/RegisterUser';
 import UserDashboard from './pages/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import MapboxRouting from './components/MapboxRouting';
+
 function App() {
   return (
     <Router>
