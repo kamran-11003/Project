@@ -3,19 +3,29 @@ import Sidebar from '../components/Sidebar';
 import MapComponent from '../components/MapComponent';
 import PickupDropOffComponent from '../components/PickupDropOffComponent';
 import RideSelector from '../components/RideSelector';
+import FareEstimator from '../components/FareEstimator';
 
 const UserDashboard = () => {
   const [pickup, setPickup] = useState('');
   const [dropOff, setDropOff] = useState('');
   const [selectedRide, setSelectedRide] = useState('');
+  const [distance, setDistance] = useState(0); // Distance in km
 
   const handleSetPickupAndDropOff = (pickupLocation, dropOffLocation) => {
     setPickup(pickupLocation);
     setDropOff(dropOffLocation);
+    calculateDistance(pickupLocation, dropOffLocation); // Call function to update distance
   };
 
   const handleSelectRide = (rideType) => {
     setSelectedRide(rideType);
+  };
+
+  const calculateDistance = (pickupLocation, dropOffLocation) => {
+    // Placeholder: Distance calculation logic goes here.
+    // For now, we'll set a dummy distance.
+    const dummyDistance = 12; // Example distance in km
+    setDistance(dummyDistance);
   };
 
   return (
@@ -23,14 +33,12 @@ const UserDashboard = () => {
       <Sidebar />
       <div style={styles.mainContent}>
         <MapComponent pickup={pickup} dropOff={dropOff} />
-        <RideSelector
-          pickup={pickup}
-          dropOff={dropOff}
-          selectedRide={selectedRide}
-          onSelectRide={handleSelectRide}
-        />
+        <RideSelector pickup={pickup} dropOff={dropOff} selectedRide={selectedRide} onSelectRide={handleSelectRide} />
         <PickupDropOffComponent onSetPickupAndDropOff={handleSetPickupAndDropOff} />
         
+        {selectedRide && distance > 0 && (
+          <FareEstimator rideType={selectedRide} distance={distance} />
+        )}
       </div>
     </div>
   );
