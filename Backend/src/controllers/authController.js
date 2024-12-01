@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
+const Admin = require('../models/Admin'); // Import the Admin model
+
 
 // Configure multer storage (save files locally or in a cloud)
 const storage = multer.diskStorage({
@@ -135,6 +137,37 @@ exports.loginDriver = async (req, res) => {
       { 
         id: driver._id, 
         role: "driver" // Add role to the payload 
+      }, 
+      process.env.JWT_SECRET, 
+      {
+        expiresIn: '1h', // Set token expiration
+      }
+    );
+
+    res.status(200).json({ message: 'Login successful', token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+// Login an admin
+exports.loginAdmin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if admin exists
+    const admin = await Admin.findOne({ email });
+    if (!admin) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Generate JWT
+    const token = jwt.sign(
+      { 
+        id: admin._id, 
+        role: "admin" // Add role to the payload 
       }, 
       process.env.JWT_SECRET, 
       {

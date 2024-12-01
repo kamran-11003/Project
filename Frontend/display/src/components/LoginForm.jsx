@@ -12,7 +12,7 @@ function LoginForm({ type }) {
   const getApiEndpoint = (type) => {
     switch (type) {
       case 'admin':
-        return 'http://localhost:5000/api/auth/login';
+        return 'http://localhost:5000/api/auth/login-admin';
       case 'user':
         return 'http://localhost:5000/api/auth/login-user';
       case 'driver':
