@@ -1,6 +1,27 @@
-const User = require('../models/User');
+const User = require('../models/User');  // Import the User model
+const Driver = require('../models/Driver');  // Import the Driver model
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+
+// Configure multer storage (save files locally or in a cloud)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Save files to 'uploads' folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Use unique filenames
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware for file uploads
+exports.uploadFiles = upload.fields([
+  { name: 'licenseImage', maxCount: 1 },
+  { name: 'profileImage', maxCount: 1 }
+]);
 
 // Register a new user
 exports.registerUser = async (req, res) => {
@@ -54,10 +75,76 @@ exports.loginUser = async (req, res) => {
         expiresIn: '1h', // Set token expiration
       }
     );
-    
 
     res.status(200).json({ message: 'Login successful', token });
   } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Register a new driver
+exports.registerDriver = async (req, res) => {
+  const { firstName, lastName, email, password, phone, idNumber, licenseNumber,vehicleMake,vehicleModel,vehicleYear,plateNumber } = req.body;
+  const licenseImage = req.files?.licenseImage ? req.files.licenseImage[0].path : null;
+  const profileImage = req.files?.profileImage ? req.files.profileImage[0].path : null;
+  try {
+    // Check if email already exists
+    const existingDriver = await Driver.findOne({ email });
+    if (existingDriver) return res.status(400).json({ message: 'Email already exists' });
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new driver
+    const driver = new Driver({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      phone,
+      idNumber,
+      licenseNumber,
+      vehicleMake,vehicleModel,vehicleYear,plateNumber,
+      licenseImage, // Store the file path or URL here
+      profileImage, // Store the file path or URL here
+    });
+
+    await driver.save();
+    res.status(201).json({ message: 'Driver registered successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Login a driver
+exports.loginDriver = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if driver exists
+    const driver = await Driver.findOne({ email });
+    if (!driver) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, driver.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Generate JWT
+    const token = jwt.sign(
+      { 
+        id: driver._id, 
+        role: "driver" // Add role to the payload 
+      }, 
+      process.env.JWT_SECRET, 
+      {
+        expiresIn: '1h', // Set token expiration
+      }
+    );
+
+    res.status(200).json({ message: 'Login successful', token });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };

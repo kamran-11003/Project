@@ -14,9 +14,9 @@ function LoginForm({ type }) {
       case 'admin':
         return 'http://localhost:5000/api/auth/login';
       case 'user':
-        return 'http://localhost:5000/api/auth/login';
+        return 'http://localhost:5000/api/auth/login-user';
       case 'driver':
-        return 'https://your-api-endpoint.com/driver/login';
+        return 'http://localhost:5000/api/auth/login-driver';
       default:
         throw new Error('Invalid user type');
     }
@@ -41,6 +41,7 @@ function LoginForm({ type }) {
 
     try {
       const apiEndpoint = getApiEndpoint(type);
+      console.log(apiEndpoint);
       const response = await axios.post(apiEndpoint, { email, password });
 
       // Assume the JWT is in response.data.token
@@ -112,6 +113,8 @@ function LoginForm({ type }) {
 
         <div className="form-footerlog">
           <a href="#" className="forgot-password">Forgot Password?</a>
+          {// /register-driver
+          }
           <a href="/register-user" className="create-account">Create Account</a>
         </div>
       </form>

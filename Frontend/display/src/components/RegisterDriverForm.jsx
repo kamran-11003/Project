@@ -50,25 +50,32 @@ const DriverRegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (step !== 3) {
       return;
     }
-
+  
     setLoading(true);
     setMessage('');
-
+    console.log(formData);
+    const formDataToSubmit = new FormData();
+    
+    // Append form fields to FormData
+    Object.keys(formData).forEach(key => {
+      formDataToSubmit.append(key, formData[key]);
+    });
+    
     try {
-      console.log('register');
-      // Replace with your API endpoint
       const response = await fetch('http://localhost:5000/api/auth/register-driver', {
         method: 'POST',
-        body: JSON.stringify(formData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        body: formDataToSubmit, // Use FormData instead of JSON.stringify
       });
-      setMessage('Registration successful!');
+  
+      if (response.ok) {
+        setMessage('Registration successful!');
+      } else {
+        setMessage('Registration failed. Please try again.');
+      }
       console.log('Response:', response);
     } catch (error) {
       setMessage('Registration failed. Please try again.');
@@ -77,7 +84,7 @@ const DriverRegisterForm = () => {
       setLoading(false);
     }
   };
-
+  
   const renderStepOne = () => (
     <form onSubmit={nextStep}>
       <div className="form-group">
@@ -149,7 +156,7 @@ const DriverRegisterForm = () => {
 
       <div className="form-footer">
         <span>Already have an account?</span>
-        <a href="/" className="create-account">Login</a>
+        <a href="/login-driver" className="create-account">Login</a>
       </div>
     </form>
   );
