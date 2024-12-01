@@ -10,6 +10,7 @@ import RegisterUser from './pages/RegisterUser';
 import UserDashboard from './pages/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import MapboxRouting from './components/MapboxRouting';
+import Unauthorized from './pages/Unauthorized';
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
         <Route
           path="/admin-dashboard"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute allowedRoles={['admin']}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -34,7 +35,7 @@ function App() {
         <Route
           path="/driver-dashboard"
           element={
-            <ProtectedRoute role="driver">
+            <ProtectedRoute allowedRoles={['driver']}>
               <DriverDashboard />
             </ProtectedRoute>
           }
@@ -42,11 +43,14 @@ function App() {
         <Route
           path="/user-dashboard"
           element={
-            <ProtectedRoute role="user">
+            <ProtectedRoute allowedRoles={['user']}>
               <UserDashboard />
             </ProtectedRoute>
           }
         />
+        
+        {/* Unauthorized route */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
     </Router>
   );

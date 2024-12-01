@@ -12,9 +12,9 @@ function LoginForm({ type }) {
   const getApiEndpoint = (type) => {
     switch (type) {
       case 'admin':
-        return 'https://your-api-endpoint.com/admin/login';
+        return 'http://localhost:5000/api/auth/login';
       case 'user':
-        return 'https://your-api-endpoint.com/user/login';
+        return 'http://localhost:5000/api/auth/login';
       case 'driver':
         return 'https://your-api-endpoint.com/driver/login';
       default:
@@ -61,9 +61,6 @@ function LoginForm({ type }) {
   };
 
   return (
-    
- 
-
     <div className="login-container">
     {/* Animated Background */}
     <div className="login-background">
@@ -115,7 +112,7 @@ function LoginForm({ type }) {
 
         <div className="form-footerlog">
           <a href="#" className="forgot-password">Forgot Password?</a>
-          <a href="#" className="create-account">Create Account</a>
+          <a href="/register-user" className="create-account">Create Account</a>
         </div>
       </form>
     </div>

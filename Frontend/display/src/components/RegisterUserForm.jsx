@@ -25,7 +25,7 @@ const RegisterForm = () => {
     setMessage('');
 
     try {
-      const response = await axios.post('https://jsonplaceholder.typicode.com/posts', formData);
+      const response = await axios.post('http://localhost:5000/api/auth/register', formData);
       setMessage('Registration successful!');
       console.log('Response:', response.data);
     } catch (error) {
@@ -135,7 +135,7 @@ const RegisterForm = () => {
 
         <div className="form-footer">
           <span>Already have an account?</span>
-          <a href="#" className="create-account">Login</a>
+          <a href="/" className="create-account">Login</a>
         </div>
       </form>
     </div>

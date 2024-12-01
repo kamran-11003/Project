@@ -1,44 +1,41 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  userId: {
+  firstName: {
     type: String,
     required: true,
-    unique: true
+    trim: true,
   },
-  name: {
+  lastName: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    trim: true,
+    lowercase: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 6,
   },
   phone: {
     type: String,
-    required: true
+    required: true,
+    match: [/^\d{11}$/, 'Phone number must be 10 digits'], // Example validation
   },
-  profileImage: String,
-  preferredPaymentMethod: String,
-  rideHistory: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Ride'
-  }],
-  walletBalance: {
-    type: Number,
-    default: 0
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
-  isVerified: {
-    type: Boolean,
-    default: false
-  }
-}, {
-  timestamps: true
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);
