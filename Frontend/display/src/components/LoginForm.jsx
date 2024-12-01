@@ -113,9 +113,14 @@ function LoginForm({ type }) {
 
         <div className="form-footerlog">
           <a href="#" className="forgot-password">Forgot Password?</a>
-          {// /register-driver
-          }
-          <a href="/register-user" className="create-account">Create Account</a>
+         {/* Conditional render based on user type */}
+         {type === 'user' && (
+              <a href="/register-user" className="create-account">Create Account</a>
+            )}
+            {type === 'driver' && (
+              <a href="/register-driver" className="create-account">Create Account</a>
+            )}
+            {/* Admin does not have a create account option */}
         </div>
       </form>
     </div>
