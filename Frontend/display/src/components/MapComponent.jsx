@@ -20,11 +20,18 @@ const MapComponent = ({ pickup, dropOff }) => {
         zoom: 12,
       });
 
-      // Add Directions Control
+      // Add Directions Control with customization to remove unwanted UI elements
       directionsRef.current = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
         unit: 'metric',
         profile: 'mapbox/driving',
+        controls: {
+          inputs: false, // Hide input boxes
+          instructions: false, // Hide route instructions
+        },
+        interactive: false, // Disable interaction
+        placeholderOrigin: '', // Remove "Choose a starting place"
+        placeholderDestination: '', // Remove "Choose destination"
       });
 
       newMap.addControl(directionsRef.current, 'top-left');
