@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useRideContext } from '../context/rideContext'; // Import the context hook
 import Sidebar from '../components/Sidebar';
 import MapComponent from '../components/MapComponent';
 import PickupDropOffComponent from '../components/PickupDropOffComponent';
@@ -6,26 +7,24 @@ import RideSelector from '../components/RideSelector';
 import FareEstimator from '../components/FareEstimator';
 
 const UserDashboard = () => {
-  const [pickup, setPickup] = useState('');
-  const [dropOff, setDropOff] = useState('');
-  const [selectedRide, setSelectedRide] = useState('');
-  const [distance, setDistance] = useState(0); // Distance in km
+  const {
+    pickup,
+    dropOff,
+    selectedRide,
+    setPickup,
+    setDropOff,
+    setSelectedRide,
+    distance
+  } = useRideContext(); // Destructure values from the context
 
   const handleSetPickupAndDropOff = (pickupLocation, dropOffLocation) => {
     setPickup(pickupLocation);
     setDropOff(dropOffLocation);
-    calculateDistance(pickupLocation, dropOffLocation); // Call function to update distance
   };
 
   const handleSelectRide = (rideType) => {
     setSelectedRide(rideType);
   };
-
-  const calculateDistance = (pickupLocation, dropOffLocation) => {
-    const dummyDistance = 12; // Example distance in km
-    setDistance(dummyDistance);
-  };
-
   return (
     <div style={styles.container}>
       <Sidebar />
@@ -41,7 +40,7 @@ const UserDashboard = () => {
         <PickupDropOffComponent onSetPickupAndDropOff={handleSetPickupAndDropOff} />
         
         {selectedRide && distance > 0 && (
-          <FareEstimator rideType={selectedRide} distance={distance} />
+          <FareEstimator />
         )}
       </div>
     </div>

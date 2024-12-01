@@ -9,8 +9,8 @@ import RegisterDriver from './pages/RegisterDriver';
 import RegisterUser from './pages/RegisterUser';
 import UserDashboard from './pages/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import MapboxRouting from './components/MapboxRouting';
 import Unauthorized from './pages/Unauthorized';
+import { RideProvider } from './context/rideContext'; // Import the RideProvider
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
         <Route path="/login-driver" element={<LoginDriver />} />
         <Route path="/register-driver" element={<RegisterDriver />} />
         <Route path="/register-user" element={<RegisterUser />} />
-        <Route path='/Map' element={<MapboxRouting/>}></Route>
+
         {/* Protected Routes */}
         <Route
           path="/admin-dashboard"
@@ -44,11 +44,13 @@ function App() {
           path="/user-dashboard"
           element={
             <ProtectedRoute allowedRoles={['user']}>
-              <UserDashboard />
+              <RideProvider> {/* Wrap UserDashboard with RideProvider */}
+                <UserDashboard />
+              </RideProvider>
             </ProtectedRoute>
           }
         />
-        
+
         {/* Unauthorized route */}
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
