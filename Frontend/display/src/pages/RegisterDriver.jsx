@@ -1,11 +1,12 @@
 import React from 'react'
-
-const RegisterDriver = () => {
+import '../Styles/RegisterUser.css';
+import DriverRegisterForm from '../components/RegisterDriverForm.jsx';
+const registerDriver = () => {
   return (
     <div>
-      <h1>Register Driver</h1>
+      <DriverRegisterForm></DriverRegisterForm>
     </div>
   )
 }
 
-export default RegisterDriver
+export default registerDriver
