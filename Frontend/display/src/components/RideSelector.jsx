@@ -1,60 +1,79 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import styled from 'styled-components';
 import 'swiper/css';
-import RideOption from './RideOption';
+import { 
+  FaCar, 
+  FaMotorcycle, 
+  FaHorse, 
+  FaCarSide, 
+  FaSpider,
+  FaUserAstronaut 
+} from 'react-icons/fa';
+
+const RideCard = styled.div`
+  background: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid ${props => props.isSelected ? '#4299e1' : '#e2e8f0'};
+  text-align: center;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: #4299e1;
+  }
+`;
+
+const IconWrapper = styled.div`
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  color: ${props => props.isSelected ? '#4299e1' : '#4a5568'};
+`;
+
+const RideName = styled.p`
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2d3748;
+`;
 
 const rides = [
-  {
-    name: 'Ride AC',
-    image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=300&h=300'
-  },
-  {
-    name: 'Ride Mini',
-    image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80&w=300&h=300'
-  },
-  {
-    name: 'Motoride',
-    image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=300&h=300'
-  },
-  {
-    name: 'Horse',
-    image: 'https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=300&h=300'
-  },
-  {
-    name: 'Spiderman',
-    image: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&q=80&w=300&h=300'
-  },
-  {
-    name: 'Superman',
-    image: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&q=80&w=300&h=300'
-  }
+  { name: 'Ride AC', icon: FaCar },
+  { name: 'Ride Mini', icon: FaCarSide },
+  { name: 'Motoride', icon: FaMotorcycle },
+  { name: 'Horse', icon: FaHorse },
+  { name: 'Spiderman', icon: FaSpider },
+  { name: 'Superman', icon: FaUserAstronaut }
 ];
 
 const RideSelector = ({ selectedRide, onSelectRide }) => {
   return (
-    <div className="mt-6">
-      <Swiper
-        spaceBetween={8} // Adjust spacing between slides
-        slidesPerView={4} // Show 4 slides at a time
-        breakpoints={{
-          640: { slidesPerView: 2 }, // Smaller screens show 2 slides
-          768: { slidesPerView: 3 }, // Medium screens show 3 slides
-          1024: { slidesPerView: 4 } // Larger screens show 4 slides
-        }}
-        className="px-4"
-      >
-        {rides.map((ride) => (
-          <SwiperSlide key={ride.name}>
-            <RideOption
-              name={ride.name}
-              image={ride.image}
-              isSelected={selectedRide === ride.name}
-              onClick={() => onSelectRide(ride.name)}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
+    <Swiper
+      spaceBetween={12}
+      slidesPerView={4}
+      style={{ padding: '1rem 0' }}
+      breakpoints={{
+        320: { slidesPerView: 2.5 },
+        480: { slidesPerView: 3 },
+        768: { slidesPerView: 4 }
+      }}
+    >
+      {rides.map((ride) => (
+        <SwiperSlide key={ride.name}>
+          <RideCard 
+            isSelected={selectedRide === ride.name} 
+            onClick={() => onSelectRide(ride.name)}
+          >
+            <IconWrapper isSelected={selectedRide === ride.name}>
+              <ride.icon />
+            </IconWrapper>
+            <RideName>{ride.name}</RideName>
+          </RideCard>
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 };
 

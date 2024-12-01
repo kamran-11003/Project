@@ -23,13 +23,14 @@ const UserDashboard = () => {
       <Sidebar />
       <div style={styles.mainContent}>
         <MapComponent pickup={pickup} dropOff={dropOff} />
-        <PickupDropOffComponent onSetPickupAndDropOff={handleSetPickupAndDropOff} />
         <RideSelector
           pickup={pickup}
           dropOff={dropOff}
           selectedRide={selectedRide}
           onSelectRide={handleSelectRide}
         />
+        <PickupDropOffComponent onSetPickupAndDropOff={handleSetPickupAndDropOff} />
+        
       </div>
     </div>
   );
