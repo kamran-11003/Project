@@ -22,8 +22,6 @@ const UserDashboard = () => {
   };
 
   const calculateDistance = (pickupLocation, dropOffLocation) => {
-    // Placeholder: Distance calculation logic goes here.
-    // For now, we'll set a dummy distance.
     const dummyDistance = 12; // Example distance in km
     setDistance(dummyDistance);
   };
@@ -33,7 +31,13 @@ const UserDashboard = () => {
       <Sidebar />
       <div style={styles.mainContent}>
         <MapComponent pickup={pickup} dropOff={dropOff} />
-        <RideSelector pickup={pickup} dropOff={dropOff} selectedRide={selectedRide} onSelectRide={handleSelectRide} />
+        
+        <RideSelector 
+          pickup={pickup} 
+          dropOff={dropOff} 
+          selectedRide={selectedRide} 
+          onSelectRide={handleSelectRide} 
+        />
         <PickupDropOffComponent onSetPickupAndDropOff={handleSetPickupAndDropOff} />
         
         {selectedRide && distance > 0 && (
@@ -52,7 +56,7 @@ const styles = {
   },
   mainContent: {
     flex: 1,
-    padding: '40px',
+    padding: '10px',
     overflowY: 'auto',
   },
 };

@@ -12,17 +12,17 @@ const FARE_MULTIPLIERS = {
 
 const Container = styled.div`
   background: white;
-  padding: 24px;
+  padding: 16px 24px;  // Reduced vertical padding to 16px (from 24px)
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  max: 800px;
-  margin: 0 auto;
+  width: 800px;  // Fixed width set to 800px
+  margin: 0 auto;  // Centering the container
 `;
 
 const FareInfo = styled.div`
-  margin-bottom: 16px;
-  font-size: 16px;
+  margin-bottom: 12px;  // Reduced bottom margin to 12px
+  font-size: 14px;      // Slightly smaller font size
   color: #4a5568;
 `;
 
@@ -30,11 +30,12 @@ const FareDetails = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;  // Reduced bottom margin to 6px
   
   p {
     flex: 1;
     margin: 0;
+    font-size: 14px;  // Slightly smaller font size
   }
 `;
 
@@ -44,16 +45,16 @@ const Label = styled.span`
 
 const BidSection = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 12px;  // Reduced the gap between input and button
   align-items: center;
 `;
 
 const BidInput = styled.input`
   flex: 1;
-  padding: 16px;
+  padding: 12px;  // Reduced padding to 12px (from 16px)
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;  // Slightly smaller font size
   outline: none;
 
   &:focus {
@@ -63,12 +64,12 @@ const BidInput = styled.input`
 `;
 
 const FindDriverButton = styled.button`
-  padding: 16px 32px;
+  padding: 12px 24px;  // Reduced padding to 12px top/bottom, 24px left/right
   background-color: #4299e1;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;  // Slightly smaller font size
   cursor: pointer;
   transition: background-color 0.2s ease;
   white-space: nowrap;
