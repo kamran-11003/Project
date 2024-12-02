@@ -8,11 +8,6 @@ const updateProfile = async (req, res) => {
   // Allowed fields to update
   const allowedUpdates = ['firstName', 'lastName', 'phone', 'preferredPaymentMethod'];
   const updateKeys = Object.keys(updates);
-  const isValidOperation = updateKeys.every((key) => allowedUpdates.includes(key));
-
-  if (!isValidOperation) {
-    return res.status(400).json({ error: 'Invalid updates' });
-  }
 
   try {
     const user = await User.findById(userId);

@@ -11,6 +11,7 @@ import UserDashboard from './pages/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Unauthorized from './pages/Unauthorized';
 import { RideProvider } from './context/rideContext'; // Import the RideProvider
+import ProfileUpdate from './components/ProfileUpdate'; // Import ProfileUpdate
 
 function App() {
   return (
@@ -47,6 +48,16 @@ function App() {
               <RideProvider> {/* Wrap UserDashboard with RideProvider */}
                 <UserDashboard />
               </RideProvider>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Profile Update Route */}
+        <Route
+          path="/edit-profile"
+          element={
+            <ProtectedRoute allowedRoles={['user']}> {/* Only user can access their profile */}
+              <ProfileUpdate />
             </ProtectedRoute>
           }
         />
