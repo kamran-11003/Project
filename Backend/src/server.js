@@ -7,7 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const rideRoutes = require('./routes/rideRouts');
 const bodyParser = require('body-parser');
 const fareRoutes = require('./routes/fareRoutes'); // Adjust path to your routes
-
+const userRoutes = require('./routes/userRoutes'); // Adjust path to your routes
 
 
 const app = express();
@@ -26,7 +26,7 @@ app.use(bodyParser.json()); // For parsing application/json
 app.use('/api/auth', authRoutes);
 app.use('/api/ride', rideRoutes); // Include the ride routes
 app.use('/api/fare', fareRoutes);
-
+app.use('/api/user', userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

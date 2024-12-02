@@ -28,6 +28,7 @@ const UserDashboard = () => {
   return (
     <div style={styles.container}>
       <Sidebar />
+      {/* if path is dashboard*/}
       <div style={styles.mainContent}>
         <MapComponent pickup={pickup} dropOff={dropOff} />
         

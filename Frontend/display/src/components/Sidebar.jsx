@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { FaHome, FaHistory, FaCog, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
+import axios from "axios";
+import {jwtDecode} from 'jwt-decode';
+import { FaHome, FaHistory, FaSignOutAlt } from "react-icons/fa";
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -14,6 +16,7 @@ const SidebarContainer = styled.div`
 
 const ProfileSection = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
@@ -21,16 +24,17 @@ const ProfileSection = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  margin-right: 1rem;
+  margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const Name = styled.h4`
@@ -38,18 +42,35 @@ const Name = styled.h4`
   font-size: 1rem;
   font-weight: 600;
   color: #2d3748;
+  text-align: center;
 `;
 
-const Email = styled.p`
-  margin: 0.25rem 0 0;
+const WalletBalance = styled.p`
+  margin: 0.5rem 0 0;
   font-size: 0.875rem;
-  color: #718096;
+  color: #4a5568;
+`;
+
+const EditProfileButton = styled.button`
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #2b6cb0;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: #2c5282;
+  }
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 100px); /* Adjust based on profile section height */
+  height: calc(100% - 150px); /* Adjust based on profile section height */
 `;
 
 const Navigation = styled.nav`
@@ -86,7 +107,7 @@ const LogoutLink = styled(NavLink)`
   color: #e53e3e;
   border-top: 1px solid #e9ecef;
   padding-top: 1rem;
-  margin-top: -10px;
+  margin-top: auto;
 
   &:hover {
     background: #fff5f5;
@@ -95,23 +116,54 @@ const LogoutLink = styled(NavLink)`
 `;
 
 const Sidebar = () => {
+  const [user, setUser] = useState({ name: "Loading...", wallet: 0 });
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+          console.error("Token not found in localStorage");
+          return;
+        }
+
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId; // Assuming token contains `userId`
+        console.log(decodedToken);
+        const response = await axios.get(`http://localhost:5000/api/user/profile`, {
+          params: { userId },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setUser({
+          name: `${response.data.firstName} ${response.data.lastName}`,
+          wallet: response.data.wallet,
+        });
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   const navigationItems = [
-    { icon: <FaHome />, label: "Dashboard", href: "#dashboard" },
-    { icon: <FaHistory />, label: "Request History", href: "#history" },
-    { icon: <FaCog />, label: "Settings", href: "#settings" },
-    { icon: <FaQuestionCircle />, label: "Help", href: "#help" },
+    { icon: <FaHome />, label: "Dashboard", href: "/user-dashboard" },
+    { icon: <FaHistory />, label: "Ride History", href: "#history" },
   ];
 
   return (
     <SidebarContainer>
       <ProfileSection>
-        <ProfileImage
-          src="https://via.placeholder.com/50"
-          alt="Profile"
-        />
+        <ProfileImage src="https://via.placeholder.com/64" alt="Profile" />
         <ProfileInfo>
-          <Name>John Doe</Name>
-          <Email>john.doe@example.com</Email>
+          <Name>{user.name}</Name>
+          <WalletBalance>Wallet: ${user.wallet}</WalletBalance>
+          <EditProfileButton onClick={() => (window.location.href = "/edit-profile")}>
+            Edit Profile
+          </EditProfileButton>
         </ProfileInfo>
       </ProfileSection>
 
@@ -124,7 +176,7 @@ const Sidebar = () => {
             </NavLink>
           ))}
         </Navigation>
-        
+
         <LogoutLink href="#logout">
           <FaSignOutAlt />
           Logout
