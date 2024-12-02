@@ -32,7 +32,7 @@ const MapComponent = ({ pickup, dropOff }) => {
   const mapContainerRef = useRef(null);
   const directionsRef = useRef(null);
   const [map, setMap] = useState(null);
-
+  const [currentLocation, setCurrentLocation] = useState(null); // State for current location
   const { setDistance } = useRideContext(); // Access setDistance from context
 
   useEffect(() => {
@@ -54,8 +54,6 @@ const MapComponent = ({ pickup, dropOff }) => {
           instructions: false, // Hide route instructions
         },
         interactive: false, // Disable interaction
-        placeholderOrigin: '', // Remove "Choose a starting place"
-        placeholderDestination: '', // Remove "Choose destination"
       });
 
       newMap.addControl(directionsRef.current, 'top-left');
@@ -66,43 +64,37 @@ const MapComponent = ({ pickup, dropOff }) => {
 
     const mapInstance = initializeMap();
 
-    // Cleanup function to remove the map on unmount
-    return () => mapInstance.remove();
+    return () => mapInstance.remove(); // Cleanup on component unmount
   }, []);
 
-  useEffect(() => {
+  // Function to update route and distance
+  const updateRouteAndDistance = () => {
     if (pickup && dropOff) {
-      // Geocode pickup and dropOff addresses to get coordinates
-      Promise.all([
-        geocodeAddress(pickup),
-        geocodeAddress(dropOff),
-      ]).then(([pickupCoordinates, dropOffCoordinates]) => {
+      Promise.all([geocodeAddress(pickup), geocodeAddress(dropOff)]).then(([pickupCoordinates, dropOffCoordinates]) => {
         if (pickupCoordinates && dropOffCoordinates) {
           directionsRef.current.setOrigin(pickupCoordinates);
           directionsRef.current.setDestination(dropOffCoordinates);
-
-          // Fetch and set the actual distance from Mapbox Directions API
           fetchDistance(pickupCoordinates, dropOffCoordinates);
         } else {
           console.error("Error geocoding the addresses.");
         }
       });
     }
-  }, [pickup, dropOff]);
+  };
 
+  // Function to fetch distance using Mapbox Directions API
   const fetchDistance = (pickupLocation, dropOffLocation) => {
     if (!pickupLocation || !dropOffLocation) return;
 
-    // Set up the API request to get the route and distance
     const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${pickupLocation[0]},${pickupLocation[1]};${dropOffLocation[0]},${dropOffLocation[1]}?access_token=${mapboxgl.accessToken}&geometries=geojson&overview=false&steps=false`;
     fetch(url)
       .then(response => response.json())
       .then(data => {
         if (data.routes && data.routes.length > 0) {
           const route = data.routes[0];
-          const distanceInMeters = route.distance; // Distance in meters
-          const distanceInKm = distanceInMeters / 1000; // Convert to kilometers
-          setDistance(distanceInKm); // Set the distance in context
+          const distanceInMeters = route.distance;
+          const distanceInKm = distanceInMeters / 1000;
+          setDistance(distanceInKm);
           console.log(`Distance: ${distanceInKm} km`);
         } else {
           console.error("No route found");
@@ -112,6 +104,40 @@ const MapComponent = ({ pickup, dropOff }) => {
         console.error('Error fetching distance from Mapbox:', error);
       });
   };
+
+  // Function to get and update current location
+  const updateCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setCurrentLocation([longitude, latitude]);
+
+        if (map) {
+          // Create a marker for the current location
+          const marker = new mapboxgl.Marker()
+            .setLngLat([longitude, latitude])
+            .addTo(map);
+
+          // Optionally, center the map on the current location
+          map.setCenter([longitude, latitude]);
+        }
+      });
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
+
+  // Update route and current location every 5 seconds
+  useEffect(() => {
+    updateRouteAndDistance();
+    const intervalId = setInterval(updateRouteAndDistance, 5000); // Refresh every 5 seconds
+    const locationIntervalId = setInterval(updateCurrentLocation, 5000); // Refresh current location every 5 seconds
+
+    return () => {
+      clearInterval(intervalId); // Cleanup route and distance refresh interval
+      clearInterval(locationIntervalId); // Cleanup location refresh interval
+    };
+  }, [pickup, dropOff, map]);
 
   return <div ref={mapContainerRef} style={styles.mapContainer} />;
 };

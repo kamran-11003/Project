@@ -1,5 +1,4 @@
-
-  const findDriver = (req, res) => {
+ const findDriver = (req, res) => {
     const { pickup, dropOff, fare, distance, userId } = req.body;
   
   

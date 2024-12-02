@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { useRideContext } from '../context/rideContext'; // Import the context hook
-
-// Constants
-const FARE_MULTIPLIERS = {
-  'Ride AC': 30,
-  'Ride Mini': 20,
-  Motoride: 10,
-  Horse: 15,
-  Spiderman: 50,
-  Superman: 100,
-};
 
 // Styled Components
 const Container = styled.div`
@@ -49,8 +39,8 @@ const Label = styled.span`
 
 const BidSection = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  align-items: center;
 `;
 
 const BidInput = styled.input`
@@ -64,6 +54,19 @@ const BidInput = styled.input`
   &:focus {
     border-color: #4299e1;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+  }
+`;
+
+const PromoInput = styled.input`
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+
+  &:focus {
+    border-color: #48bb78;
+    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.2);
   }
 `;
 
@@ -87,7 +90,6 @@ const getUserIdFromToken = () => {
   const token = localStorage.getItem('jwtToken');
   try {
     const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
     return decodedToken.id; // Adjust based on your token's payload
   } catch (error) {
     console.error('Error decoding token:', error);
@@ -95,37 +97,107 @@ const getUserIdFromToken = () => {
   }
 };
 
-// FareEstimator Component
 const FareEstimator = () => {
   const {
     pickup,
     dropOff,
     selectedRide,
-    setPickup,
-    setDropOff,
-    setSelectedRide,
     distance,
     fare,
     setFare
-  } = useRideContext(); 
+  } = useRideContext();
+
+  const [fareMultipliers, setFareMultipliers] = useState({});
   const [recommendedFare, setRecommendedFare] = useState(0);
   const [customBid, setCustomBid] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [promotions, setPromotions] = useState([]);
+  const [discount, setDiscount] = useState(0);
+  const [error, setError] = useState('');
 
+  // Fetch fare multipliers from API
+  useEffect(() => {
+    const fetchFareData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/fare/fares');
+        const data = await response.json();
+
+        const multipliers = {};
+        data.forEach((item) => {
+          multipliers[item.rideType] = {
+            fareMultiplier: item.fareMultiplier,
+            promotions: item.promotions || [],
+          };
+        });
+
+        setFareMultipliers(multipliers);
+      } catch (error) {
+        console.error('Error fetching fare data:', error);
+      }
+    };
+
+    fetchFareData();
+  }, []);
+
+  // Recalculate fare whenever selected ride or distance changes
   useEffect(() => {
     if (selectedRide && distance) {
-      const multiplier = FARE_MULTIPLIERS[selectedRide] || 20;
-      setRecommendedFare(distance * multiplier);
-      setFare(recommendedFare); // Update the fare in the context hook for other components to see
+      const rideData = fareMultipliers[selectedRide];
+      if (rideData) {
+        const multiplier = rideData.fareMultiplier || 20; // Default to 20 if not found
+        const calculatedFare = distance * multiplier;
+        setRecommendedFare(calculatedFare);
+        setPromotions(rideData.promotions);
+        setFare(calculatedFare - discount); // Apply discount
+      }
     }
-  }, [selectedRide, distance]);
+  }, [selectedRide, distance, fareMultipliers, discount]);
 
   const handleBidChange = (e) => {
-    setCustomBid(e.target.value);
+    const bid = parseFloat(e.target.value);
+    const minimumFare = recommendedFare - discount;
+
+    if (bid >= minimumFare || isNaN(bid)) {
+      setCustomBid(e.target.value); // Update bid only if it's valid or empty
+      setError(''); // Clear error message
+    } else {
+      setError(`Bid must be at least PKR ${minimumFare.toFixed(2)}.`);
+    }
+  };
+
+  const handlePromoChange = (e) => {
+    setPromoCode(e.target.value);
+  };
+
+  const applyPromoCode = () => {
+    const currentPromo = promotions.find(
+      (promo) =>
+        promo.promotionCode === promoCode &&
+        new Date(promo.validUntil) > new Date()
+    );
+
+    if (currentPromo) {
+      const discountAmount =
+        (recommendedFare * currentPromo.discountPercentage) / 100;
+      setDiscount(discountAmount);
+      setFare(recommendedFare - discountAmount);
+      setError(''); // Clear any previous error
+    } else {
+      setError('Invalid or expired promo code.');
+      setDiscount(0); // Reset discount
+    }
   };
 
   const handleFindDriver = async () => {
+    const minimumFare = recommendedFare - discount;
+
     if (!customBid || isNaN(customBid) || customBid <= 0) {
       alert('Please enter a valid bid.');
+      return;
+    }
+
+    if (parseFloat(customBid) < minimumFare) {
+      alert(`Your bid must be at least PKR ${minimumFare.toFixed(2)}.`);
       return;
     }
 
@@ -134,7 +206,7 @@ const FareEstimator = () => {
       alert('User not authenticated. Please log in.');
       return;
     }
-    console.log(dropOff);
+
     const data = {
       pickup,
       dropOff,
@@ -171,16 +243,29 @@ const FareEstimator = () => {
           <p><Label>Ride Type:</Label> {selectedRide}</p>
           <p><Label>Distance:</Label> {distance} km</p>
           <p><Label>Fare:</Label> PKR {recommendedFare.toFixed(2)}</p>
+          {discount > 0 && (
+            <p><Label>Discounted Fare:</Label> PKR {(recommendedFare - discount).toFixed(2)}</p>
+          )}
         </FareDetails>
       </FareInfo>
 
       <BidSection>
         <BidInput
           type="number"
-          placeholder="Enter your bid (PKR)"
+          placeholder={`Minimum bid: PKR ${(recommendedFare - discount).toFixed(2)}`}
           value={customBid}
           onChange={handleBidChange}
         />
+        {error && <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>}
+        <PromoInput
+          type="text"
+          placeholder="Enter promo code"
+          value={promoCode}
+          onChange={handlePromoChange}
+        />
+        <FindDriverButton onClick={applyPromoCode}>
+          Apply Promo Code
+        </FindDriverButton>
         <FindDriverButton onClick={handleFindDriver}>
           Find Driver
         </FindDriverButton>
