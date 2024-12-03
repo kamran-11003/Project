@@ -68,6 +68,21 @@ const driverSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  // Approval, Suspension, and Availability
+  approved: {
+    type: Boolean,
+    default: false, // Default to not approved
+  },
+  suspensionStatus: {
+    type: String,
+    enum: ['active', 'suspended', 'banned'],
+    default: 'active', // Default to active status
+  },
+  availability: {
+    type: Boolean,
+    default: true, // Default to available
+  },
 }, { timestamps: true });
 
 const Driver = mongoose.model('Driver', driverSchema);

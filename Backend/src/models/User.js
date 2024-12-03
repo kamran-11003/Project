@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     match: [/^\d{11}$/, 'Phone number must be 10 digits'], // Example validation
   },
+  suspensionStatus: {
+    type: String,
+    enum: ['active', 'suspended', 'banned'],
+    default: 'active', // Default to active status
+  },
   createdAt: {
     type: Date,
     default: Date.now,

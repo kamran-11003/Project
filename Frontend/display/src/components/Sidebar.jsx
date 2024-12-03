@@ -128,6 +128,7 @@ const Sidebar = () => {
         }
 
         const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId; // Assuming token contains `userId`
         console.log(decodedToken);
         const response = await axios.get(`http://localhost:5000/api/user/profile`, {
           headers: {
