@@ -8,7 +8,7 @@ const rideRoutes = require('./routes/rideRouts');
 const bodyParser = require('body-parser');
 const fareRoutes = require('./routes/fareRoutes'); // Adjust path to your routes
 const userRoutes = require('./routes/userRoutes'); // Adjust path to your routes
-
+const adminRouts = require('./routes/adminRoutes'); // Adjust path to
 
 const app = express();
 
@@ -27,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/ride', rideRoutes); // Include the ride routes
 app.use('/api/fare', fareRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/admin', adminRouts); // Include the admin routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {
