@@ -49,7 +49,7 @@ const DriverMap = () => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setDriverId(decoded.driverId);
+        setDriverId(decoded.id);
       } catch (err) {
         console.error('JWT Decoding Error:', err);
       }
