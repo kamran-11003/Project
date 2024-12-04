@@ -135,10 +135,7 @@ socket.on('requestRide', async (data) => {
     io.emit('requestLocationUpdate');
 
     if (socket.userType === 'user') {
-      console.log(
-        `User ${data.userId} is requesting a ride at location:`,
-        data.pickupCoordinates
-      );
+      
 
       const { pickupCoordinates } = data; // { latitude, longitude }
       const nearbyDrivers = [];
