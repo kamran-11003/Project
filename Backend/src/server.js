@@ -8,7 +8,7 @@ const socketIo = require('socket.io');
 const fetch = require('node-fetch'); // Import fetch for server-side use
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
 const Driver = require('./models/Driver'); // Driver model
-
+const Ride = require('./models/ride');
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
@@ -16,6 +16,7 @@ const fareRoutes = require('./routes/fareRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const driverRoutes = require('./routes/DriverRoutes');
+const { AsyncLocalStorage } = require('async_hooks');
 
 // Initialize express app
 const app = express();
@@ -179,15 +180,36 @@ socket.on('requestRide', async (data) => {
     console.error('Error handling ride request:', error);
   }
 });
+socket.on('acceptRide', async(res) => {
 
+  const { rideRequest, driverid} =res;
+  console.log(driverid);
+  const { pickup, dropOff, fare, distance, userId, pickupCoordinates, dropOffCoordinates } = rideRequest;
+  const newRide = new Ride({
+    userId, 
+    driverid,
+    pickupCoordinates,
+    dropOffCoordinates,
+    fare,
+    distance,
+    status: 'ongoing', // Set the initial status to 'requested'
+    pickup, // Address of pickup
+    dropOff, // Address of drop-off
+  });
+  await newRide.save();
+  console.log(`Ride request`);  
+  io.emit('rideStarted', newRide);
+});
 
     
+
 
 
   // Disconnect handler
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
   });
+ 
 });
 
 // Start Server
