@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import DriverSidebar from '../components/DriverSidebar';
 import DriverMap from '../components/DriverMap';
+import RideRequest from '../components/RideRequest';
 const UserDashboard = () => {
+
   return (
     <div style={styles.container}>
       <DriverSidebar/>
       <div style={styles.mainContent}>
         <DriverMap />
-        
+        <RideRequest />
       </div>
     </div>
   );

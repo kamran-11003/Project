@@ -5,6 +5,10 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const http = require('http');
 const socketIo = require('socket.io');
+const fetch = require('node-fetch'); // Import fetch for server-side use
+const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
+const Driver = require('./models/Driver'); // Driver model
+
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
@@ -38,6 +42,34 @@ app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/driver', driverRoutes);
 
+const fetchDistance = (pickupLocation, dropOffLocation) => {
+  if (!pickupLocation || !dropOffLocation) return Promise.reject('Invalid locations');
+  console.log(pickupLocation, dropOffLocation);
+  const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${pickupLocation[0]},${pickupLocation[1]};${dropOffLocation[0]},${dropOffLocation[1]}?access_token=${MAPBOX_ACCESS_TOKEN}&geometries=geojson&overview=false&steps=false`;
+
+  return fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data.routes && data.routes.length > 0) {
+        const route = data.routes[0];
+        const distanceInMeters = route.distance;
+        const distanceInKm = distanceInMeters / 1000;
+        console.log(distanceInKm);
+        return distanceInKm; // Return the distance in kilometers
+      } else {
+        throw new Error("No route found");
+      }
+    })
+    .catch(error => {
+      throw new Error('Error fetching distance from Mapbox: ' + error.message);
+    });
+};
+
+
+
+const activeDrivers = [];
+const activeUsers = [];
+
 // Socket.io Event Handlers
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
@@ -46,8 +78,24 @@ io.on('connection', (socket) => {
   socket.on('identify', ({ type, userId }) => {
 
     console.log(`Client identified as: ${type} with ID: ${userId}`);
+    console.log(`Client identified as: ${type} with ID: ${userId}`);
     socket.userType = type; // Store the type (user or driver)
     socket.userId = userId; // Store the user or driver ID
+
+    const clientInfo = { userId, socketId: socket.id };
+
+    // Add to the respective array
+    if (type === 'driver') {
+      if (!activeDrivers.find((driver) => driver.userId === userId)) {
+        activeDrivers.push(clientInfo);
+      }
+      console.log('Active drivers:', activeDrivers);
+    } else if (type === 'user') {
+      if (!activeUsers.find((user) => user.userId === userId)) {
+        activeUsers.push(clientInfo);
+      }
+      console.log('Active users:', activeUsers);
+    }
   });
  
   // Request location updates from drivers
@@ -77,21 +125,63 @@ io.on('connection', (socket) => {
       }
     }
   });
-
 // Handle user ride requests (example event)
 socket.on('requestRide', async (data) => {
   try {
     console.log(data);
 
-    // Check userType (make sure this is set somewhere when the socket connects)
-    if (socket.userType === 'user') {
-      console.log(`User ${data.userId} is requesting a ride at location:`, data.pickup);
+    // Emit requestLocationUpdate event to all connected clients (likely drivers)
+    io.emit('requestLocationUpdate');
 
+    if (socket.userType === 'user') {
+      console.log(
+        `User ${data.userId} is requesting a ride at location:`,
+        data.pickupCoordinates
+      );
+
+      const { pickupCoordinates } = data; // { latitude, longitude }
+      const nearbyDrivers = [];
+      
+      // Fetch all active drivers from the array
+      for (const activeDriver of activeDrivers) {
+        const driver = await Driver.findById(activeDriver.userId);
+
+        if (driver && driver.location && driver.location.coordinates) {
+          const [driverLon, driverLat] = driver.location.coordinates;
+          // Fetch distance from Mapbox API
+          const pickupLocation = [pickupCoordinates.longitude, pickupCoordinates.latitude]; // [lon, lat]
+          const driverLocation = [driverLon, driverLat]; // [lon, lat]
+          try {
+            const distance = await fetchDistance(pickupLocation, driverLocation);
+            console.log('Distance from driver to user:', distance);
+
+            // Add the driver to nearbyDrivers if within 5 km (1000 meters)
+            if (distance <= 100) { // Assuming the distance is in meters
+              nearbyDrivers.push({
+                driverId: activeDriver.userId,
+                distance,
+                location: { latitude: driverLat, longitude: driverLon },
+              });
+
+              // Emit ride request data to the nearby driver
+              io.to(activeDriver.socketId).emit('rideRequest', data);
+            }
+          } catch (error) {
+            console.error('Error fetching distance:', error.message);
+          }
+        }
+      }
+
+      // Emit the list of nearby drivers to the user
+      console.log(`Nearby drivers for user ${data.userId}:`, nearbyDrivers);
     }
   } catch (error) {
     console.error('Error handling ride request:', error);
   }
 });
+
+
+    
 
 
   // Disconnect handler

@@ -106,7 +106,9 @@ const FareEstimator = () => {
     selectedRide,
     distance,
     fare,
-    setFare
+    setFare,
+    pickupCoordinates,
+    dropOffCoordinates
   } = useRideContext();
   const { userId, socket } = useSocket(); // Get userId and socket from SocketContext
 
@@ -207,6 +209,8 @@ const FareEstimator = () => {
       fare: parseFloat(customBid),
       distance,
       userId,
+      pickupCoordinates,
+      dropOffCoordinates
     };
     //implement socket
     socket.emit('requestRide', data);

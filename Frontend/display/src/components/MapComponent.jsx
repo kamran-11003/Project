@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { useRideContext } from '../context/rideContext'; // Import context to access setDistance
+import { useRideContext } from '../context/rideContext'; // Import context
 
-// Import Directions
 const MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
 
-// Function to geocode an address to latitude and longitude
 const geocodeAddress = (address) => {
   const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
 
@@ -33,7 +31,7 @@ const MapComponent = ({ pickup, dropOff }) => {
   const directionsRef = useRef(null);
   const [map, setMap] = useState(null);
 
-  const { setDistance } = useRideContext(); // Access setDistance from context
+  const { setDistance, setPickupCoordinates, setDropOffCoordinates } = useRideContext();
 
   useEffect(() => {
     const initializeMap = () => {
@@ -44,18 +42,15 @@ const MapComponent = ({ pickup, dropOff }) => {
         zoom: 12,
       });
 
-      // Add Directions Control with customization to remove unwanted UI elements
       directionsRef.current = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
         unit: 'metric',
         profile: 'mapbox/driving',
         controls: {
-          inputs: false, // Hide input boxes
-          instructions: false, // Hide route instructions
+          inputs: false,
+          instructions: false,
         },
-        interactive: false, // Disable interaction
-        placeholderOrigin: '', // Remove "Choose a starting place"
-        placeholderDestination: '', // Remove "Choose destination"
+        interactive: false,
       });
 
       newMap.addControl(directionsRef.current, 'top-left');
@@ -66,13 +61,11 @@ const MapComponent = ({ pickup, dropOff }) => {
 
     const mapInstance = initializeMap();
 
-    // Cleanup function to remove the map on unmount
     return () => mapInstance.remove();
   }, []);
 
   useEffect(() => {
     if (pickup && dropOff) {
-      // Geocode pickup and dropOff addresses to get coordinates
       Promise.all([
         geocodeAddress(pickup),
         geocodeAddress(dropOff),
@@ -80,6 +73,16 @@ const MapComponent = ({ pickup, dropOff }) => {
         if (pickupCoordinates && dropOffCoordinates) {
           directionsRef.current.setOrigin(pickupCoordinates);
           directionsRef.current.setDestination(dropOffCoordinates);
+
+          // Set the coordinates in the context
+          setPickupCoordinates({
+            latitude: pickupCoordinates[1], // Latitude is the second value
+            longitude: pickupCoordinates[0], // Longitude is the first value
+          });
+          setDropOffCoordinates({
+            latitude: dropOffCoordinates[1],
+            longitude: dropOffCoordinates[0],
+          });
 
           // Fetch and set the actual distance from Mapbox Directions API
           fetchDistance(pickupCoordinates, dropOffCoordinates);
@@ -93,15 +96,14 @@ const MapComponent = ({ pickup, dropOff }) => {
   const fetchDistance = (pickupLocation, dropOffLocation) => {
     if (!pickupLocation || !dropOffLocation) return;
 
-    // Set up the API request to get the route and distance
     const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${pickupLocation[0]},${pickupLocation[1]};${dropOffLocation[0]},${dropOffLocation[1]}?access_token=${mapboxgl.accessToken}&geometries=geojson&overview=false&steps=false`;
     fetch(url)
       .then(response => response.json())
       .then(data => {
         if (data.routes && data.routes.length > 0) {
           const route = data.routes[0];
-          const distanceInMeters = route.distance; // Distance in meters
-          const distanceInKm = distanceInMeters / 1000; // Convert to kilometers
+          const distanceInMeters = route.distance;
+          const distanceInKm = distanceInMeters / 1000;
           setDistance(distanceInKm); // Set the distance in context
           console.log(`Distance: ${distanceInKm} km`);
         } else {
