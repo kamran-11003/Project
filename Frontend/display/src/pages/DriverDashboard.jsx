@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import Sidebar from '../components/DriverSidebar';
-import MapComponent from '../components/MapComponent';
 import DriverSidebar from '../components/DriverSidebar';
-
+import DriverMap from '../components/DriverMap';
 const UserDashboard = () => {
   return (
     <div style={styles.container}>
       <DriverSidebar/>
       <div style={styles.mainContent}>
-        <MapComponent />
+        <DriverMap />
         
       </div>
     </div>

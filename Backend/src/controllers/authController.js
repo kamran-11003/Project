@@ -109,6 +109,10 @@ exports.registerDriver = async (req, res) => {
       vehicleMake,vehicleModel,vehicleYear,plateNumber,
       licenseImage, // Store the file path or URL here
       profileImage, // Store the file path or URL here
+      location: {
+        type: "Point",
+        coordinates: [0, 0],  // Default coordinates
+      },
     });
 
     await driver.save();
