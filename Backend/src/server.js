@@ -44,28 +44,52 @@ app.use('/api/driver', driverRoutes);
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
 
-  socket.on('requestLocationUpdate', () => {
-    console.log('Requesting location update from all drivers');
-    io.emit('sendLocationUpdate');
+  // Event to identify whether the client is a driver or user
+  socket.on('identify', ({ type, userId }) => {
+
+    console.log(`Client identified as: ${type} with ID: ${userId}`);
+    socket.userType = type; // Store the type (user or driver)
+    socket.userId = userId; // Store the user or driver ID
   });
-
-  socket.on('locationUpdate', async ({ driverId, longitude, latitude }) => {
-    console.log(`Received location update for driver ${driverId}:`, { longitude, latitude });
-
-    try {
-      const Driver = require('./models/Driver');
-      await Driver.findByIdAndUpdate(driverId, {
-        location: {
-          type: 'Point',
-          coordinates: [longitude, latitude],
-        },
-      });
-      console.log('Driver location updated in database.');
-    } catch (error) {
-      console.error('Error updating driver location:', error);
+ 
+  // Request location updates from drivers
+  socket.on('requestLocationUpdate', () => {
+    if (socket.userType === 'driver') {
+      console.log('Requesting location update from all drivers');
+      io.emit('sendLocationUpdate');
     }
   });
 
+  // Handle location updates for drivers
+  socket.on('locationUpdate', async ({ driverId, longitude, latitude }) => {
+    if (socket.userType === 'driver') {
+      console.log(`Received location update for driver ${driverId}:`, { longitude, latitude });
+
+      try {
+        const Driver = require('./models/Driver');
+        await Driver.findByIdAndUpdate(driverId, {
+          location: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+        });
+        console.log('Driver location updated in database.');
+      } catch (error) {
+        console.error('Error updating driver location:', error);
+      }
+    }
+  });
+
+  // Handle user ride requests (example event)
+  socket.on('requestRide', async ({ userId, location }) => {
+    if (socket.userType === 'user') {
+      console.log(`User ${userId} is requesting a ride at location:`, location);
+      // Logic for handling ride requests for users can go here
+      // Emit an event to notify available drivers, etc.
+    }
+  });
+
+  // Disconnect handler
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
   });

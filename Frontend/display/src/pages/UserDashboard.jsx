@@ -1,48 +1,64 @@
-import React from 'react';
-import { useRideContext } from '../context/rideContext'; // Import the context hook
-import Sidebar from '../components/Sidebar';
-import MapComponent from '../components/MapComponent';
-import PickupDropOffComponent from '../components/PickupDropOffComponent';
-import RideSelector from '../components/RideSelector';
-import FareEstimator from '../components/FareEstimator';
+import React, { useEffect, useState } from 'react';
+import { useSocket } from '../context/SocketContext'; // Import the socket context
+import DriverSidebar from '../components/DriverSidebar';
+import DriverMap from '../components/DriverMap';
+import { jwtDecode } from 'jwt-decode';
 
 const UserDashboard = () => {
-  const {
-    pickup,
-    dropOff,
-    selectedRide,
-    setPickup,
-    setDropOff,
-    setSelectedRide,
-    distance
-  } = useRideContext(); // Destructure values from the context
+  const { socket, isConnected } = useSocket(); // Use the socket context
+  const [userId, setUserId] = useState(null);
+  const [location, setLocation] = useState(null);
 
-  const handleSetPickupAndDropOff = (pickupLocation, dropOffLocation) => {
-    setPickup(pickupLocation);
-    setDropOff(dropOffLocation);
+  // Decode JWT to get user ID
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUserId(decoded.id);
+      } catch (err) {
+        console.error('JWT Decoding Error:', err);
+      }
+    }
+  }, []);
+
+  // Listen for ride updates or location-related events specific to the user
+  useEffect(() => {
+    if (isConnected && userId) {
+      socket.on('rideStatusUpdate', (rideData) => {
+        console.log('Received ride status update:', rideData);
+        // Handle the ride status update for the user here
+      });
+
+      // Example: If the user is requesting a driver update
+      socket.on('driverLocationUpdate', (driverLocation) => {
+        console.log('Received driver location update:', driverLocation);
+        // Handle driver location update for the user
+        setLocation(driverLocation);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('rideStatusUpdate');
+        socket.off('driverLocationUpdate');
+      }
+    };
+  }, [isConnected, userId, socket]);
+
+  const requestRide = () => {
+    if (socket && userId) {
+      // Emit a ride request event for the user
+      socket.emit('requestRide', { userId, location });
+    }
   };
 
-  const handleSelectRide = (rideType) => {
-    setSelectedRide(rideType);
-  };
   return (
     <div style={styles.container}>
-      <Sidebar />
-      {/* if path is dashboard*/}
+      <DriverSidebar />
       <div style={styles.mainContent}>
-        <MapComponent pickup={pickup} dropOff={dropOff} />
-        
-        <RideSelector 
-          pickup={pickup} 
-          dropOff={dropOff} 
-          selectedRide={selectedRide} 
-          onSelectRide={handleSelectRide} 
-        />
-        <PickupDropOffComponent onSetPickupAndDropOff={handleSetPickupAndDropOff} />
-        
-        {selectedRide && distance > 0 && (
-          <FareEstimator />
-        )}
+        <DriverMap />
+        <button onClick={requestRide} style={styles.button}>Request Ride</button>
       </div>
     </div>
   );
@@ -58,6 +74,16 @@ const styles = {
     flex: 1,
     padding: '10px',
     overflowY: 'auto',
+  },
+  button: {
+    padding: '10px 20px',
+    fontSize: '16px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
   },
 };
 
