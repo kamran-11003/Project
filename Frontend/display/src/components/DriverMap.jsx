@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import io from 'socket.io-client';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { jwtDecode } from 'jwt-decode';mapboxgl.accessToken = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
+import {jwtDecode} from 'jwt-decode';
+
+mapboxgl.accessToken = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
 
 const DriverMap = () => {
   const mapContainerRef = useRef(null);
@@ -11,10 +13,10 @@ const DriverMap = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(true);
   const [driverId, setDriverId] = useState(null);
-  const socketRef = useRef(null); // UseRef for persistent socket instance
+  const socketRef = useRef(null);
 
+  // Initialize socket connection
   useEffect(() => {
-    // Initialize socket connection
     socketRef.current = io('http://localhost:5000', {
       reconnection: true,
       reconnectionAttempts: 5,
@@ -27,21 +29,20 @@ const DriverMap = () => {
       console.log('Connected to socket server');
     });
 
-    socket.on('disconnect', () => {
-      console.log('Disconnected from socket server');
-    });
-
-    socket.on('driverLocationUpdate', (data) => {
-      console.log('Received driver location update:', data);
+    socket.on('sendLocationUpdate', () => {
+      const storedLocation = JSON.parse(localStorage.getItem('driverLocation'));
+      if (storedLocation) {
+        const { latitude, longitude } = storedLocation;
+        socket.emit('locationUpdate', { driverId, longitude, latitude });
+      }
     });
 
     return () => {
       socket.off('connect');
-      socket.off('disconnect');
-      socket.off('driverLocationUpdate');
-      socket.disconnect(); // Ensure proper cleanup
+      socket.off('sendLocationUpdate');
+      socket.disconnect();
     };
-  }, []);
+  }, [driverId]);
 
   // Decode JWT and set driver ID
   useEffect(() => {
@@ -56,8 +57,10 @@ const DriverMap = () => {
     }
   }, []);
 
-  // Update driver location and emit updates
+  // Update driver location
   const updateLocation = (latitude, longitude) => {
+    const locationData = { latitude, longitude };
+    localStorage.setItem('driverLocation', JSON.stringify(locationData));
     setCurrentLocation([longitude, latitude]);
     setLoadingLocation(false);
 
@@ -73,13 +76,9 @@ const DriverMap = () => {
       mapRef.current.setCenter([longitude, latitude]);
       mapRef.current.setZoom(15);
     }
-
-    if (driverId && socketRef.current) {
-      socketRef.current.emit('locationUpdate', { driverId, longitude, latitude });
-    }
   };
 
-  // Geolocation logic
+  // Watch geolocation changes
   useEffect(() => {
     let watchId;
 
@@ -106,9 +105,9 @@ const DriverMap = () => {
         navigator.geolocation.clearWatch(watchId);
       }
     };
-  }, [driverId]);
+  }, []);
 
-  // Mapbox initialization
+  // Initialize Mapbox map
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -117,7 +116,7 @@ const DriverMap = () => {
       zoom: 12,
     });
 
-    return () => mapRef.current?.remove(); // Clean up map instance
+    return () => mapRef.current?.remove();
   }, []);
 
   return (
