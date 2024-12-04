@@ -87,15 +87,6 @@ socket.on('requestRide', async (data) => {
     if (socket.userType === 'user') {
       console.log(`User ${data.userId} is requesting a ride at location:`, data.pickup);
 
-      // Logic for handling ride requests for users can go here
-      // For example, emit an event to notify available drivers
-      socket.emit('rideRequestReceived', {
-        userId: data.userId,
-        pickup: data.pickup,
-        dropOff: data.dropOff,
-        fare: data.fare,
-        distance: data.distance
-      });
     }
   } catch (error) {
     console.error('Error handling ride request:', error);
