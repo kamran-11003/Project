@@ -36,6 +36,7 @@ const UserDashboard = () => {
       socket.emit('userConnected', { userId }); // Notify the server user has connected
 
     
+      // Cleanup the socket listener when component unmounts
       return () => {
         socket.off('rideRequest');
       };
