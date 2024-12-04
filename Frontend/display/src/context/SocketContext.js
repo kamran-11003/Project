@@ -34,10 +34,11 @@ export const SocketProvider = ({ children }) => {
           const decoded = jwtDecode(token);
           const type = decoded.role; // Assuming the role is either 'user' or 'driver'
           setUserType(type);
+          console.log()
           setUserId(decoded.id);
 
           // Emit identify event to server with user type and ID
-          socketRef.current.emit('identify', { type, userId: decoded.id });
+          socketRef.current.emit('identify', {  type, userId: decoded.id });
         } catch (error) {
           console.error('JWT decoding failed:', error);
         }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { jwtDecode } from 'jwt-decode';
 import { useRideContext } from '../context/rideContext'; // Import the context hook
+import { useSocket } from '../context/SocketContext'; // Import the SocketContext
+
 
 // Styled Components
 const Container = styled.div`
@@ -106,10 +108,11 @@ const FareEstimator = () => {
     fare,
     setFare
   } = useRideContext();
+  const { userId, socket } = useSocket(); // Get userId and socket from SocketContext
 
   const [fareMultipliers, setFareMultipliers] = useState({});
   const [recommendedFare, setRecommendedFare] = useState(0);
-  const [customBid, setCustomBid] = useState('');
+  const [customBid, setCustomBid] = useState(''); // Initialize as an empty string
   const [promoCode, setPromoCode] = useState('');
   const [promotions, setPromotions] = useState([]);
   const [discount, setDiscount] = useState(0);
@@ -154,11 +157,12 @@ const FareEstimator = () => {
   }, [selectedRide, distance, fareMultipliers, discount]);
 
   const handleBidChange = (e) => {
-    const bid = parseFloat(e.target.value);
+    const bid = e.target.value;
     const minimumFare = recommendedFare - discount;
 
-    if (bid >= minimumFare || isNaN(bid)) {
-      setCustomBid(e.target.value); // Update bid only if it's valid or empty
+    // Allow the value to be empty or any numeric value, but show error if it's below minimum fare
+    if (bid === '' || !isNaN(bid)) {
+      setCustomBid(bid);
       setError(''); // Clear error message
     } else {
       setError(`Bid must be at least PKR ${minimumFare.toFixed(2)}.`);
@@ -191,21 +195,11 @@ const FareEstimator = () => {
   const handleFindDriver = async () => {
     const minimumFare = recommendedFare - discount;
 
-    if (!customBid || isNaN(customBid) || customBid <= 0) {
-      alert('Please enter a valid bid.');
-      return;
-    }
-
-    if (parseFloat(customBid) < minimumFare) {
+    if (!customBid || isNaN(customBid) || parseFloat(customBid) < minimumFare) {
       alert(`Your bid must be at least PKR ${minimumFare.toFixed(2)}.`);
       return;
     }
 
-    const userId = getUserIdFromToken();
-    if (!userId) {
-      alert('User not authenticated. Please log in.');
-      return;
-    }
 
     const data = {
       pickup,
@@ -214,26 +208,9 @@ const FareEstimator = () => {
       distance,
       userId,
     };
-
-    try {
-      const response = await fetch('http://localhost:5000/api/ride/ride', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send data to the server.');
-      }
-
-      const result = await response.json();
-      alert(`Driver found! Details: ${JSON.stringify(result)}`);
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while finding a driver. Please try again.');
-    }
+    //implement socket
+    socket.emit('requestRide', data);
+    
   };
 
   return (
@@ -251,7 +228,7 @@ const FareEstimator = () => {
 
       <BidSection>
         <BidInput
-          type="number"
+          type="text"  // Allow text input to make typing easier, still ensure it's numeric
           placeholder={`Minimum bid: PKR ${(recommendedFare - discount).toFixed(2)}`}
           value={customBid}
           onChange={handleBidChange}

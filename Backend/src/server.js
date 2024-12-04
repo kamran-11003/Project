@@ -8,7 +8,6 @@ const socketIo = require('socket.io');
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
-const rideRoutes = require('./routes/rideRouts');
 const fareRoutes = require('./routes/fareRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -34,7 +33,6 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/ride', rideRoutes);
 app.use('/api/fare', fareRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
@@ -80,14 +78,30 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Handle user ride requests (example event)
-  socket.on('requestRide', async ({ userId, location }) => {
+// Handle user ride requests (example event)
+socket.on('requestRide', async (data) => {
+  try {
+    console.log(data);
+
+    // Check userType (make sure this is set somewhere when the socket connects)
     if (socket.userType === 'user') {
-      console.log(`User ${userId} is requesting a ride at location:`, location);
+      console.log(`User ${data.userId} is requesting a ride at location:`, data.pickup);
+
       // Logic for handling ride requests for users can go here
-      // Emit an event to notify available drivers, etc.
+      // For example, emit an event to notify available drivers
+      socket.emit('rideRequestReceived', {
+        userId: data.userId,
+        pickup: data.pickup,
+        dropOff: data.dropOff,
+        fare: data.fare,
+        distance: data.distance
+      });
     }
-  });
+  } catch (error) {
+    console.error('Error handling ride request:', error);
+  }
+});
+
 
   // Disconnect handler
   socket.on('disconnect', () => {
