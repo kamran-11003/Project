@@ -4,7 +4,8 @@ const {
   updateDriverLocation, 
   findNearbyDrivers, 
   updateDriver, 
-  getProfile // Add this to handle driver profile retrieval
+  getProfile ,
+  toggleAvailability// Add this to handle driver profile retrieval
 } = require('../controllers/DriverController');
 
 // Route to update the driver's location by driver ID
@@ -17,5 +18,6 @@ router.get('/driver/nearby', findNearbyDrivers);
 router.put('/driver/:driverId', updateDriver);
 // Get driver profile
 router.get('/driver/:driverId', getProfile);
+router.put('/drivers/:driverId/toggle-availability', toggleAvailability);
 
 module.exports = router;

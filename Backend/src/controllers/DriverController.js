@@ -95,6 +95,34 @@ const updateDriver = async (req, res) => {
   }
 };
 
+const toggleAvailability = async (req, res) => {
+  console.log(req.params)
+  const { driverId } = req.params; // Assuming driverId is passed as a URL parameter
+  console.log(driverId)
+  try {
+    // Find the driver by ID
+    const driver = await Driver.findById(driverId);
+    
+    if (!driver) {
+      return res.status(404).json({ message: 'Driver not found' });
+    }
+
+    // Toggle the availability status
+    driver.availability = !driver.availability;
+
+    // Save the updated driver
+    await driver.save();
+
+    // Respond with the updated driver
+    res.status(200).json({
+      message: `Driver availability toggled successfully`,
+      availability: driver.availability,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 // Get the profile of a driver by their ID
 const getProfile = async (req, res) => {
   const { driverId } = req.params;
@@ -111,10 +139,10 @@ const getProfile = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 module.exports = {
   updateDriverLocation,
   findNearbyDrivers,
   updateDriver,
   getProfile,
+  toggleAvailability,
 };
