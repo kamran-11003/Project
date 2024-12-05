@@ -8,6 +8,7 @@ import RideSelector from '../components/RideSelector';
 import FareEstimator from '../components/FareEstimator';
 import { Routes, Route } from "react-router-dom";
 import ProfileUpdate from '../components/ProfileUpdate';
+import RideHistory from '../components/RideHistory';
 
 const UserDashboard = () => {
   const {
@@ -63,7 +64,7 @@ const UserDashboard = () => {
               </>
             }
           />
-          <Route path="history" element={<h2>Ride History Page (To be implemented)</h2>} />
+          <Route path="history" element={<RideHistory></RideHistory>} />
           <Route path="edit-profile" element={<ProfileUpdate />} />
           </Routes>
       </div>
