@@ -12,3 +12,4 @@ router.post('/wallet', authenticateToken, updateWallet);
 router.get('/profile', authenticateToken, getUser);
 
 module.exports = router;
+    
