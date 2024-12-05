@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Unauthorized from './pages/Unauthorized';
 import { RideProvider } from './context/rideContext'; // Import the RideProvider
 import { SocketProvider } from './context/SocketContext'; // Import the SocketProvider
+import DriverProfileUpdate from './components/DriverProfileUpdate';
 
 function App() {
   return (
@@ -53,7 +54,15 @@ function App() {
             }
           />
 
-          
+          {/* Profile Update Route */}
+          <Route
+            path="/edit-profile"
+            element={
+              <ProtectedRoute allowedRoles={['user']}>
+                <ProfileUpdate />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Unauthorized route */}
           <Route path="/unauthorized" element={<Unauthorized />} />

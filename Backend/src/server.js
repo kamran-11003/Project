@@ -16,7 +16,8 @@ const fareRoutes = require('./routes/fareRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const driverRoutes = require('./routes/DriverRoutes');
-const rideRoutes = require('./routes/rideRoutes');
+const { AsyncLocalStorage } = require('async_hooks');
+
 // Initialize express app
 const app = express();
 const server = http.createServer(app);
@@ -41,7 +42,6 @@ app.use('/api/fare', fareRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/driver', driverRoutes);
-app.use('/api/ride',rideRoutes);
 
 const fetchDistance = (pickupLocation, dropOffLocation) => {
   if (!pickupLocation || !dropOffLocation) return Promise.reject('Invalid locations');
@@ -66,8 +66,6 @@ const fetchDistance = (pickupLocation, dropOffLocation) => {
     });
 };
 
-
-
 const activeDrivers = [];
 const activeUsers = [];
 
@@ -78,7 +76,6 @@ io.on('connection', (socket) => {
   // Event to identify whether the client is a driver or user
   socket.on('identify', ({ type, userId }) => {
 
-    console.log(`Client identified as: ${type} with ID: ${userId}`);
     console.log(`Client identified as: ${type} with ID: ${userId}`);
     socket.userType = type; // Store the type (user or driver)
     socket.userId = userId; // Store the user or driver ID
@@ -98,7 +95,7 @@ io.on('connection', (socket) => {
       console.log('Active users:', activeUsers);
     }
   });
- 
+
   // Request location updates from drivers
   socket.on('requestLocationUpdate', () => {
     if (socket.userType === 'driver') {
@@ -126,87 +123,83 @@ io.on('connection', (socket) => {
       }
     }
   });
-// Handle user ride requests (example event)
-socket.on('requestRide', async (data) => {
-  try {
-    console.log(data);
 
-    // Emit requestLocationUpdate event to all connected clients (likely drivers)
+  // Handle user ride requests (example event)
+  socket.on('requestRide', async (data) => {
     io.emit('requestLocationUpdate');
+    try {
+      console.log(data);
 
-    if (socket.userType === 'user') {
-      
+      // Emit requestLocationUpdate event to all connected clients (likely drivers)
+      io.emit('requestLocationUpdate');
 
-      const { pickupCoordinates } = data; // { latitude, longitude }
-      const nearbyDrivers = [];
-      
-      // Fetch all active drivers from the array
-      for (const activeDriver of activeDrivers) {
-        const driver = await Driver.findById(activeDriver.userId);
+      if (socket.userType === 'user') {
+        const { pickupCoordinates } = data; // { latitude, longitude }
+        const nearbyDrivers = [];
+        
+        // Fetch all active drivers from the array
+        for (const activeDriver of activeDrivers) {
+          const driver = await Driver.findById(activeDriver.userId);
 
-        if (driver && driver.location && driver.location.coordinates) {
-          const [driverLon, driverLat] = driver.location.coordinates;
-          // Fetch distance from Mapbox API
-          const pickupLocation = [pickupCoordinates.longitude, pickupCoordinates.latitude]; // [lon, lat]
-          const driverLocation = [driverLon, driverLat]; // [lon, lat]
-          try {
-            const distance = await fetchDistance(pickupLocation, driverLocation);
-            console.log('Distance from driver to user:', distance);
+          if (driver && driver.location && driver.location.coordinates) {
+            const [driverLon, driverLat] = driver.location.coordinates;
+            // Fetch distance from Mapbox API
+            const pickupLocation = [pickupCoordinates.longitude, pickupCoordinates.latitude]; // [lon, lat]
+            const driverLocation = [driverLon, driverLat]; // [lon, lat]
+            try {
+              const distance = await fetchDistance(pickupLocation, driverLocation);
+              console.log('Distance from driver to user:', distance);
 
-            // Add the driver to nearbyDrivers if within 5 km (1000 meters)
-            if (distance <= 100) { // Assuming the distance is in meters
-              nearbyDrivers.push({
-                driverId: activeDriver.userId,
-                distance,
-                location: { latitude: driverLat, longitude: driverLon },
-              });
+              // Add the driver to nearbyDrivers if within 5 km (1000 meters)
+              if (distance <= 150) { // Assuming the distance is in meters
+                nearbyDrivers.push({
+                  driverId: activeDriver.userId,
+                  distance,
+                  location: { latitude: driverLat, longitude: driverLon },
+                });
 
-              // Emit ride request data to the nearby driver
-              io.to(activeDriver.socketId).emit('rideRequest', data);
+                // Emit ride request data to the nearby driver
+                io.to(activeDriver.socketId).emit('rideRequest', data);
+              }
+            } catch (error) {
+              console.error('Error fetching distance:', error.message);
             }
-          } catch (error) {
-            console.error('Error fetching distance:', error.message);
           }
         }
+
+        // Emit the list of nearby drivers to the user
+        console.log(`Nearby drivers for user ${data.userId}:`, nearbyDrivers);
       }
-
-      // Emit the list of nearby drivers to the user
-      console.log(`Nearby drivers for user ${data.userId}:`, nearbyDrivers);
+    } catch (error) {
+      console.error('Error handling ride request:', error);
     }
-  } catch (error) {
-    console.error('Error handling ride request:', error);
-  }
-});
-socket.on('acceptRide', async(res) => {
-
-  const { rideRequest, driverid} =res;
-  console.log(driverid);
-  const { pickup, dropOff, fare, distance, userId, pickupCoordinates, dropOffCoordinates } = rideRequest;
-  const newRide = new Ride({
-    userId, 
-    driverid,
-    pickupCoordinates,
-    dropOffCoordinates,
-    fare,
-    distance,
-    status: 'ongoing', // Set the initial status to 'requested'
-    pickup, // Address of pickup
-    dropOff, // Address of drop-off
   });
-  await newRide.save();
-  console.log(`Ride request`);  
-  io.emit('rideStarted', newRide);
-});
 
-    
-
-
+  socket.on('acceptRide', async (res) => {
+    const { rideRequest, driverid } = res;
+    console.log(driverid);
+    const { pickup, dropOff, fare, distance, userId, pickupCoordinates, dropOffCoordinates } = rideRequest;
+    const newRide = new Ride({
+      userId, 
+      driverid,
+      pickupCoordinates,
+      dropOffCoordinates,
+      fare,
+      distance,
+      status: 'ongoing', // Set the initial status to 'requested'
+      pickup, // Address of pickup
+      dropOff, // Address of drop-off
+    });
+    await newRide.save();
+    console.log(`Ride request`);  
+    io.emit('rideStarted', newRide);
+  });
 
   // Disconnect handler
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
   });
- 
+
 });
 
 // Start Server
