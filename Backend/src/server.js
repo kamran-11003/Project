@@ -16,8 +16,7 @@ const fareRoutes = require('./routes/fareRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const driverRoutes = require('./routes/DriverRoutes');
-const { AsyncLocalStorage } = require('async_hooks');
-
+const RideRoutes = require('./routes/rideRoutes'); 
 // Initialize express app
 const app = express();
 const server = http.createServer(app);
@@ -42,6 +41,7 @@ app.use('/api/fare', fareRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/driver', driverRoutes);
+app.use('/api/ride',RideRoutes);
 
 const fetchDistance = (pickupLocation, dropOffLocation) => {
   if (!pickupLocation || !dropOffLocation) return Promise.reject('Invalid locations');
