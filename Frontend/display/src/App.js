@@ -54,16 +54,15 @@ function App() {
             }
           />
 
-          {/* Profile Update Route */}
+          
           <Route
-            path="/edit-profile"
-            element={
-              <ProtectedRoute allowedRoles={['user']}>
-                <ProfileUpdate />
-              </ProtectedRoute>
-            }
-          />
-
+  path="/driver-update"
+  element={
+    <ProtectedRoute allowedRoles={['driver']}>
+      <DriverProfileUpdate />
+    </ProtectedRoute>
+  }
+/>
           {/* Unauthorized route */}
           <Route path="/unauthorized" element={<Unauthorized />} />
         </Routes>
