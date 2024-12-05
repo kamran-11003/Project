@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react';
 import styled from "styled-components";
-import { FaHome, FaHistory, FaCog, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaHistory, FaCog, FaQuestionCircle, FaSignOutAlt, FaUserEdit } from "react-icons/fa";
+import { Link } from "react-router-dom"; // Assuming you're using React Router
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -49,7 +50,7 @@ const Email = styled.p`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 100px); /* Adjust based on profile section height */
+  height: calc(100% - 100px);
 `;
 
 const Navigation = styled.nav`
@@ -60,7 +61,7 @@ const Navigation = styled.nav`
   overflow-y: auto;
 `;
 
-const NavLink = styled.a`
+const NavLink = styled(Link)`
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
@@ -94,44 +95,72 @@ const LogoutLink = styled(NavLink)`
   }
 `;
 
-const DriverSidebar = () => {
-    const navigationItems = [
-        { icon: <FaHome />, label: "Dashboard", href: "#dashboard" },
-        { icon: <FaHistory />, label: "Ride History", href: "#history" },
-        { icon: <FaCog />, label: "Settings", href: "#settings" },
-        { icon: <FaQuestionCircle />, label: "Help", href: "#help" },
-      ];
-    
-      return (
-        <SidebarContainer>
-          <ProfileSection>
-            <ProfileImage
-              src="https://via.placeholder.com/50"
-              alt="Profile"
-            />
-            <ProfileInfo>
-              <Name>John Doe</Name>
-              <Email>john.doe@example.com</Email>
-            </ProfileInfo>
-          </ProfileSection>
-    
-          <ContentWrapper>
-            <Navigation>
-              {navigationItems.map((item) => (
-                <NavLink key={item.href} href={item.href}>
-                  {item.icon}
-                  {item.label}
-                </NavLink>
-              ))}
-            </Navigation>
-            
-            <LogoutLink href="#logout">
-              <FaSignOutAlt />
-              Logout
-            </LogoutLink>
-          </ContentWrapper>
-        </SidebarContainer>
-      );
-}
+const ToggleButton = styled.button`
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: ${({ active }) => (active ? "#48bb78" : "#e53e3e")};
+  cursor: pointer;
+  transition: background-color 0.3s;
 
-export default DriverSidebar
+  &:hover {
+    background-color: ${({ active }) => (active ? "#38a169" : "#c53030")};
+  }
+`;
+
+const DriverSidebar = () => {
+  const [isActive, setIsActive] = useState(false);
+
+  const toggleActivation = () => {
+    setIsActive((prev) => !prev);
+  };
+
+  const navigationItems = [
+    { icon: <FaHome />, label: "Dashboard", to: "/dashboard" },
+    { icon: <FaHistory />, label: "Ride History", to: "/history" },
+    { icon: <FaCog />, label: "Settings", to: "/settings" },
+    { icon: <FaQuestionCircle />, label: "Help", to: "/help" },
+    { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" }, // New Edit Profile link
+  ];
+
+  return (
+    <SidebarContainer>
+      <ProfileSection>
+        <ProfileImage
+          src="https://via.placeholder.com/50"
+          alt="Profile"
+        />
+        <ProfileInfo>
+          <Name>John Doe</Name>
+          <Email>john.doe@example.com</Email>
+        </ProfileInfo>
+      </ProfileSection>
+
+      <ContentWrapper>
+        <Navigation>
+          {navigationItems.map((item) => (
+            <NavLink key={item.to} to={item.to}>
+              {item.icon}
+              {item.label}
+            </NavLink>
+          ))}
+        </Navigation>
+        
+        <LogoutLink to="/logout">
+          <FaSignOutAlt />
+          Logout
+        </LogoutLink>
+
+        <ToggleButton active={isActive} onClick={toggleActivation}>
+          {isActive ? "Active" : "Inactive"}
+        </ToggleButton>
+      </ContentWrapper>
+    </SidebarContainer>
+  );
+};
+
+export default DriverSidebar;

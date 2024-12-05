@@ -13,6 +13,7 @@ import Unauthorized from './pages/Unauthorized';
 import ProfileUpdate from './components/ProfileUpdate'; // Import ProfileUpdate
 import { RideProvider } from './context/rideContext'; // Import the RideProvider
 import { SocketProvider } from './context/SocketContext'; // Import the SocketProvider
+import DriverProfileUpdate from './components/DriverProfileUpdate';
 
 function App() {
   return (
@@ -54,7 +55,7 @@ function App() {
             }
           />
 
-          {/* Profile Update Route */}
+          {/* User Profile Update Route */}
           <Route
             path="/edit-profile"
             element={
@@ -63,6 +64,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+{/*Driver User Profile Update Route */}
+<Route
+  path="/driver-update"
+  element={
+    <ProtectedRoute allowedRoles={['driver']}>
+      <DriverProfileUpdate />
+    </ProtectedRoute>
+  }
+/>
+
 
           {/* Unauthorized route */}
           <Route path="/unauthorized" element={<Unauthorized />} />
