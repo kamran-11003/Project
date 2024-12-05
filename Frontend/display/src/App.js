@@ -10,13 +10,12 @@ import RegisterUser from './pages/RegisterUser';
 import UserDashboard from './pages/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Unauthorized from './pages/Unauthorized';
-import ProfileUpdate from './components/ProfileUpdate'; // Import ProfileUpdate
 import { RideProvider } from './context/rideContext'; // Import the RideProvider
 import { SocketProvider } from './context/SocketContext'; // Import the SocketProvider
 
 function App() {
   return (
-    <SocketProvider> {/* Wrap the app with SocketProvider */}
+    <SocketProvider>
       <Router>
         <Routes>
           {/* Public Routes */}
@@ -44,7 +43,7 @@ function App() {
             }
           />
           <Route
-            path="/user-dashboard"
+            path="/user-dashboard/*"
             element={
               <ProtectedRoute allowedRoles={['user']}>
                 <RideProvider>
@@ -54,15 +53,7 @@ function App() {
             }
           />
 
-          {/* Profile Update Route */}
-          <Route
-            path="/edit-profile"
-            element={
-              <ProtectedRoute allowedRoles={['user']}>
-                <ProfileUpdate />
-              </ProtectedRoute>
-            }
-          />
+          
 
           {/* Unauthorized route */}
           <Route path="/unauthorized" element={<Unauthorized />} />

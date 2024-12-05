@@ -1,12 +1,13 @@
-// components/UserDashboard.js
 import React, { useEffect } from 'react';
-import { useRideContext } from '../context/rideContext'; // Import the ride context
-import { useSocket } from '../context/SocketContext'; // Import the SocketContext
+import { useRideContext } from '../context/rideContext';
+import { useSocket } from '../context/SocketContext';
 import Sidebar from '../components/Sidebar';
 import MapComponent from '../components/MapComponent';
 import PickupDropOffComponent from '../components/PickupDropOffComponent';
 import RideSelector from '../components/RideSelector';
 import FareEstimator from '../components/FareEstimator';
+import { Routes, Route } from "react-router-dom";
+import ProfileUpdate from '../components/ProfileUpdate';
 
 const UserDashboard = () => {
   const {
@@ -16,10 +17,10 @@ const UserDashboard = () => {
     setPickup,
     setDropOff,
     setSelectedRide,
-    distance
-  } = useRideContext(); // Destructure ride context values
+    distance,
+  } = useRideContext();
 
-  const { userId, socket } = useSocket(); // Get userId and socket from SocketContext
+  const { userId, socket } = useSocket();
 
   const handleSetPickupAndDropOff = (pickupLocation, dropOffLocation) => {
     setPickup(pickupLocation);
@@ -28,15 +29,11 @@ const UserDashboard = () => {
 
   const handleSelectRide = (rideType) => {
     setSelectedRide(rideType);
-
   };
 
   useEffect(() => {
     if (socket && userId) {
-      socket.emit('userConnected', { userId }); // Notify the server user has connected
-
-    
-      // Cleanup the socket listener when component unmounts
+      socket.emit('userConnected', { userId });
       return () => {
         socket.off('rideRequest');
       };
@@ -47,20 +44,28 @@ const UserDashboard = () => {
     <div style={styles.container}>
       <Sidebar />
       <div style={styles.mainContent}>
-        <MapComponent pickup={pickup} dropOff={dropOff} />
-        
-        <RideSelector 
-          pickup={pickup} 
-          dropOff={dropOff} 
-          selectedRide={selectedRide} 
-          onSelectRide={handleSelectRide} 
-        />
-        
-        <PickupDropOffComponent onSetPickupAndDropOff={handleSetPickupAndDropOff} />
-        
-        {selectedRide && distance > 0 && (
-          <FareEstimator />
-        )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <MapComponent pickup={pickup} dropOff={dropOff} />
+                <RideSelector
+                  pickup={pickup}
+                  dropOff={dropOff}
+                  selectedRide={selectedRide}
+                  onSelectRide={handleSelectRide}
+                />
+                <PickupDropOffComponent
+                  onSetPickupAndDropOff={handleSetPickupAndDropOff}
+                />
+                {selectedRide && distance > 0 && <FareEstimator />}
+              </>
+            }
+          />
+          <Route path="history" element={<h2>Ride History Page (To be implemented)</h2>} />
+          <Route path="edit-profile" element={<ProfileUpdate />} />
+          </Routes>
       </div>
     </div>
   );

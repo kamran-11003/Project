@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from "jwt-decode"; // Correct import
 import { FaHome, FaHistory, FaSignOutAlt } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -70,7 +71,7 @@ const EditProfileButton = styled.button`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 150px); /* Adjust based on profile section height */
+  height: calc(100% - 150px);
 `;
 
 const Navigation = styled.nav`
@@ -81,7 +82,7 @@ const Navigation = styled.nav`
   overflow-y: auto;
 `;
 
-const NavLink = styled.a`
+const NavLink = styled(Link)`
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
@@ -103,20 +104,30 @@ const NavLink = styled.a`
   }
 `;
 
-const LogoutLink = styled(NavLink)`
+const LogoutLink = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
   color: #e53e3e;
   border-top: 1px solid #e9ecef;
-  padding-top: 1rem;
   margin-top: auto;
+  cursor: pointer;
+  font-weight: 500;
 
   &:hover {
     background: #fff5f5;
     color: #c53030;
   }
+
+  svg {
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+  }
 `;
 
 const Sidebar = () => {
   const [user, setUser] = useState({ name: "Loading...", wallet: 0 });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -129,7 +140,6 @@ const Sidebar = () => {
 
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId; // Assuming token contains `userId`
-        console.log(decodedToken);
         const response = await axios.get(`http://localhost:5000/api/user/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -148,9 +158,14 @@ const Sidebar = () => {
     fetchUserProfile();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    navigate("/"); // Redirect to login
+  };
+
   const navigationItems = [
-    { icon: <FaHome />, label: "Dashboard", href: "/user-dashboard" },
-    { icon: <FaHistory />, label: "Ride History", href: "#history" },
+    { icon: <FaHome />, label: "Dashboard", path: "/user-dashboard" },
+    { icon: <FaHistory />, label: "Ride History", path: "/user-dashboard/history" },
   ];
 
   return (
@@ -160,23 +175,23 @@ const Sidebar = () => {
         <ProfileInfo>
           <Name>{user.name}</Name>
           <WalletBalance>Wallet: ${user.wallet}</WalletBalance>
-          <EditProfileButton onClick={() => (window.location.href = "/edit-profile")}>
-            Edit Profile
-          </EditProfileButton>
+          <EditProfileButton onClick={() => navigate("/user-dashboard/edit-profile")}>
+  Edit Profile
+</EditProfileButton>
         </ProfileInfo>
       </ProfileSection>
 
       <ContentWrapper>
         <Navigation>
           {navigationItems.map((item) => (
-            <NavLink key={item.href} href={item.href}>
+            <NavLink key={item.path} to={item.path}>
               {item.icon}
               {item.label}
             </NavLink>
           ))}
         </Navigation>
 
-        <LogoutLink href="#logout">
+        <LogoutLink onClick={handleLogout}>
           <FaSignOutAlt />
           Logout
         </LogoutLink>
