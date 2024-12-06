@@ -195,7 +195,15 @@ io.on('connection', (socket) => {
     io.emit('rideStarted', newRide);
     io.to(userId).emit('rideStarted', newRide);
   });
+  socket.on('DriverLocation', (location) => {
+    console.log('Driver Location received:', location);
 
+    // Simulate a location update or send the location to other clients
+    // For example, broadcasting to all connected clients
+    io.emit('Location', location);
+    
+    // You could also store the location in a database if needed
+});
   // Disconnect handler
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
