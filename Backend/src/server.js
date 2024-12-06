@@ -17,8 +17,10 @@ const fareRoutes = require('./routes/fareRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const driverRoutes = require('./routes/DriverRoutes');  // Make sure this is the correct path to your driver routes
-const { AsyncLocalStorage } = require('async_hooks');
 const earningsRoutes = require('./routes/earningsRoutes'); 
+const RatingRoutes=require('./routes/ratingRouts')
+const feedbackRoutes = require('./routes/feedbackRoutes'); // Import the feedback routes
+
 
 // Initialize express app
 const app = express();
@@ -45,6 +47,9 @@ app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/driver', driverRoutes);  // Register your new driver routes here
 app.use('/api/earnings', earningsRoutes);
+app.use('/api/rating',RatingRoutes);
+app.use('/api/feedbacks', feedbackRoutes);
+
 
 const fetchDistance = (pickupLocation, dropOffLocation) => {
   if (!pickupLocation || !dropOffLocation) return Promise.reject('Invalid locations');
