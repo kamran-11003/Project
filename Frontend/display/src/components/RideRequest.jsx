@@ -1,5 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import { useSocket } from '../context/SocketContext';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  font-family: Arial, sans-serif;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+`;
+
+const Section = styled.div`
+  margin-bottom: 20px;
+`;
+
+const Title = styled.h3`
+  color: #333;
+`;
+
+const Paragraph = styled.p`
+  color: #555;
+  line-height: 1.5;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+
+  &.accept {
+    background-color: #4caf50;
+  }
+
+  &.reject {
+    background-color: #f44336;
+  }
+
+  &.notify {
+    background-color: #2196f3;
+  }
+
+  &.end {
+    background-color: #ff9800;
+  }
+`;
+
+const NoRequest = styled.p`
+  text-align: center;
+  color: #777;
+`;
 
 const RideRequest = () => {
   const { socket, userType, userId } = useSocket(); 
@@ -17,6 +71,7 @@ const RideRequest = () => {
       socket.on('rideRequest', (data) => {
         console.log('Ride request received:', data);
         setRideRequest(data);
+        setRideData(null); // Clear the previous ride data
       });
 
       // Listen for the 'rideStarted' event
@@ -24,21 +79,18 @@ const RideRequest = () => {
         console.log('Ride started:', newRide);
         setRideData(newRide);
         setRideRequest(null); // Clear ride request
-        
-    
+
         const locationEmitter = setInterval(() => {
-            const currentLocation = JSON.parse(localStorage.getItem('driverLocation'));
-            console.log('location send');
-            // Emit the location to the server (replace 'locationUpdate' with the appropriate event name)
-            socket.emit('DriverLocation', currentLocation);
+          const currentLocation = JSON.parse(localStorage.getItem('driverLocation'));
+          console.log('location send');
+          socket.emit('DriverLocation', currentLocation);
         }, 5000); // 5000 ms = 5 seconds
-    
-        // Optional: Clear the interval when the ride ends
+
+        // Clear the interval when the ride ends
         socket.on('rideEnded', () => {
-            clearInterval(locationEmitter); // Stop emitting the location
+          clearInterval(locationEmitter);
         });
-    });
-    
+      });
 
       return () => {
         socket.off('rideRequest');
@@ -47,52 +99,68 @@ const RideRequest = () => {
     }
   }, [socket, userType]);
 
+  const rejectRide = () => {
+    socket.emit('rejectRide', { rideId: rideRequest.id, driverId: userId });
+    setRideRequest(null); // Clear the ride request
+  };
+
   return (
-    <div>
+    <Container>
       {rideData ? (
-        <div>
-          <h3>Ongoing Ride</h3>
-          <p>
-            Ride ID: {rideData.id}
+        <Section>
+          <Title>Ongoing Ride</Title>
+          <Paragraph>
+            <strong>Pickup:</strong> {rideData.pickup}
             <br />
-            User ID: {rideData.userId}
+            <strong>Dropoff:</strong> {rideData.dropOff}
             <br />
-            Pickup Coordinates: {JSON.stringify(rideData.pickupCoordinates)}
+            <strong>Distance:</strong> {rideData.distance} meters
             <br />
-            Destination: {JSON.stringify(rideData.destinationCoordinates)}
-            <br />
-            Distance: {rideData.distance} meters
-          </p>
-          <button onClick={() => socket.emit('notifyArrival', { rideId: rideData.id, driverId: userId })}>
+            <strong>Fare:</strong> ${rideData.fare}
+          </Paragraph>
+          <Button 
+            className="notify" 
+            onClick={() => socket.emit('notifyArrival', { rideId: rideData.id, driverId: userId })}>
             Notify User of Arrival
-          </button>
-          <button onClick={() => {
-            socket.emit('endRide', { rideId: rideData.id, driverId: userId });
-            setRideData(null); // Clear ride data
-          }}>
+          </Button>
+          <Button 
+            className="end" 
+            onClick={() => {
+              socket.emit('endRide', { rideId: rideData.id, driverId: userId });
+              setRideData(null); // Clear ride data
+            }}>
             End Ride
-          </button>
-        </div>
+          </Button>
+        </Section>
       ) : (
         rideRequest ? (
-          <div>
-            <h3>New Ride Request</h3>
-            <p>
-              User ID: {rideRequest.userId}
+          <Section>
+            <Title>New Ride Request</Title>
+            <Paragraph>
+              <strong>Pickup:</strong> {rideRequest.pickup}
               <br />
-              Pickup Coordinates: {JSON.stringify(rideRequest.pickupCoordinates)}
+              <strong>Dropoff:</strong> {rideRequest.dropOff}
               <br />
-              Distance: {rideRequest.distance} meters
-            </p>
-            <button onClick={() => socket.emit('acceptRide', { rideRequest, driverId: userId })}>
+              <strong>Distance:</strong> {rideRequest.distance} meters
+              <br />
+              <strong>Fare:</strong> ${rideRequest.fare}
+            </Paragraph>
+            <Button 
+              className="accept" 
+              onClick={() => socket.emit('acceptRide', { rideRequest, driverId: userId })}>
               Accept Ride
-            </button>
-          </div>
+            </Button>
+            <Button 
+              className="reject" 
+              onClick={rejectRide}>
+              Reject Ride
+            </Button>
+          </Section>
         ) : (
-          <p>No ride request at the moment</p>
+          <NoRequest>No ride request at the moment</NoRequest>
         )
       )}
-    </div>
+    </Container>
   );
 };
 

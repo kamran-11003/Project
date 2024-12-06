@@ -17,8 +17,7 @@ const fareRoutes = require('./routes/fareRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const driverRoutes = require('./routes/DriverRoutes');
-const RideRoutes = require('./routes/rideRoutes'); const earningsRoutes = require('./routes/earningsRoutes'); 
-const driverRoutes = require('./routes/DriverRoutes');  // Make sure this is the correct path to your driver routes
+const RideRoutes = require('./routes/rideRoutes');
 const earningsRoutes = require('./routes/earningsRoutes'); 
 const RatingRoutes=require('./routes/ratingRouts')
 const feedbackRoutes = require('./routes/feedbackRoutes'); // Import the feedback routes
@@ -203,8 +202,8 @@ io.on('connection', (socket) => {
     });
     await newRide.save();
     console.log(`Ride request`);  
-    io.emit('rideStarted', newRide);
-    io.to(userId).emit('rideStarted', newRide);
+    io.emit('rideStarted', rideRequest);
+    io.to(userId).emit('rideStarted', rideRequest);
   });
   socket.on('DriverLocation', (location) => {
     console.log('Driver Location received:', location);

@@ -75,7 +75,7 @@ const UserDashboard = () => {
         socket.off('location', handleLocationUpdate); // Remove the location update listener
       };
     }
-  }, [socket, userId, navigate]);
+  }, [socket, userId, navigate,driverLocation]);
 
   return (
     <div style={styles.container}>

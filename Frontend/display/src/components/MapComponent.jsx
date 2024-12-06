@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { useRideContext } from '../context/rideContext'; // Import context
+import { useRideContext } from '../context/rideContext';
 
 const MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
 
@@ -53,7 +53,29 @@ const MapComponent = ({ pickup, dropOff }) => {
         interactive: false,
       });
 
+      // Add Directions Control
       newMap.addControl(directionsRef.current, 'top-left');
+
+      // Add Geolocate Control
+      const geolocateControl = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+      });
+
+      newMap.addControl(geolocateControl);
+
+      // Center map to user's location upon geolocation success
+      geolocateControl.on('geolocate', (e) => {
+        const { latitude, longitude } = e.coords;
+        setPickupCoordinates({ latitude, longitude });
+        directionsRef.current.setOrigin([longitude, latitude]);
+        newMap.flyTo({ center: [longitude, latitude], zoom: 14 });
+        console.log(`User location: ${latitude}, ${longitude}`);
+      });
+
       setMap(newMap);
 
       return newMap;
@@ -66,25 +88,20 @@ const MapComponent = ({ pickup, dropOff }) => {
 
   useEffect(() => {
     if (pickup && dropOff) {
-      Promise.all([
-        geocodeAddress(pickup),
-        geocodeAddress(dropOff),
-      ]).then(([pickupCoordinates, dropOffCoordinates]) => {
+      Promise.all([geocodeAddress(pickup), geocodeAddress(dropOff)]).then(([pickupCoordinates, dropOffCoordinates]) => {
         if (pickupCoordinates && dropOffCoordinates) {
           directionsRef.current.setOrigin(pickupCoordinates);
           directionsRef.current.setDestination(dropOffCoordinates);
 
-          // Set the coordinates in the context
           setPickupCoordinates({
-            latitude: pickupCoordinates[1], // Latitude is the second value
-            longitude: pickupCoordinates[0], // Longitude is the first value
+            latitude: pickupCoordinates[1],
+            longitude: pickupCoordinates[0],
           });
           setDropOffCoordinates({
             latitude: dropOffCoordinates[1],
             longitude: dropOffCoordinates[0],
           });
 
-          // Fetch and set the actual distance from Mapbox Directions API
           fetchDistance(pickupCoordinates, dropOffCoordinates);
         } else {
           console.error("Error geocoding the addresses.");
@@ -104,7 +121,7 @@ const MapComponent = ({ pickup, dropOff }) => {
           const route = data.routes[0];
           const distanceInMeters = route.distance;
           const distanceInKm = distanceInMeters / 1000;
-          setDistance(distanceInKm); // Set the distance in context
+          setDistance(distanceInKm);
           console.log(`Distance: ${distanceInKm} km`);
         } else {
           console.error("No route found");
