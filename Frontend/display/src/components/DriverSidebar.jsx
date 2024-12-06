@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
-import { FaHome, FaHistory, FaCog, FaQuestionCircle, FaSignOutAlt, FaUserEdit } from "react-icons/fa";
+import { FaHome, FaHistory, FaCog, FaSignOutAlt, FaUserEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -185,8 +185,9 @@ const DriverSidebar = () => {
     { icon: <FaHome />, label: "Dashboard", to: "/dashboard" },
     { icon: <FaHistory />, label: "Ride History", to: "/history" },
     { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" },
+    { icon: <FaCog />, label: "Earnings", to: "/earnings" }, 
   ];
-
+  
   return (
     <SidebarContainer>
       <ProfileSection>

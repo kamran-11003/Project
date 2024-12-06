@@ -10,7 +10,7 @@ import {
   Lock, 
   UserCheck 
 } from 'lucide-react';
-import '../Styles/profileupdate.css';
+
 
 const DriverProfileUpdate = () => {
   const [driver, setDriver] = useState({
@@ -96,7 +96,7 @@ const DriverProfileUpdate = () => {
           <div className="shape shape-2"></div>
           <div className="shape shape-3"></div>
         </div>
-      </div>
+      </div>  
 
       <div className="driver-profile-wrapper">
         <div className="driver-profile-header">
