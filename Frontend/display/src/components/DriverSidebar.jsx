@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { FaHome, FaHistory, FaCog, FaQuestionCircle, FaSignOutAlt, FaUserEdit } from "react-icons/fa";
-import { Link } from "react-router-dom"; // Assuming you're using React Router
+import { Link } from "react-router-dom";
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -113,30 +115,85 @@ const ToggleButton = styled.button`
 `;
 
 const DriverSidebar = () => {
-  const [isActive, setIsActive] = useState(false);
+  const [user, setUser] = useState({ name: "Loading...", email: "Loading...", profileImage: "" });
+  const [isActive, setIsActive] = useState(false); // Track availability status
 
-  const toggleActivation = () => {
-    setIsActive((prev) => !prev);
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+          console.error("Token not found in localStorage");
+          return;
+        }
+
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.id; // Assuming `userId` exists in the token
+
+        const response = await axios.get(`http://localhost:5000/api/driver/driver/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const { firstName, lastName, email, profileImage, availability } = response.data.driver;
+        setUser({
+          name: `${firstName} ${lastName}`,
+          email: email,
+          profileImage: profileImage || "https://via.placeholder.com/50",
+        });
+
+        setIsActive(availability); // Set the initial state of the toggle based on the user's availability
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  // Function to toggle availability
+  const toggleActivation = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        console.error("Token not found in localStorage");
+        return;
+      }
+      
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id; // Assuming `userId` exists in the token
+
+      // Send PUT request to update the availability
+      await axios.put(
+        `http://localhost:5000/api/driver/drivers/${userId}/toggle-availability`,
+        { availability: !isActive }, // Toggle the availability
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update the local state to reflect the change
+      setIsActive((prev) => !prev);
+    } catch (error) {
+      console.error("Failed to update availability:", error);
+    }
   };
 
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", to: "/dashboard" },
     { icon: <FaHistory />, label: "Ride History", to: "/history" },
-    { icon: <FaCog />, label: "Settings", to: "/settings" },
-    { icon: <FaQuestionCircle />, label: "Help", to: "/help" },
-    { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" }, // New Edit Profile link
+    { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" },
   ];
 
   return (
     <SidebarContainer>
       <ProfileSection>
-        <ProfileImage
-          src="https://via.placeholder.com/50"
-          alt="Profile"
-        />
+        <ProfileImage src={user.profileImage} alt="Profile" />
         <ProfileInfo>
-          <Name>John Doe</Name>
-          <Email>john.doe@example.com</Email>
+          <Name>{user.name}</Name>
+          <Email>{user.email}</Email>
         </ProfileInfo>
       </ProfileSection>
 
@@ -149,7 +206,7 @@ const DriverSidebar = () => {
             </NavLink>
           ))}
         </Navigation>
-        
+
         <LogoutLink to="/logout">
           <FaSignOutAlt />
           Logout

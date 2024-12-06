@@ -103,7 +103,12 @@ const driverSchema = new mongoose.Schema(
         },
       },
     },
+    availability: {
+  type: Boolean,
+  default: true, // Default to available
+},
   },
+  
   { timestamps: true }
 );
 
