@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { FaHome, FaHistory, FaCog, FaSignOutAlt, FaUserEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import FeedbackList from './FeedbackList';
+import RatingStar from './RatingStar';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
@@ -114,6 +116,17 @@ const ToggleButton = styled.button`
   }
 `;
 
+const FeedbackSection = styled.div`
+  margin-top: 1rem;
+`;
+
+const FeedbackTitle = styled.h5`
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+`;
+
 const DriverSidebar = () => {
   const [user, setUser] = useState({ name: "Loading...", email: "Loading...", profileImage: "" });
   const [isActive, setIsActive] = useState(false); // Track availability status
@@ -182,8 +195,7 @@ const DriverSidebar = () => {
   };
 
   const navigationItems = [
-    { icon: <FaHome />, label: "Dashboard", to: "/dashboard" },
-    { icon: <FaHistory />, label: "Ride History", to: "/history" },
+    { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
     { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" },
     { icon: <FaCog />, label: "Earnings", to: "/earnings" }, 
   ];
@@ -216,6 +228,12 @@ const DriverSidebar = () => {
         <ToggleButton active={isActive} onClick={toggleActivation}>
           {isActive ? "Active" : "Inactive"}
         </ToggleButton>
+
+        <FeedbackSection>
+          <FeedbackTitle>Feedback</FeedbackTitle>
+          <FeedbackList />
+          <RatingStar />
+        </FeedbackSection>
       </ContentWrapper>
     </SidebarContainer>
   );
