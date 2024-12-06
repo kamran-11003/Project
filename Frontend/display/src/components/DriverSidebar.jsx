@@ -182,7 +182,7 @@ const DriverSidebar = () => {
   };
 
   const navigationItems = [
-    { icon: <FaHome />, label: "Dashboard", to: "/dashboard" },
+    { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
     { icon: <FaHistory />, label: "Ride History", to: "/history" },
     { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" },
   ];
