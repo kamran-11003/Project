@@ -9,7 +9,6 @@ const getRidesByUserId = async (req, res) => {
   try {
     const userId  = req.params.userId;
     const rides = await Ride.find({ userId }).sort({ createdAt: -1 }); // Sort by newest first
-    console.log('Rides by user,',rides);
     if (!rides.length) {
       return res.status(404).json({ message: 'No rides found for the given user ID.' });
     }

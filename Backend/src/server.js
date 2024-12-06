@@ -193,6 +193,7 @@ io.on('connection', (socket) => {
     await newRide.save();
     console.log(`Ride request`);  
     io.emit('rideStarted', newRide);
+    io.to(userId).emit('rideStarted', newRide);
   });
 
   // Disconnect handler
