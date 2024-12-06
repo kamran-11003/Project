@@ -10,6 +10,7 @@ const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzVi
 const Driver = require('./models/Driver'); // Driver model
 const Ride = require('./models/ride');
 
+
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
 const fareRoutes = require('./routes/fareRoutes');
@@ -17,6 +18,7 @@ const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const driverRoutes = require('./routes/DriverRoutes');  // Make sure this is the correct path to your driver routes
 const { AsyncLocalStorage } = require('async_hooks');
+const earningsRoutes = require('./routes/earningsRoutes'); 
 
 // Initialize express app
 const app = express();
@@ -42,6 +44,7 @@ app.use('/api/fare', fareRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/driver', driverRoutes);  // Register your new driver routes here
+app.use('/api/earnings', earningsRoutes);
 
 const fetchDistance = (pickupLocation, dropOffLocation) => {
   if (!pickupLocation || !dropOffLocation) return Promise.reject('Invalid locations');

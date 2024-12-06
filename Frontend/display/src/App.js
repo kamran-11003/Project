@@ -14,6 +14,7 @@ import ProfileUpdate from './components/ProfileUpdate'; // Import ProfileUpdate
 import { RideProvider } from './context/rideContext'; // Import the RideProvider
 import { SocketProvider } from './context/SocketContext'; // Import the SocketProvider
 import DriverProfileUpdate from './components/DriverProfileUpdate';
+import EarningsSummary from './components/EarningsSummary';
 
 function App() {
   return (
@@ -73,6 +74,16 @@ function App() {
     </ProtectedRoute>
   }
 />
+
+          {/* Earnings Summary Route for Drivers */}
+          <Route
+            path="/earnings"
+            element={
+              <ProtectedRoute allowedRoles={['driver']}>
+                <EarningsSummary />
+              </ProtectedRoute>
+            }
+          />
 
 
           {/* Unauthorized route */}

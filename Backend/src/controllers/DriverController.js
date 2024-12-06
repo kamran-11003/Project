@@ -1,6 +1,5 @@
 const Driver = require('../models/Driver.js');
 
-// Helper function for validating longitude and latitude
 const isValidCoordinates = (longitude, latitude) => {
   return typeof longitude === 'number' && 
          typeof latitude === 'number' && 
@@ -124,7 +123,8 @@ const toggleAvailability = async (req, res) => {
   }
 };
 // Get the profile of a driver by their ID
-const getProfile = async (req, res) => {
+const getProfile = async (req, res) => 
+{
   const { driverId } = req.params;
 
   try {
@@ -139,10 +139,11 @@ const getProfile = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 module.exports = {
   updateDriverLocation,
   findNearbyDrivers,
   updateDriver,
   getProfile,
   toggleAvailability,
-};
+};  
