@@ -7,6 +7,7 @@ const DriverManagement = () => {
   const [status, setStatus] = useState('');
   const [driverId, setDriverId] = useState('');
   const [message, setMessage] = useState('');
+  const [currentSection, setCurrentSection] = useState(1); // Track the current section
 
   // Get JWT Token from localStorage
   const getJwtToken = () => {
@@ -118,73 +119,89 @@ const DriverManagement = () => {
       {message && <Message>{message}</Message>}
 
       <FormContainer>
-        {/* Suspended or Banned Drivers */}
-        <Section>
-          <SubTitle>Suspended or Banned Drivers</SubTitle>
-          <DriverList>
-            {drivers.length > 0 ? (
-              drivers.map((driver) => (
-                <ListItem key={driver._id}>
-                  <DriverDetails>
-                    <span>{driver.firstName} {driver.lastName}</span> - 
-                    <span>{driver._id}</span> - 
-                    <span>{driver.suspensionStatus}</span>
-                  </DriverDetails>
-                </ListItem>
-              ))
-            ) : (
-              <NoDrivers>No suspended or banned drivers found</NoDrivers>
-            )}
-          </DriverList>
-        </Section>
+        {/* Section Navigation */}
+        <NavButtons>
+          <Button onClick={() => setCurrentSection(1)}>Suspended or Banned Drivers</Button>
+          <Button onClick={() => setCurrentSection(2)}>Update Driver Status</Button>
+          <Button onClick={() => setCurrentSection(3)}>Approve Driver</Button>
+          <Button onClick={() => setCurrentSection(4)}>Delete Driver</Button> {/* Added button for delete */}
+        </NavButtons>
 
-        {/* Update Driver Status */}
-        <Section>
-          <SubTitle>Update Driver Status</SubTitle>
-          <InputGroup>
-            <Input
-              type="text"
-              placeholder="Driver ID"
-              value={driverId}
-              onChange={(e) => setDriverId(e.target.value)}
-            />
-            <Select onChange={(e) => setStatus(e.target.value)} value={status}>
-              <option value="">Select Status</option>
-              <option value="active">Active</option>
-              <option value="suspended">Suspended</option>
-              <option value="banned">Banned</option>
-            </Select>
-            <Button onClick={handleDriverStatusUpdate}>Update Status</Button>
-          </InputGroup>
-        </Section>
+        {/* Suspended or Banned Drivers Section */}
+        {currentSection === 1 && (
+          <Section>
+            <SubTitle>Suspended or Banned Drivers</SubTitle>
+            <DriverList>
+              {drivers.length > 0 ? (
+                drivers.map((driver) => (
+                  <ListItem key={driver._id}>
+                    <DriverDetails>
+                      <span>{driver.firstName} {driver.lastName}</span> - 
+                      <span>{driver._id}</span> - 
+                      <span>{driver.suspensionStatus}</span>
+                    </DriverDetails>
+                  </ListItem>
+                ))
+              ) : (
+                <NoDrivers>No suspended or banned drivers found</NoDrivers>
+              )}
+            </DriverList>
+          </Section>
+        )}
 
-        {/* Approve Driver */}
-        <Section>
-          <SubTitle>Approve Driver</SubTitle>
-          <InputGroup>
-            <Input
-              type="text"
-              placeholder="Driver ID"
-              value={driverId}
-              onChange={(e) => setDriverId(e.target.value)}
-            />
-            <Button onClick={handleApproveDriver}>Approve Driver</Button>
-          </InputGroup>
-        </Section>
+        {/* Update Driver Status Section */}
+        {currentSection === 2 && (
+          <Section>
+            <SubTitle>Update Driver Status</SubTitle>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="Driver ID"
+                value={driverId}
+                onChange={(e) => setDriverId(e.target.value)}
+              />
+              <Select onChange={(e) => setStatus(e.target.value)} value={status}>
+                <option value="">Select Status</option>
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+                <option value="banned">Banned</option>
+              </Select>
+              <Button onClick={handleDriverStatusUpdate}>Update Status</Button>
+            </InputGroup>
+          </Section>
+        )}
 
-        {/* Delete Driver */}
-        <Section>
-          <SubTitle>Delete Driver</SubTitle>
-          <InputGroup>
-            <Input
-              type="text"
-              placeholder="Driver ID"
-              value={driverId}
-              onChange={(e) => setDriverId(e.target.value)}
-            />
-            <Button onClick={handleDeleteDriver}>Delete Driver</Button>
-          </InputGroup>
-        </Section>
+        {/* Approve Driver Section */}
+        {currentSection === 3 && (
+          <Section>
+            <SubTitle>Approve Driver</SubTitle>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="Driver ID"
+                value={driverId}
+                onChange={(e) => setDriverId(e.target.value)}
+              />
+              <Button onClick={handleApproveDriver}>Approve Driver</Button>
+            </InputGroup>
+          </Section>
+        )}
+
+        {/* Delete Driver Section */}
+        {currentSection === 4 && (
+          <Section>
+            <SubTitle>Delete Driver</SubTitle>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="Driver ID"
+                value={driverId}
+                onChange={(e) => setDriverId(e.target.value)}
+              />
+              <Button onClick={handleDeleteDriver}>Delete Driver</Button>
+            </InputGroup>
+          </Section>
+        )}
       </FormContainer>
     </Container>
   );
@@ -279,6 +296,12 @@ const Button = styled.button`
   :hover {
     background-color: #0056b3;
   }
+`;
+
+const NavButtons = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
 `;
 
 export default DriverManagement;

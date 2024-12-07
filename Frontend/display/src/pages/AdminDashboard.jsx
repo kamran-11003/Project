@@ -5,6 +5,7 @@ import DriverManagement from '../components/DriverManagement';
 import FareManagement from '../components/FareManagement';
 import AnalyticsChart from '../components/AnalyticsChart';
 // import DisputeResolution from '../components/DisputeResolution'; // Add Dispute Resolution component
+import styled from 'styled-components';
 
 const AdminDashboard = () => {
   // State to track which page/component is selected
@@ -24,26 +25,79 @@ const AdminDashboard = () => {
         return <DriverManagement />;
       case 'fare-and-discount':
         return <FareManagement />;
-       case 'ride-analytics':
-         return <AnalyticsChart/>;
+      case 'ride-analytics':
+        return <AnalyticsChart />;
       // case 'dispute-resolution':
       //   return <DisputeResolution />;
       default:
-        return <div>Welcome to the Admin Dashboard</div>; // Default landing page
+        return (
+          <LandingPage>
+            <StyledH1>Welcome to Admin Dashboard</StyledH1>
+            <StyledH1>Awaiz Ali Khan </StyledH1>
+          </LandingPage>
+        ); // Default landing page
     }
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <Container>
       {/* Sidebar on the left */}
-      <AdminSidebar onSelectPage={handlePageChange} />
-      
+      <SidebarContainer>
+        <AdminSidebar onSelectPage={handlePageChange} />
+      </SidebarContainer>
+
       {/* Main content area */}
-      <div style={{ flex: 1, padding: '1rem' }}>
-        {renderSelectedPage()}  {/* Dynamically render content */}
-      </div>
-    </div>
+      <ContentContainer>
+        {renderSelectedPage()} {/* Dynamically render content */}
+      </ContentContainer>
+    </Container>
   );
 };
 
 export default AdminDashboard;
+
+// Styled Components
+
+const Container = styled.div`
+  display: flex;
+  height: 100vh;
+`;
+
+const SidebarContainer = styled.div`
+  width: 250px;
+  background-color: #2f3b52;
+  color: white;
+`;
+
+const ContentContainer = styled.div`
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+`;
+
+const LandingPage = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+const StyledH1 = styled.h1`
+  font-size: 3rem; /* Make it larger */
+  color: #333;
+  text-align: center; /* Center the text */
+  margin: 10px 0;
+  animation: fadeIn 1s ease-in-out;
+`;
+
+const fadeIn = `
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+export { fadeIn }; // Export fadeIn animation for reuse
