@@ -15,7 +15,7 @@ const rideSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: [ 'ongoing', 'completed', 'cancelled'],
+      enum: [ 'ongoing', 'completed'],
       default: 'requested', // Ride status (requested by default)
     },
     pickupCoordinates: {

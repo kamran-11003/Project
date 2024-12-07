@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSocket } from '../context/SocketContext';
 import styled from 'styled-components';
-
+import { jwtDecode } from 'jwt-decode';
 const Container = styled.div`
   font-family: Arial, sans-serif;
   max-width: 500px;
@@ -59,8 +59,13 @@ const RideRequest = () => {
   const { socket, userType, userId } = useSocket(); 
   const [rideRequest, setRideRequest] = useState(null);
   const [rideData, setRideData] = useState(null);
+  const [driverId, setDriverId] =useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+        const decoded = jwtDecode(token); // Get driverId from JWT token if needed
+        const driverIdFromToken = decoded.id; // Get driverId from JWT token if needed
+        setDriverId(driverIdFromToken); // Set driverId
     if (userType === 'driver' && socket) {
       if (!socket.connected) {
         console.log('Socket not connected, waiting for connection...');
@@ -120,13 +125,13 @@ const RideRequest = () => {
           </Paragraph>
           <Button 
             className="notify" 
-            onClick={() => socket.emit('notifyArrival', { rideId: rideData.id, driverId: userId })}>
+            onClick={() => socket.emit('notifyArrival', { ride: rideData })}>
             Notify User of Arrival
           </Button>
           <Button 
             className="end" 
             onClick={() => {
-              socket.emit('endRide', { rideId: rideData.id, driverId: userId });
+              socket.emit('endRide', { ride: rideData, driverId: driverId });
               setRideData(null); // Clear ride data
             }}>
             End Ride
@@ -147,7 +152,7 @@ const RideRequest = () => {
             </Paragraph>
             <Button 
               className="accept" 
-              onClick={() => socket.emit('acceptRide', { rideRequest, driverId: userId })}>
+              onClick={() => socket.emit('acceptRide', { rideRequest, driverid: driverId })}>
               Accept Ride
             </Button>
             <Button 

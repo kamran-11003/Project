@@ -10,9 +10,12 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import ProfileUpdate from '../components/ProfileUpdate';
 import RideHistory from '../components/RideHistory';
 import RideMap from '../components/RideMap';
-
+import DriverData from '../components/DriverData';
+import RideCompleted from '../components/RideComplete';
 const UserDashboard = () => {
   const [driverLocation, setDriverLocation] = useState([73.0580, 33.6841]); // Example: Driver's location
+  const [driver, setDriver] = useState({}); // Changed to an object
+
   const {
     pickup,
     dropOff,
@@ -26,8 +29,8 @@ const UserDashboard = () => {
     setPickupCoordinates,
     setDropOffCoordinates,
   } = useRideContext();
+
   const navigate = useNavigate();
-  
   const { userId, socket } = useSocket();
 
   const handleSetPickupAndDropOff = (pickupLocation, dropOffLocation) => {
@@ -43,39 +46,48 @@ const UserDashboard = () => {
     if (socket && userId) {
       // Notify server of user connection
       socket.emit('userConnected', { userId });
-  
+
       // Register listener for 'rideStarted'
-      const handleRideStarted = (data) => {
+      const handleRideStarted = (data, driverDetails) => {
         try {
           if (!data) {
             throw new Error('Invalid data received');
           }
+          console.log(driverDetails);
+          setDriver(driverDetails); // Set driver details
           console.log('Ride request received:', data);
-          navigate("/user-dashboard/ride");
+          navigate("/user-dashboard/rate");
         } catch (error) {
           console.error('Error handling rideStarted event:', error);
         }
       };
-  
+
       socket.on('rideStarted', handleRideStarted);
-  
+      socket.on('DriverArrived', (data) => {
+        console.log('Driver Arrival Notification Received:', data);
+        alert(data.message); // Show an alert message
+    });
+    socket.on('rideCompleted',(driverId)=>{
+      console.log('Ride completed:', driverId);
+      navigate("/user-dashboard/ride");
+    })
       // Listen for driver's location updates
       const handleLocationUpdate = (newLocation) => {
         if (newLocation && Array.isArray(newLocation) && newLocation.length === 2) {
           setDriverLocation(newLocation); // Update the driver's location
         }
-        console.log(driverLocation,pickupCoordinates,dropOffCoordinates);
+        console.log(driverLocation, pickupCoordinates, dropOffCoordinates);
       };
 
-      socket.on('Location', handleLocationUpdate);
+      socket.on('location', handleLocationUpdate);
 
       // Cleanup on unmount or dependency change
       return () => {
         socket.off('rideStarted', handleRideStarted);
-        socket.off('location', handleLocationUpdate); // Remove the location update listener
+        socket.off('location', handleLocationUpdate);
       };
     }
-  }, [socket, userId, navigate,driverLocation]);
+  }, [socket, userId, navigate, driverLocation, pickupCoordinates, dropOffCoordinates]);
 
   return (
     <div style={styles.container}>
@@ -101,8 +113,29 @@ const UserDashboard = () => {
             }
           />
           <Route path="history" element={<RideHistory />} />
-          <Route path="edit-profile" element={<ProfileUpdate />} />
-          <Route path='ride' element={<RideMap driverLocation={driverLocation} pickup={[pickupCoordinates.longitude, pickupCoordinates.latitude]} dropOff={[dropOffCoordinates.longitude, dropOffCoordinates.latitude]} />} />
+          <Route path="driver-data" element={<DriverData driver={driver} />} /> 
+          <Route path="rate" element={<RideCompleted  driver={driver}/>} />
+          <Route
+            path="ride"
+            element={
+              <>
+                <RideMap
+                  driverLocation={driverLocation}
+                  pickup={
+                    pickupCoordinates
+                      ? [pickupCoordinates.longitude, pickupCoordinates.latitude]
+                      : null
+                  }
+                  dropOff={
+                    dropOffCoordinates
+                      ? [dropOffCoordinates.longitude, dropOffCoordinates.latitude]
+                      : null
+                  }
+                />
+                <DriverData driver={driver} /> {/* Updated to use DriverData */}
+              </>
+            }
+          />
         </Routes>
       </div>
     </div>
