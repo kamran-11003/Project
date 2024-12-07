@@ -223,7 +223,7 @@ socket.on('requestRide', async (data) => {
     await newRide.save();
     console.log(`Ride request`);  
     const driver = await Driver.findById(driverid);
-    io.emit('rideStarted', rideRequest);
+    io.emit('rideStarted', rideRequest,driver);
     io.to(userId).emit('rideStarted', rideRequest,driver);
   });
   socket.on('DriverLocation', (location) => {

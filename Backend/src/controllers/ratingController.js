@@ -6,7 +6,7 @@ const addRating = async (req, res) => {
   try {
     // Destructure the driverId and rating from the request body
     const { driverId, rating } = req.body;
-
+    console.log(driverId, rating);
     // Validate rating (ensure it is between 1 and 5)
     if (rating < 1 || rating > 5) {
       return res.status(400).json({ message: 'Rating must be between 1 and 5.' });

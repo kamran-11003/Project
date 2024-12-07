@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const addFeedback = async (req, res) => {
   try {
     const { driverId, feedback } = req.body;
-
+    console.log(driverId, feedback);
     // Validate driverId (check if it's a valid ObjectId)
     if (!mongoose.Types.ObjectId.isValid(driverId)) {
       return res.status(400).json({ message: 'Invalid driverId.' });
@@ -19,6 +19,7 @@ const addFeedback = async (req, res) => {
     // }
 
     // Create a new Feedback instance
+    
     const newFeedback = new Feedback({
       driverId:new mongoose.Types.ObjectId(driverId), // Ensure driverId is an ObjectId
       feedback,

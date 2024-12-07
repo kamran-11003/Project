@@ -24,10 +24,12 @@ const UserDashboard = () => {
     setDropOff,
     setSelectedRide,
     distance,
+    fare,
     pickupCoordinates,
     dropOffCoordinates,
     setPickupCoordinates,
     setDropOffCoordinates,
+    setDistance,
   } = useRideContext();
 
   const navigate = useNavigate();
@@ -114,7 +116,7 @@ const UserDashboard = () => {
           />
           <Route path="history" element={<RideHistory />} />
           <Route path="driver-data" element={<DriverData driver={driver} />} /> 
-          <Route path="rate" element={<RideCompleted  driver={driver}/>} />
+          <Route path="rate" element={<RideCompleted  driver={driver} fare={fare} distance={distance} />} />
           <Route
             path="ride"
             element={
@@ -132,7 +134,7 @@ const UserDashboard = () => {
                       : null
                   }
                 />
-                <DriverData driver={driver} /> {/* Updated to use DriverData */}
+                <DriverData driver={driver} /> 
               </>
             }
           />
