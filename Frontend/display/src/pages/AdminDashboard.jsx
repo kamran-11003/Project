@@ -3,7 +3,7 @@ import AdminSidebar from '../components/AdminSidebar';
 import UserManagement from '../components/UserManagement';
 import DriverManagement from '../components/DriverManagement';
 import FareManagement from '../components/FareManagement';
-// import RideAnalytics from '../components/RideAnalytics'; // Add Analytics component
+import AnalyticsChart from '../components/AnalyticsChart';
 // import DisputeResolution from '../components/DisputeResolution'; // Add Dispute Resolution component
 
 const AdminDashboard = () => {
@@ -24,8 +24,8 @@ const AdminDashboard = () => {
         return <DriverManagement />;
       case 'fare-and-discount':
         return <FareManagement />;
-      // case 'ride-analytics':
-      //   return <RideAnalytics />;
+       case 'ride-analytics':
+         return <AnalyticsChart/>;
       // case 'dispute-resolution':
       //   return <DisputeResolution />;
       default:

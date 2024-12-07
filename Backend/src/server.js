@@ -9,6 +9,7 @@ const fetch = require('node-fetch'); // Import fetch for server-side use
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
 const Driver = require('./models/Driver'); // Driver model
 const Ride = require('./models/ride');
+const router = express.Router();
 
 
 // Import Routes
@@ -21,7 +22,7 @@ const RideRoutes = require('./routes/rideRoutes');
 const earningsRoutes = require('./routes/earningsRoutes'); 
 const RatingRoutes=require('./routes/ratingRouts')
 const feedbackRoutes = require('./routes/feedbackRoutes'); // Import the feedback routes
-
+const analyticsRoutes=require('./routes/analyticsRouts');
 
 // Initialize express app
 const app = express();
@@ -40,7 +41,17 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
-
+router.get('/active-users', (req, res) => {
+  try {
+    res.json({
+      success: true,
+      activeUsersCount: activeUsers.length, // Count of active users
+    });
+  } catch (error) {
+    console.error('Error fetching active users:', error);
+    res.status(500).json({ success: false, message: 'Error fetching active users.' });
+  }
+});
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/fare', fareRoutes);
@@ -51,8 +62,8 @@ app.use('/api/ride',RideRoutes);
 app.use('/api/earnings', earningsRoutes);
 app.use('/api/rating',RatingRoutes);
 app.use('/api/feedbacks', feedbackRoutes);
-
-
+app.use('/api/analytic',analyticsRoutes);
+app.use('/api/activeuser',router);
 const fetchDistance = (pickupLocation, dropOffLocation) => {
   if (!pickupLocation || !dropOffLocation) return Promise.reject('Invalid locations');
   console.log(pickupLocation, dropOffLocation);
