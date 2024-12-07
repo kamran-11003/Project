@@ -9,6 +9,7 @@ const fetch = require('node-fetch'); // Import fetch for server-side use
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
 const Driver = require('./models/Driver'); // Driver model
 const Ride = require('./models/ride');
+const Earnings = require('./models/Earnings');
 const router = express.Router();
 
 
@@ -243,7 +244,7 @@ socket.on('notifyArrival', (data) => {
 });
 socket.on('endRide', async ({ ride, driverId }) => {
   try {
-    const { userId } = ride; // Extract userId from ride data (assuming ride contains userId)
+    const { userId,fare } = ride; // Extract userId from ride data (assuming ride contains userId)
     
     console.log(`Ending ride for user: ${userId}, driver: ${driverId}`);
 
@@ -260,7 +261,14 @@ socket.on('endRide', async ({ ride, driverId }) => {
     await ongoingRide.save();  // Save updated ride status in the database
 
     console.log(`Ride completed successfully for ride between user ${userId} and driver ${driverId}.`);
+    const newEarning = new Earnings({
+      driverId: driverId,
+      amount: fare,
+      date: new Date(), // Automatically sets to current date and time
+    });
 
+    await newEarning.save(); // Save earnings to the database
+    console.log(`Earnings recorded for driver ${driverId}: ${fare}`);
     // Emit an event to the user to notify them that the ride has been completed
    // .to(userId)
     io.emit('rideCompleted', driverId);

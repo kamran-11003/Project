@@ -56,7 +56,7 @@ const UserDashboard = () => {
           console.log(driverDetails);
           setDriver(driverDetails); // Set driver details
           console.log('Ride request received:', data);
-          navigate("/user-dashboard/rate");
+          navigate("/user-dashboard/ride");
         } catch (error) {
           console.error('Error handling rideStarted event:', error);
         }
@@ -69,7 +69,7 @@ const UserDashboard = () => {
     });
     socket.on('rideCompleted',(driverId)=>{
       console.log('Ride completed:', driverId);
-      navigate("/user-dashboard/ride");
+      navigate("/user-dashboard/rate");
     })
       // Listen for driver's location updates
       const handleLocationUpdate = (newLocation) => {
