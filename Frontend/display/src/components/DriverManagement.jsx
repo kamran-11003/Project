@@ -117,69 +117,75 @@ const DriverManagement = () => {
 
       {message && <Message>{message}</Message>}
 
-      <Section>
-        <SubTitle>Suspended or Banned Drivers</SubTitle>
-        <DriverList>
-          {drivers.length > 0 ? (
-            drivers.map((driver) => (
-              <ListItem key={driver._id}>
-                <DriverDetails>
-                  <span>{driver.firstName} {driver.lastName}</span> - 
-                  <span>{driver._id}</span> - 
-                  <span>{driver.suspensionStatus}</span>
-                </DriverDetails>
-              </ListItem>
-            ))
-          ) : (
-            <NoDrivers>No suspended or banned drivers found</NoDrivers>
-          )}
-        </DriverList>
-      </Section>
+      <FormContainer>
+        {/* Suspended or Banned Drivers */}
+        <Section>
+          <SubTitle>Suspended or Banned Drivers</SubTitle>
+          <DriverList>
+            {drivers.length > 0 ? (
+              drivers.map((driver) => (
+                <ListItem key={driver._id}>
+                  <DriverDetails>
+                    <span>{driver.firstName} {driver.lastName}</span> - 
+                    <span>{driver._id}</span> - 
+                    <span>{driver.suspensionStatus}</span>
+                  </DriverDetails>
+                </ListItem>
+              ))
+            ) : (
+              <NoDrivers>No suspended or banned drivers found</NoDrivers>
+            )}
+          </DriverList>
+        </Section>
 
-      <Section>
-        <SubTitle>Update Driver Status</SubTitle>
-        <InputGroup>
-          <Input
-            type="text"
-            placeholder="Driver ID"
-            value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
-          />
-          <Select onChange={(e) => setStatus(e.target.value)} value={status}>
-            <option value="">Select Status</option>
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
-            <option value="banned">Banned</option>
-          </Select>
-          <Button onClick={handleDriverStatusUpdate}>Update Status</Button>
-        </InputGroup>
-      </Section>
+        {/* Update Driver Status */}
+        <Section>
+          <SubTitle>Update Driver Status</SubTitle>
+          <InputGroup>
+            <Input
+              type="text"
+              placeholder="Driver ID"
+              value={driverId}
+              onChange={(e) => setDriverId(e.target.value)}
+            />
+            <Select onChange={(e) => setStatus(e.target.value)} value={status}>
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+              <option value="banned">Banned</option>
+            </Select>
+            <Button onClick={handleDriverStatusUpdate}>Update Status</Button>
+          </InputGroup>
+        </Section>
 
-      <Section>
-        <SubTitle>Approve Driver</SubTitle>
-        <InputGroup>
-          <Input
-            type="text"
-            placeholder="Driver ID"
-            value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
-          />
-          <Button onClick={handleApproveDriver}>Approve Driver</Button>
-        </InputGroup>
-      </Section>
+        {/* Approve Driver */}
+        <Section>
+          <SubTitle>Approve Driver</SubTitle>
+          <InputGroup>
+            <Input
+              type="text"
+              placeholder="Driver ID"
+              value={driverId}
+              onChange={(e) => setDriverId(e.target.value)}
+            />
+            <Button onClick={handleApproveDriver}>Approve Driver</Button>
+          </InputGroup>
+        </Section>
 
-      <Section>
-        <SubTitle>Delete Driver</SubTitle>
-        <InputGroup>
-          <Input
-            type="text"
-            placeholder="Driver ID"
-            value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
-          />
-          <Button onClick={handleDeleteDriver}>Delete Driver</Button>
-        </InputGroup>
-      </Section>
+        {/* Delete Driver */}
+        <Section>
+          <SubTitle>Delete Driver</SubTitle>
+          <InputGroup>
+            <Input
+              type="text"
+              placeholder="Driver ID"
+              value={driverId}
+              onChange={(e) => setDriverId(e.target.value)}
+            />
+            <Button onClick={handleDeleteDriver}>Delete Driver</Button>
+          </InputGroup>
+        </Section>
+      </FormContainer>
     </Container>
   );
 };
@@ -201,6 +207,11 @@ const Message = styled.div`
   color: red;
   margin-bottom: 1rem;
   text-align: center;
+`;
+
+const FormContainer = styled.div`
+  width: 100%;
+  padding: 20px;
 `;
 
 const Section = styled.section`
@@ -260,7 +271,7 @@ const Select = styled.select`
 const Button = styled.button`
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #007bff;
+  background-color: #C1F11D;
   color: white;
   border: none;
   border-radius: 5px;

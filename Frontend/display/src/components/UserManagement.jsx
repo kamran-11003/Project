@@ -36,7 +36,6 @@ const UserManagement = () => {
     if (!userId || !status) {
       return setMessage('Please provide both User ID and Status');
     }
-    console.log(userId,status)
     axios
       .put('/admin/user/status', { userId, status })
       .then((response) => {
@@ -137,6 +136,7 @@ const Title = styled.h1`
   text-align: center;
   font-size: 2rem;
   margin-bottom: 20px;
+  color: #333;
 `;
 
 const Message = styled.div`
@@ -152,6 +152,7 @@ const Section = styled.section`
 const SubTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 10px;
+  color: #444;
 `;
 
 const UserList = styled.ul`
@@ -163,6 +164,7 @@ const ListItem = styled.li`
   padding: 10px;
   background-color: #f4f4f4;
   margin: 5px 0;
+  border-radius: 5px;
 `;
 
 const UserDetails = styled.div`
@@ -200,7 +202,7 @@ const Select = styled.select`
 const Button = styled.button`
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #007bff;
+  background-color: #C1F11D;
   color: white;
   border: none;
   border-radius: 5px;
