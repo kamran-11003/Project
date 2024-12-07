@@ -197,8 +197,10 @@ const DriverSidebar = () => {
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
     { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" },
-    { icon: <FaCog />, label: "Earnings", to: "/earnings" }, 
+    { icon: <FaCog />, label: "Earnings", to: "/earnings" },
+    { icon: <FaHistory />, label: "Help and Support", to: "/create-dispute" }, // New Help and Support Link
   ];
+  
   
   return (
     <SidebarContainer>

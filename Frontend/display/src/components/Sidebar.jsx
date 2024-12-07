@@ -166,6 +166,7 @@ const Sidebar = () => {
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", path: "/user-dashboard" },
     { icon: <FaHistory />, label: "Ride History", path: "/user-dashboard/history" },
+    { icon: <FaHistory />, label: "Help and Support", path: "/user-dashboard/create-dispute-user" },
   ];
 
   return (

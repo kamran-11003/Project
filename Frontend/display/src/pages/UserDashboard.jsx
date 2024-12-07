@@ -12,6 +12,7 @@ import RideHistory from '../components/RideHistory';
 import RideMap from '../components/RideMap';
 import DriverData from '../components/DriverData';
 import RideCompleted from '../components/RideComplete';
+import CreateDisputeUser from '../components/CreateDisputeuser';
 const UserDashboard = () => {
   const [driverLocation, setDriverLocation] = useState([73.0580, 33.6841]); // Example: Driver's location
   const [driver, setDriver] = useState({}); // Changed to an object
@@ -116,6 +117,7 @@ const UserDashboard = () => {
           />
           <Route path="history" element={<RideHistory />} />
           <Route path="driver-data" element={<DriverData driver={driver} />} /> 
+          <Route path="create-dispute-user" element={<CreateDisputeUser></CreateDisputeUser>}/>
           <Route path="rate" element={<RideCompleted  driver={driver} fare={fare} distance={distance} />} />
           <Route
             path="ride"
