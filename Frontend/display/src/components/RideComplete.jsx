@@ -31,6 +31,7 @@ const RatingStar = ({ driverId }) => {
       setNewFeedback('');
       setUserRating(0);
       navigate('/user-dashboard');
+      
     } catch (error) {
       console.error('Error submitting rating:', error);
       alert('Failed to submit rating.');

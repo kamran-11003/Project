@@ -87,8 +87,7 @@ const RideRequest = () => {
 
         const locationEmitter = setInterval(() => {
           const currentLocation = JSON.parse(localStorage.getItem('driverLocation'));
-          console.log('location send');
-          socket.emit('DriverLocation', currentLocation);
+          socket.emit('locationUpdate', currentLocation);
         }, 5000); // 5000 ms = 5 seconds
 
         // Clear the interval when the ride ends
