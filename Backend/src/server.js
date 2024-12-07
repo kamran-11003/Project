@@ -24,6 +24,7 @@ const earningsRoutes = require('./routes/earningsRoutes');
 const RatingRoutes=require('./routes/ratingRouts')
 const feedbackRoutes = require('./routes/feedbackRoutes'); // Import the feedback routes
 const analyticsRoutes=require('./routes/analyticsRouts');
+const disputeRoutes = require('./routes/disputeRoutes');
 
 // Initialize express app
 const app = express();
@@ -65,6 +66,8 @@ app.use('/api/rating',RatingRoutes);
 app.use('/api/feedbacks', feedbackRoutes);
 app.use('/api/analytic',analyticsRoutes);
 app.use('/api/activeuser',router);
+app.use('/api/disputes',disputeRoutes);
+
 const fetchDistance = (pickupLocation, dropOffLocation) => {
   if (!pickupLocation || !dropOffLocation) return Promise.reject('Invalid locations');
   console.log(pickupLocation, dropOffLocation);

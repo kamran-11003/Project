@@ -4,7 +4,7 @@ import UserManagement from '../components/UserManagement';
 import DriverManagement from '../components/DriverManagement';
 import FareManagement from '../components/FareManagement';
 import AnalyticsChart from '../components/AnalyticsChart';
-// import DisputeResolution from '../components/DisputeResolution'; // Add Dispute Resolution component
+import DisputeManagement from '../components/DisputeManagement';
 import styled from 'styled-components';
 
 const AdminDashboard = () => {
@@ -27,8 +27,8 @@ const AdminDashboard = () => {
         return <FareManagement />;
       case 'ride-analytics':
         return <AnalyticsChart />;
-      // case 'dispute-resolution':
-      //   return <DisputeResolution />;
+      case 'dispute-resolution':
+       return <DisputeManagement />;
       default:
         return (
           <LandingPage>
