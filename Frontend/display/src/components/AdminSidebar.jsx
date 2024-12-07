@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaHome, FaUsers, FaCar, FaMoneyBillWave, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaUsers, FaCar, FaMoneyBillWave, FaChartBar, FaExclamationCircle, FaSignOutAlt } from 'react-icons/fa';
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -48,9 +48,12 @@ const LogoutLink = styled(NavLink)`
 
 const AdminSidebar = ({ onSelectPage }) => {
   const navigationItems = [
+    { icon: <FaHome />, label: 'Dashboard', page: 'dashboard' },
     { icon: <FaUsers />, label: 'User Management', page: 'user-management' },
     { icon: <FaCar />, label: 'Driver Management', page: 'driver-management' },
     { icon: <FaMoneyBillWave />, label: 'Fare and Discount', page: 'fare-and-discount' },
+    { icon: <FaChartBar />, label: 'Ride Analytics', page: 'ride-analytics' },
+    { icon: <FaExclamationCircle />, label: 'Dispute Resolution', page: 'dispute-resolution' },
   ];
 
   return (

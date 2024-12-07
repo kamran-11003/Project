@@ -27,7 +27,7 @@ const getSuspendedBannedDrivers = async (req, res) => {
         if (drivers.length === 0) {
             return res.status(404).json({ message: 'No suspended or banned drivers found' });
         }
-
+        console.log(drivers)
         res.status(200).json({ drivers });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -44,31 +44,46 @@ const getSuspendedBannedUsers = async (req, res) => {
         if (users.length === 0) {
             return res.status(404).json({ message: 'No suspended or banned users found' });
         }
-
+        console.log(users);
         res.status(200).json({ users });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
 };
 
-// Suspend, unsuspend, or ban a user
 const updateUserStatus = async (req, res) => {
     const { userId, status } = req.body;
-
+  
     if (!['active', 'suspended', 'banned'].includes(status)) {
-        return res.status(400).json({ message: 'Invalid status' });
+      return res.status(400).json({ message: 'Invalid status' });
     }
-
+  
     try {
-        const user = await User.findByIdAndUpdate(userId, { suspensionStatus: status }, { new: true });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({ message: `User status updated to ${status}`, user });
+      const user = await User.findByIdAndUpdate(userId, { suspensionStatus: status }, { new: true });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: `User status updated to ${status}`, user });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+      res.status(500).json({ message: 'Server error', error });
     }
-};
+  };
+  
+  // Delete User
+  const deleteUser = async (req, res) => {
+    const { userId } = req.body;
+  
+    try {
+      const user = await User.findByIdAndDelete(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error });
+    }
+  };
+
 
 // Update a user account
 const updateUser = async (req, res) => {
@@ -80,21 +95,6 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
         res.status(200).json({ message: 'User updated successfully', user });
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
-    }
-};
-
-// Delete a user account
-const deleteUser = async (req, res) => {
-    const { userId } = req.body;
-
-    try {
-        const user = await User.findByIdAndDelete(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

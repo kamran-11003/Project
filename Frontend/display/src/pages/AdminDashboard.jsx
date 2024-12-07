@@ -3,15 +3,19 @@ import AdminSidebar from '../components/AdminSidebar';
 import UserManagement from '../components/UserManagement';
 import DriverManagement from '../components/DriverManagement';
 import FareManagement from '../components/FareManagement';
+// import RideAnalytics from '../components/RideAnalytics'; // Add Analytics component
+// import DisputeResolution from '../components/DisputeResolution'; // Add Dispute Resolution component
+
 const AdminDashboard = () => {
-  const [selectedPage, setSelectedPage] = useState('dashboard'); // Default page
+  // State to track which page/component is selected
+  const [selectedPage, setSelectedPage] = useState('dashboard'); // Default page is 'dashboard'
 
   // Function to handle sidebar link clicks
   const handlePageChange = (page) => {
     setSelectedPage(page);
   };
 
-  // Function to return the selected page content
+  // Render the selected page content based on the current state
   const renderSelectedPage = () => {
     switch (selectedPage) {
       case 'user-management':
@@ -20,16 +24,23 @@ const AdminDashboard = () => {
         return <DriverManagement />;
       case 'fare-and-discount':
         return <FareManagement />;
+      // case 'ride-analytics':
+      //   return <RideAnalytics />;
+      // case 'dispute-resolution':
+      //   return <DisputeResolution />;
       default:
-        return <UserManagement/>
+        return <div>Welcome to the Admin Dashboard</div>; // Default landing page
     }
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', height: '100vh' }}>
+      {/* Sidebar on the left */}
       <AdminSidebar onSelectPage={handlePageChange} />
+      
+      {/* Main content area */}
       <div style={{ flex: 1, padding: '1rem' }}>
-        {renderSelectedPage()}
+        {renderSelectedPage()}  {/* Dynamically render content */}
       </div>
     </div>
   );
