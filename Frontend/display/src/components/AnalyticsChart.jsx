@@ -179,7 +179,7 @@ const ChartContainer = styled.div`
   background-color: #f9f9f9;
   max-width: 500px; /* Set a maximum width for larger screens */
   width: 100%; /* Allow the chart to take up available width */
-
+  margin-left:60px;
   @media (max-width: 1200px) {
     height: 350px; /* Slightly smaller on medium-sized screens */
   }

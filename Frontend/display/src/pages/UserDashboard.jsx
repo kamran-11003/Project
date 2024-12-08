@@ -96,7 +96,9 @@ const UserDashboard = () => {
     <div style={styles.container}>
       <Sidebar />
       <div style={styles.mainContent}>
+
         <Routes>
+          
           <Route
             path="/"
             element={
@@ -115,6 +117,7 @@ const UserDashboard = () => {
               </>
             }
           />
+          <Route path="edit-profile" element={<ProfileUpdate />} />
           <Route path="history" element={<RideHistory />} />
           <Route path="driver-data" element={<DriverData driver={driver} />} /> 
           <Route path="create-dispute-user" element={<CreateDisputeUser></CreateDisputeUser>}/>

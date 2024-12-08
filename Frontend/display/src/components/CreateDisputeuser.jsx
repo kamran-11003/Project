@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";  // Import jwt-decode
 
 const Container = styled.div`
   max-width: 600px;
@@ -89,21 +90,30 @@ const ErrorMessage = styled.p`
 `;
 
 const CreateDisputeUser = () => {
-  const [userId, setUserId] = useState("");
   const [issueDescription, setIssueDescription] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+      } catch (error) {
+        setError("Invalid token.");
+      }
+    } else {
+      setError("Authentication token is missing. Please log in.");
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      setError("Authentication token is missing. Please log in.");
-      return;
-    }
-
     try {
+      const token = localStorage.getItem("jwtToken");
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+      console.log(userId);
       const response = await axios.post(
         "http://localhost:5000/api/disputes/dispute",
         {
@@ -131,17 +141,6 @@ const CreateDisputeUser = () => {
     <Container>
       <Title>Create a Dispute</Title>
       <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>User ID</Label>
-          <Input
-            type="text"
-            placeholder="Enter user ID"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            required
-          />
-        </FormGroup>
-
         <FormGroup>
           <Label>Issue Description</Label>
           <Textarea

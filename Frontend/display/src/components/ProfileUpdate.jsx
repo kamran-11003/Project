@@ -135,17 +135,6 @@ const ProfileUpdate = () => {
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={user.password}
-            onChange={handleChange}
-            minLength="6"
-          />
-        </div>
 
         <button type="submit" disabled={isLoading}>
           {isLoading ? 'Updating...' : 'Update Profile'}
