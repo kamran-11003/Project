@@ -12,8 +12,14 @@ const Container = styled.div`
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 800px;
+  width: 100%;
+  max-width: 800px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    width: 90%;
+    padding: 12px 16px;
+  }
 `;
 
 const FareInfo = styled.div`
@@ -57,6 +63,10 @@ const BidInput = styled.input`
     border-color: #4299e1;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
   }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
 `;
 
 const PromoInput = styled.input`
@@ -70,12 +80,16 @@ const PromoInput = styled.input`
     border-color: #48bb78;
     box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.2);
   }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
 `;
 
 const FindDriverButton = styled.button`
   padding: 12px 24px;
-  background-color: #4299e1;
-  color: white;
+  background-color: #c1f11d;
+  color: black;  // Button text color changed to black
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -83,7 +97,12 @@ const FindDriverButton = styled.button`
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #3182ce;
+    background-color: #9ccf17;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px 20px;
+    font-size: 12px;
   }
 `;
 
@@ -201,7 +220,6 @@ const FareEstimator = () => {
       alert(`Your bid must be at least PKR ${minimumFare.toFixed(2)}.`);
       return;
     }
-
 
     const data = {
       pickup,
