@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
+import React, { useEffect, useRef, useState } from "react";
+import mapboxgl from "mapbox-gl";
+import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 
-const MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
+const MapboxDirections = require("@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions");
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
+mapboxgl.accessToken =
+  "pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ";
 
 const RideMaps = ({ pickup, dropOff }) => {
   const mapContainerRef = useRef(null);
@@ -21,25 +22,29 @@ const RideMaps = ({ pickup, dropOff }) => {
           setCurrentLocation({ latitude, longitude });
         },
         (error) => {
-          console.error('Error fetching current location:', error);
+          console.error("Error fetching current location:", error);
           // You can set a default location here if geolocation fails
           setCurrentLocation({ latitude: 33.6844, longitude: 73.0479 }); // Default to Islamabad coordinates
         }
       );
     } else {
-      console.error('Geolocation is not supported by this browser.');
+      console.error("Geolocation is not supported by this browser.");
     }
   }, []);
 
   useEffect(() => {
     const initializeMap = () => {
-      if (!currentLocation || !currentLocation.longitude || !currentLocation.latitude) {
+      if (
+        !currentLocation ||
+        !currentLocation.longitude ||
+        !currentLocation.latitude
+      ) {
         return;
       }
 
       const newMap = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: "mapbox://styles/mapbox/streets-v11",
         center: [currentLocation.longitude, currentLocation.latitude], // Use current location
         zoom: 12,
       });
@@ -47,15 +52,15 @@ const RideMaps = ({ pickup, dropOff }) => {
       // Add Mapbox Directions Control
       directionsRef.current = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
-        unit: 'metric',
-        profile: 'mapbox/driving',
+        unit: "metric",
+        profile: "mapbox/driving",
         controls: {
           inputs: false,
           instructions: false,
         },
       });
 
-      newMap.addControl(directionsRef.current, 'top-left');
+      newMap.addControl(directionsRef.current, "top-left");
       setMap(newMap);
 
       return newMap;
@@ -78,7 +83,10 @@ const RideMaps = ({ pickup, dropOff }) => {
       // Convert pickup, dropOff, and currentLocation to arrays [longitude, latitude]
       const pickupCoordinates = [pickup.longitude, pickup.latitude];
       const dropOffCoordinates = [dropOff.longitude, dropOff.latitude];
-      const currentCoordinates = [currentLocation.longitude, currentLocation.latitude];
+      const currentCoordinates = [
+        currentLocation.longitude,
+        currentLocation.latitude,
+      ];
 
       // Set Route: Current location → Pickup → Drop-off
       directionsRef.current.setOrigin(currentCoordinates);
@@ -87,9 +95,9 @@ const RideMaps = ({ pickup, dropOff }) => {
 
       // Add Markers (wait for map to be fully initialized)
       if (map) {
-        addMarker(currentCoordinates, 'green'); // Current location
-        addMarker(pickupCoordinates, 'red'); // Pickup
-        addMarker(dropOffCoordinates, 'blue'); // Drop-off
+        addMarker(currentCoordinates, "green"); // Current location
+        addMarker(pickupCoordinates, "red"); // Pickup
+        addMarker(dropOffCoordinates, "blue"); // Drop-off
       }
 
       // Fetch distance
@@ -108,12 +116,11 @@ const RideMaps = ({ pickup, dropOff }) => {
         if (data.routes && data.routes.length > 0) {
           const distanceInMeters = data.routes[0].distance;
           const distanceInKm = (distanceInMeters / 1000).toFixed(2);
-        
         } else {
-          console.error('No route found');
+          console.error("No route found");
         }
       })
-      .catch((error) => console.error('Error fetching distance:', error));
+      .catch((error) => console.error("Error fetching distance:", error));
   };
 
   const addMarker = (location, color) => {
@@ -126,12 +133,12 @@ const RideMaps = ({ pickup, dropOff }) => {
   };
 
   const createCustomMarker = (color) => {
-    const marker = document.createElement('div');
+    const marker = document.createElement("div");
     marker.style.backgroundColor = color;
-    marker.style.borderRadius = '50%';
-    marker.style.width = '20px';
-    marker.style.height = '20px';
-    marker.style.border = '2px solid white';
+    marker.style.borderRadius = "50%";
+    marker.style.width = "20px";
+    marker.style.height = "20px";
+    marker.style.border = "2px solid white";
     return marker;
   };
 
@@ -140,10 +147,10 @@ const RideMaps = ({ pickup, dropOff }) => {
 
 const styles = {
   mapContainer: {
-    width: '100%',
-    height: '400px',
-    borderRadius: '8px',
-    overflow: 'hidden',
+    width: "100%",
+    height: "400px",
+    borderRadius: "8px",
+    overflow: "hidden",
   },
 };
 

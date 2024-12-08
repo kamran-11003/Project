@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom'; // Ensure this import is correct
+import { Link,navigate, useNavigate } from 'react-router-dom';
 import {
   FaHome,
   FaUsers,
@@ -14,7 +14,7 @@ import {
 
 // Sidebar container
 const SidebarContainer = styled.div`
-  width: 250px; /* Fixed width for larger screens */
+  width: 250px; /* Default width for desktop */
   background: #f8f9fa;
   height: 100vh;
   display: flex;
@@ -68,7 +68,7 @@ const NavLink = styled(Link)`
   border-radius: 0.5rem;
   transition: all 0.2s ease-in-out;
   font-weight: 500;
-  
+
   &:hover {
     background: #c1f11d;
     color: #000000;
@@ -94,6 +94,7 @@ const LogoutLink = styled(NavLink)`
 `;
 
 const AdminSidebar = ({ isOpen, onSelectPage, onLogout }) => {
+  const navigate=useNavigate();
   const navigationItems = [
     { icon: <FaHome />, label: 'Dashboard', page: 'dashboard' },
     { icon: <FaUsers />, label: 'User Management', page: 'user-management' },
@@ -106,7 +107,12 @@ const AdminSidebar = ({ isOpen, onSelectPage, onLogout }) => {
   const handlePageSelect = (page) => {
     onSelectPage(page);
   };
-
+  const handleLogout = () => {
+    console.log("Logging out..."); // Debugging log
+    localStorage.removeItem("jwtToken");
+    navigate("/login-admin");  // Or try window.location.href = "/login";
+  
+  };
   return (
     <SidebarContainer isOpen={isOpen}>
       <ProfileSection>
@@ -123,7 +129,7 @@ const AdminSidebar = ({ isOpen, onSelectPage, onLogout }) => {
           </NavLink>
         ))}
       </Navigation>
-      <LogoutLink onClick={onLogout}>
+      <LogoutLink as="div" onClick={handleLogout}>
         <FaSignOutAlt />
         Logout
       </LogoutLink>

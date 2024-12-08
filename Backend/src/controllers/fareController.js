@@ -1,4 +1,4 @@
-const Fare = require('../models/Fare'); // Adjust the path to your model
+const Fare = require("../models/Fare"); // Adjust the path to your model
 
 // Get all fares with promotions
 const getAllFares = async (req, res) => {
@@ -6,7 +6,7 @@ const getAllFares = async (req, res) => {
     const fares = await Fare.find(); // Fetch all fares from the database
     res.status(200).json(fares);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching fares', error });
+    res.status(500).json({ message: "Error fetching fares", error });
   }
 };
 
@@ -16,11 +16,13 @@ const getFareByRideType = async (req, res) => {
   try {
     const fare = await Fare.findOne({ rideType });
     if (!fare) {
-      return res.status(404).json({ message: 'Fare not found for this ride type' });
+      return res
+        .status(404)
+        .json({ message: "Fare not found for this ride type" });
     }
     res.status(200).json(fare);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching fare', error });
+    res.status(500).json({ message: "Error fetching fare", error });
   }
 };
 

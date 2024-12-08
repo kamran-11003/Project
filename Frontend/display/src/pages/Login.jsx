@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import '../Styles/Login.css';
-import LoginForm from '../components/LoginForm';
+import React, { useState, useEffect } from "react";
+import "../Styles/Login.css";
+import LoginForm from "../components/LoginForm";
 
 function LoginPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,17 +17,15 @@ function LoginPage() {
     return (
       <div className="loading-screen">
         <div className="text-logo">Rahgeer</div>
-
       </div>
     );
   }
 
   return (
     <div className="login-container">
-       <LoginForm type="user" />
+      <LoginForm type="user" />
     </div>
   );
 }
 
 export default LoginPage;
-

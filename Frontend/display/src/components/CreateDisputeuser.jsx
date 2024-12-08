@@ -3,7 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { AlertTriangle, Send, User } from 'lucide-react';
+import { AlertTriangle, Send, User } from "lucide-react";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -166,7 +166,9 @@ const CreateDisputeUser = () => {
       }
     } catch (error) {
       console.error("Error creating dispute:", error);
-      setError(error.response?.data?.message || "An unexpected error occurred.");
+      setError(
+        error.response?.data?.message || "An unexpected error occurred."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -176,7 +178,7 @@ const CreateDisputeUser = () => {
     <Container>
       <FormWrapper>
         <Title>
-          <User size={24} style={{ marginRight: '0.5rem' }} />
+          <User size={24} style={{ marginRight: "0.5rem" }} />
           Create a User Dispute
         </Title>
         <Form onSubmit={handleSubmit}>
@@ -193,12 +195,12 @@ const CreateDisputeUser = () => {
           </FormGroup>
 
           <Button type="submit" disabled={isSubmitting}>
-            <Send size={18} style={{ marginRight: '0.5rem' }} />
-            {isSubmitting ? 'Submitting...' : 'Submit Dispute'}
+            <Send size={18} style={{ marginRight: "0.5rem" }} />
+            {isSubmitting ? "Submitting..." : "Submit Dispute"}
           </Button>
           {error && (
             <ErrorMessage>
-              <AlertTriangle size={18} style={{ marginRight: '0.5rem' }} />
+              <AlertTriangle size={18} style={{ marginRight: "0.5rem" }} />
               {error}
             </ErrorMessage>
           )}
@@ -209,4 +211,3 @@ const CreateDisputeUser = () => {
 };
 
 export default CreateDisputeUser;
-

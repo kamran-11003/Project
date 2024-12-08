@@ -1,31 +1,41 @@
-import React, { useState } from 'react';
-import { User, Mail, Lock, Phone, Car, UserPlus, CreditCard, Image, FileText } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  User,
+  Mail,
+  Lock,
+  Phone,
+  Car,
+  UserPlus,
+  CreditCard,
+  Image,
+  FileText,
+} from "lucide-react";
 
 const DriverRegisterForm = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     // Personal Info
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    phone: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    phone: "",
 
     // Identity Info
-    idNumber: '',
-    licenseNumber: '',
-    licenseImage: '',
-    profileImage: '',
+    idNumber: "",
+    licenseNumber: "",
+    licenseImage: "",
+    profileImage: "",
 
     // Vehicle Info
-    vehicleMake: '',
-    vehicleModel: '',
-    vehicleYear: '',
-    plateNumber: '',
+    vehicleMake: "",
+    vehicleModel: "",
+    vehicleYear: "",
+    plateNumber: "",
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,41 +60,44 @@ const DriverRegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (step !== 3) {
       return;
     }
-  
+
     setLoading(true);
-    setMessage('');
+    setMessage("");
     console.log(formData);
     const formDataToSubmit = new FormData();
-    
+
     // Append form fields to FormData
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       formDataToSubmit.append(key, formData[key]);
     });
-    
+
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register-driver', {
-        method: 'POST',
-        body: formDataToSubmit, // Use FormData instead of JSON.stringify
-      });
-  
+      const response = await fetch(
+        "http://localhost:5000/api/auth/register-driver",
+        {
+          method: "POST",
+          body: formDataToSubmit, // Use FormData instead of JSON.stringify
+        }
+      );
+
       if (response.ok) {
-        setMessage('Registration successful!');
+        setMessage("Registration successful!");
       } else {
-        setMessage('Registration failed. Please try again.');
+        setMessage("Registration failed. Please try again.");
       }
-      console.log('Response:', response);
+      console.log("Response:", response);
     } catch (error) {
-      setMessage('Registration failed. Please try again.');
-      console.error('Error:', error);
+      setMessage("Registration failed. Please try again.");
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
   };
-  
+
   const renderStepOne = () => (
     <form onSubmit={nextStep}>
       <div className="form-group">
@@ -147,16 +160,15 @@ const DriverRegisterForm = () => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="login-button"
-      >
+      <button type="submit" className="login-button">
         Next
       </button>
 
       <div className="form-footer">
         <span>Already have an account?</span>
-        <a href="/login-driver" className="create-account">Login</a>
+        <a href="/login-driver" className="create-account">
+          Login
+        </a>
       </div>
     </form>
   );
@@ -188,7 +200,6 @@ const DriverRegisterForm = () => {
       </div>
 
       <div className="form-group">
-      
         <div className="file-upload-wrapper">
           <input
             type="file"
@@ -200,14 +211,15 @@ const DriverRegisterForm = () => {
             id="licenseImage"
           />
           <span className="file-placeholder">
-            {formData.licenseImage ? formData.licenseImage.name : "Upload Driver's License Photo"}
+            {formData.licenseImage
+              ? formData.licenseImage.name
+              : "Upload Driver's License Photo"}
           </span>
           <Image size={20} className="input-icon" />
         </div>
       </div>
 
       <div className="form-group">
-        
         <div className="file-upload-wrapper">
           <input
             type="file"
@@ -219,17 +231,15 @@ const DriverRegisterForm = () => {
             id="profileImage"
           />
           <span className="file-placeholder">
-            {formData.profileImage ? formData.profileImage.name : "Upload Profile Photo"}
+            {formData.profileImage
+              ? formData.profileImage.name
+              : "Upload Profile Photo"}
           </span>
           <User size={20} className="input-icon" />
         </div>
       </div>
 
-
-      <button
-        type="submit"
-        className="login-button"
-      >
+      <button type="submit" className="login-button">
         Next
       </button>
 
@@ -237,7 +247,7 @@ const DriverRegisterForm = () => {
         type="button"
         className="login-button"
         onClick={prevStep}
-        style={{ marginTop: '10px', backgroundColor: '#f0f0f0' }}
+        style={{ marginTop: "10px", backgroundColor: "#f0f0f0" }}
       >
         Back
       </button>
@@ -294,19 +304,15 @@ const DriverRegisterForm = () => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="login-button"
-        disabled={loading}
-      >
-        {loading ? 'Registering...' : 'Register'}
+      <button type="submit" className="login-button" disabled={loading}>
+        {loading ? "Registering..." : "Register"}
       </button>
 
       <button
         type="button"
         className="login-button"
         onClick={prevStep}
-        style={{ marginTop: '10px', backgroundColor: '#f0f0f0' }}
+        style={{ marginTop: "10px", backgroundColor: "#f0f0f0" }}
       >
         Back
       </button>

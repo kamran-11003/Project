@@ -1,5 +1,5 @@
-const Rating = require('../models/Rating');
-const mongoose = require('mongoose');
+const Rating = require("../models/Rating");
+const mongoose = require("mongoose");
 
 // Controller function to add a rating
 const addRating = async (req, res) => {
@@ -9,30 +9,34 @@ const addRating = async (req, res) => {
     console.log(driverId, rating);
     // Validate rating (ensure it is between 1 and 5)
     if (rating < 1 || rating > 5) {
-      return res.status(400).json({ message: 'Rating must be between 1 and 5.' });
+      return res
+        .status(400)
+        .json({ message: "Rating must be between 1 and 5." });
     }
 
     // Check if driverId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(driverId)) {
-      return res.status(400).json({ message: 'Invalid driverId.' });
+      return res.status(400).json({ message: "Invalid driverId." });
     }
 
     // Create a new Rating instance
     const newRating = new Rating({
-      driverId:new mongoose.Types.ObjectId(driverId), // Ensure driverId is an ObjectId
+      driverId: new mongoose.Types.ObjectId(driverId), // Ensure driverId is an ObjectId
       rating,
-      date: new Date() // Set current date as the rating date
+      date: new Date(), // Set current date as the rating date
     });
 
     // Save the rating to the database
     await newRating.save();
 
     // Send response with the saved rating
-    res.status(201).json({ message: 'Rating added successfully', rating: newRating });
+    res
+      .status(201)
+      .json({ message: "Rating added successfully", rating: newRating });
   } catch (err) {
     // Handle any errors
     console.error(err);
-    res.status(500).json({ message: 'Server error. Could not save rating.' });
+    res.status(500).json({ message: "Server error. Could not save rating." });
   }
 };
 
@@ -43,7 +47,7 @@ const getAverageRating = async (req, res) => {
 
     // Check if driverId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(driverId)) {
-      return res.status(400).json({ message: 'Invalid driverId.' });
+      return res.status(400).json({ message: "Invalid driverId." });
     }
 
     // Fetch all ratings for the driver
@@ -54,7 +58,7 @@ const getAverageRating = async (req, res) => {
     // Return the average rating
     res.status(200).json({ averageRating });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching rating', error });
+    res.status(500).json({ message: "Error fetching rating", error });
   }
 };
 

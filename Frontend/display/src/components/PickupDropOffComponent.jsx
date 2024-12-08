@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { FaMapMarkerAlt, FaLocationArrow } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { FaMapMarkerAlt, FaLocationArrow } from "react-icons/fa";
 
-const mapboxAccessToken = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
+const mapboxAccessToken =
+  "pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ";
 
 const FormContainer = styled.form`
   display: flex;
@@ -61,8 +62,8 @@ const SuggestionsContainer = styled.div`
   max-height: 200px;
   overflow-y: auto;
   z-index: 10;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 `;
 
 const SuggestionItem = styled.div`
@@ -84,8 +85,8 @@ const SuggestionItem = styled.div`
 `;
 
 const PickupDropOffComponent = ({ onSetPickupAndDropOff }) => {
-  const [pickup, setPickup] = useState('');
-  const [dropOff, setDropOff] = useState('');
+  const [pickup, setPickup] = useState("");
+  const [dropOff, setDropOff] = useState("");
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [dropOffSuggestions, setDropOffSuggestions] = useState([]);
   const [isPickupDropdownVisible, setPickupDropdownVisible] = useState(false);
@@ -102,7 +103,7 @@ const PickupDropOffComponent = ({ onSetPickupAndDropOff }) => {
     setPickup(value);
 
     if (value.length > 2) {
-      fetchSuggestions(value, 'pickup');
+      fetchSuggestions(value, "pickup");
       setPickupDropdownVisible(true);
     } else {
       setPickupDropdownVisible(false);
@@ -114,7 +115,7 @@ const PickupDropOffComponent = ({ onSetPickupAndDropOff }) => {
     setDropOff(value);
 
     if (value.length > 2) {
-      fetchSuggestions(value, 'dropoff');
+      fetchSuggestions(value, "dropoff");
       setDropOffDropdownVisible(true);
     } else {
       setDropOffDropdownVisible(false);
@@ -129,18 +130,18 @@ const PickupDropOffComponent = ({ onSetPickupAndDropOff }) => {
       const data = await response.json();
       const suggestions = data.features.map((feature) => feature.place_name);
 
-      if (type === 'pickup') {
+      if (type === "pickup") {
         setPickupSuggestions(suggestions);
       } else {
         setDropOffSuggestions(suggestions);
       }
     } catch (error) {
-      console.error('Error fetching suggestions:', error);
+      console.error("Error fetching suggestions:", error);
     }
   };
 
   const handleSuggestionClick = (suggestion, type) => {
-    if (type === 'pickup') {
+    if (type === "pickup") {
       setPickup(suggestion);
       setPickupSuggestions([]);
       setPickupDropdownVisible(false);
@@ -170,7 +171,7 @@ const PickupDropOffComponent = ({ onSetPickupAndDropOff }) => {
             {pickupSuggestions.map((suggestion, index) => (
               <SuggestionItem
                 key={index}
-                onClick={() => handleSuggestionClick(suggestion, 'pickup')}
+                onClick={() => handleSuggestionClick(suggestion, "pickup")}
               >
                 <FaMapMarkerAlt />
                 {suggestion}
@@ -197,7 +198,7 @@ const PickupDropOffComponent = ({ onSetPickupAndDropOff }) => {
             {dropOffSuggestions.map((suggestion, index) => (
               <SuggestionItem
                 key={index}
-                onClick={() => handleSuggestionClick(suggestion, 'dropoff')}
+                onClick={() => handleSuggestionClick(suggestion, "dropoff")}
               >
                 <FaLocationArrow />
                 {suggestion}

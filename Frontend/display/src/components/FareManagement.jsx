@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import axios from "axios";
+import styled from "styled-components";
 
 const FareManagement = () => {
-  const [rideType, setRideType] = useState('');
-  const [fareMultiplier, setFareMultiplier] = useState('');
-  const [promotionCode, setPromotionCode] = useState('');
-  const [discountPercentage, setDiscountPercentage] = useState('');
-  const [validUntil, setValidUntil] = useState('');
+  const [rideType, setRideType] = useState("");
+  const [fareMultiplier, setFareMultiplier] = useState("");
+  const [promotionCode, setPromotionCode] = useState("");
+  const [discountPercentage, setDiscountPercentage] = useState("");
+  const [validUntil, setValidUntil] = useState("");
   const [activeSection, setActiveSection] = useState(0); // Track active section
 
   // Function to get the JWT token from localStorage
   const getJwtToken = () => {
-    return localStorage.getItem('jwtToken');
+    return localStorage.getItem("jwtToken");
   };
 
   // Handle fare update
@@ -20,7 +20,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .put(
-        'http://localhost:5000/api/admin/fare/update',
+        "http://localhost:5000/api/admin/fare/update",
         { rideType, fareMultiplier },
         {
           headers: {
@@ -29,7 +29,7 @@ const FareManagement = () => {
         }
       )
       .then((response) => alert(response.data.message))
-      .catch((error) => alert('Error updating fare'));
+      .catch((error) => alert("Error updating fare"));
   };
 
   // Handle promotion add
@@ -37,7 +37,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .post(
-        'http://localhost:5000/api/admin/promotion/add',
+        "http://localhost:5000/api/admin/promotion/add",
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {
@@ -46,7 +46,7 @@ const FareManagement = () => {
         }
       )
       .then((response) => alert(response.data.message))
-      .catch((error) => alert('Error adding promotion'));
+      .catch((error) => alert("Error adding promotion"));
   };
 
   // Handle promotion removal
@@ -54,7 +54,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .delete(
-        'http://localhost:5000/api/admin/promotion/remove',
+        "http://localhost:5000/api/admin/promotion/remove",
         { data: { rideType, promotionCode } },
         {
           headers: {
@@ -63,7 +63,7 @@ const FareManagement = () => {
         }
       )
       .then((response) => alert(response.data.message))
-      .catch((error) => alert('Error removing promotion'));
+      .catch((error) => alert("Error removing promotion"));
   };
 
   // Handle promotion update
@@ -71,7 +71,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .put(
-        'http://localhost:5000/api/admin/promotion/update',
+        "http://localhost:5000/api/admin/promotion/update",
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {
@@ -80,7 +80,7 @@ const FareManagement = () => {
         }
       )
       .then((response) => alert(response.data.message))
-      .catch((error) => alert('Error updating promotion'));
+      .catch((error) => alert("Error updating promotion"));
   };
 
   // Handle section change (using buttons)
@@ -92,10 +92,30 @@ const FareManagement = () => {
     <Container>
       <Title>Fare Management</Title>
       <NavBar>
-        <NavButton onClick={() => handleSectionChange(0)} isActive={activeSection === 0}>Update Fare</NavButton>
-        <NavButton onClick={() => handleSectionChange(1)} isActive={activeSection === 1}>Add Promotion</NavButton>
-        <NavButton onClick={() => handleSectionChange(2)} isActive={activeSection === 2}>Remove Promotion</NavButton>
-        <NavButton onClick={() => handleSectionChange(3)} isActive={activeSection === 3}>Update Promotion</NavButton>
+        <NavButton
+          onClick={() => handleSectionChange(0)}
+          isActive={activeSection === 0}
+        >
+          Update Fare
+        </NavButton>
+        <NavButton
+          onClick={() => handleSectionChange(1)}
+          isActive={activeSection === 1}
+        >
+          Add Promotion
+        </NavButton>
+        <NavButton
+          onClick={() => handleSectionChange(2)}
+          isActive={activeSection === 2}
+        >
+          Remove Promotion
+        </NavButton>
+        <NavButton
+          onClick={() => handleSectionChange(3)}
+          isActive={activeSection === 3}
+        >
+          Update Promotion
+        </NavButton>
       </NavBar>
 
       <FormContainer>
@@ -104,8 +124,18 @@ const FareManagement = () => {
           <Section>
             <SubTitle>Update Fare</SubTitle>
             <FormGroup>
-              <Input type="text" placeholder="Ride Type" value={rideType} onChange={(e) => setRideType(e.target.value)} />
-              <Input type="number" placeholder="Fare Multiplier" value={fareMultiplier} onChange={(e) => setFareMultiplier(e.target.value)} />
+              <Input
+                type="text"
+                placeholder="Ride Type"
+                value={rideType}
+                onChange={(e) => setRideType(e.target.value)}
+              />
+              <Input
+                type="number"
+                placeholder="Fare Multiplier"
+                value={fareMultiplier}
+                onChange={(e) => setFareMultiplier(e.target.value)}
+              />
               <Button onClick={handleFareUpdate}>Update Fare</Button>
             </FormGroup>
           </Section>
@@ -116,10 +146,30 @@ const FareManagement = () => {
           <Section>
             <SubTitle>Add Promotion</SubTitle>
             <FormGroup>
-              <Input type="text" placeholder="Ride Type" value={rideType} onChange={(e) => setRideType(e.target.value)} />
-              <Input type="text" placeholder="Promotion Code" value={promotionCode} onChange={(e) => setPromotionCode(e.target.value)} />
-              <Input type="number" placeholder="Discount Percentage" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} />
-              <Input type="date" placeholder="Valid Until" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
+              <Input
+                type="text"
+                placeholder="Ride Type"
+                value={rideType}
+                onChange={(e) => setRideType(e.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Promotion Code"
+                value={promotionCode}
+                onChange={(e) => setPromotionCode(e.target.value)}
+              />
+              <Input
+                type="number"
+                placeholder="Discount Percentage"
+                value={discountPercentage}
+                onChange={(e) => setDiscountPercentage(e.target.value)}
+              />
+              <Input
+                type="date"
+                placeholder="Valid Until"
+                value={validUntil}
+                onChange={(e) => setValidUntil(e.target.value)}
+              />
               <Button onClick={handleAddPromotion}>Add Promotion</Button>
             </FormGroup>
           </Section>
@@ -130,8 +180,18 @@ const FareManagement = () => {
           <Section>
             <SubTitle>Remove Promotion</SubTitle>
             <FormGroup>
-              <Input type="text" placeholder="Ride Type" value={rideType} onChange={(e) => setRideType(e.target.value)} />
-              <Input type="text" placeholder="Promotion Code" value={promotionCode} onChange={(e) => setPromotionCode(e.target.value)} />
+              <Input
+                type="text"
+                placeholder="Ride Type"
+                value={rideType}
+                onChange={(e) => setRideType(e.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Promotion Code"
+                value={promotionCode}
+                onChange={(e) => setPromotionCode(e.target.value)}
+              />
               <Button onClick={handleRemovePromotion}>Remove Promotion</Button>
             </FormGroup>
           </Section>
@@ -142,10 +202,30 @@ const FareManagement = () => {
           <Section>
             <SubTitle>Update Promotion</SubTitle>
             <FormGroup>
-              <Input type="text" placeholder="Ride Type" value={rideType} onChange={(e) => setRideType(e.target.value)} />
-              <Input type="text" placeholder="Promotion Code" value={promotionCode} onChange={(e) => setPromotionCode(e.target.value)} />
-              <Input type="number" placeholder="Discount Percentage" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} />
-              <Input type="date" placeholder="Valid Until" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
+              <Input
+                type="text"
+                placeholder="Ride Type"
+                value={rideType}
+                onChange={(e) => setRideType(e.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Promotion Code"
+                value={promotionCode}
+                onChange={(e) => setPromotionCode(e.target.value)}
+              />
+              <Input
+                type="number"
+                placeholder="Discount Percentage"
+                value={discountPercentage}
+                onChange={(e) => setDiscountPercentage(e.target.value)}
+              />
+              <Input
+                type="date"
+                placeholder="Valid Until"
+                value={validUntil}
+                onChange={(e) => setValidUntil(e.target.value)}
+              />
               <Button onClick={handleUpdatePromotion}>Update Promotion</Button>
             </FormGroup>
           </Section>
@@ -180,8 +260,8 @@ const NavBar = styled.div`
 const NavButton = styled.button`
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: ${(props) => (props.isActive ? '#C1F11D' : '#ddd')};
-  color: ${(props) => (props.isActive ? 'black' : 'gray')};
+  background-color: ${(props) => (props.isActive ? "#C1F11D" : "#ddd")};
+  color: ${(props) => (props.isActive ? "black" : "gray")};
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -227,7 +307,7 @@ const Input = styled.input`
 const Button = styled.button`
   padding: 10px;
   font-size: 1rem;
-  background-color: #C1F11D;
+  background-color: #c1f11d;
   color: white;
   border: none;
   border-radius: 6px;

@@ -10,12 +10,11 @@ import {
   FaTimes,
   FaUser,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; 
 import FeedbackList from "./FeedbackList";
 import RatingStar from "./RatingStar";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 
 const Overlay = styled.div`
   display: none;
@@ -129,7 +128,6 @@ const Email = styled.p`
   }
 `;
 
-
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -176,7 +174,6 @@ const NavLink = styled(Link)`
     justify-content: flex-start; /* Align content to the left */
   }
 `;
-
 
 const LogoutLink = styled(NavLink)`
   color: #e53e3e;
@@ -245,7 +242,7 @@ const FeedbackSection = styled.div`
 `;
 
 const DriverSidebar = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate();  // Initialize navigate for redirection
   const [user, setUser] = useState({ name: "Loading...", email: "Loading..." });
   const [isActive, setIsActive] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -313,6 +310,14 @@ const DriverSidebar = () => {
     }
   };
 
+ const handleLogout = () => {
+  console.log("Logging out..."); // Debugging log
+  localStorage.removeItem("jwtToken");
+  navigate("/login-driver");  // Or try window.location.href = "/login";
+
+};
+
+
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
     {
@@ -326,6 +331,7 @@ const DriverSidebar = () => {
       label: "Help and Support",
       to: "/driver-dashboard/create-dispute",
     },
+    
   ];
 
   const toggleMobileSidebar = () => {
@@ -377,7 +383,7 @@ const DriverSidebar = () => {
             <RatingStar />
           </FeedbackSection>
 
-          <LogoutLink onClick={() => setIsMobileSidebarOpen(false)}>
+          <LogoutLink as="div" onClick={handleLogout}>
             <FaSignOutAlt />
             <span>Logout</span>
           </LogoutLink>

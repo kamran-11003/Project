@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { jwtDecode } from 'jwt-decode';
-import { useRideContext } from '../context/rideContext'; // Import the context hook
-import { useSocket } from '../context/SocketContext'; // Import the SocketContext
-
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { jwtDecode } from "jwt-decode";
+import { useRideContext } from "../context/rideContext"; // Import the context hook
+import { useSocket } from "../context/SocketContext"; // Import the SocketContext
 
 // Styled Components
 const Container = styled.div`
@@ -89,7 +88,7 @@ const PromoInput = styled.input`
 const FindDriverButton = styled.button`
   padding: 12px 24px;
   background-color: #c1f11d;
-  color: black;  // Button text color changed to black
+  color: black; // Button text color changed to black
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -108,12 +107,12 @@ const FindDriverButton = styled.button`
 
 // Helper function to get user ID from token
 const getUserIdFromToken = () => {
-  const token = localStorage.getItem('jwtToken');
+  const token = localStorage.getItem("jwtToken");
   try {
     const decodedToken = jwtDecode(token);
     return decodedToken.id; // Adjust based on your token's payload
   } catch (error) {
-    console.error('Error decoding token:', error);
+    console.error("Error decoding token:", error);
     return null;
   }
 };
@@ -127,23 +126,23 @@ const FareEstimator = () => {
     fare,
     setFare,
     pickupCoordinates,
-    dropOffCoordinates
+    dropOffCoordinates,
   } = useRideContext();
   const { userId, socket } = useSocket(); // Get userId and socket from SocketContext
 
   const [fareMultipliers, setFareMultipliers] = useState({});
   const [recommendedFare, setRecommendedFare] = useState(0);
-  const [customBid, setCustomBid] = useState(''); // Initialize as an empty string
-  const [promoCode, setPromoCode] = useState('');
+  const [customBid, setCustomBid] = useState(""); // Initialize as an empty string
+  const [promoCode, setPromoCode] = useState("");
   const [promotions, setPromotions] = useState([]);
   const [discount, setDiscount] = useState(0);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Fetch fare multipliers from API
   useEffect(() => {
     const fetchFareData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/fare/fares');
+        const response = await fetch("http://localhost:5000/api/fare/fares");
         const data = await response.json();
 
         const multipliers = {};
@@ -156,7 +155,7 @@ const FareEstimator = () => {
 
         setFareMultipliers(multipliers);
       } catch (error) {
-        console.error('Error fetching fare data:', error);
+        console.error("Error fetching fare data:", error);
       }
     };
 
@@ -182,9 +181,9 @@ const FareEstimator = () => {
     const minimumFare = recommendedFare - discount;
 
     // Allow the value to be empty or any numeric value, but show error if it's below minimum fare
-    if (bid === '' || !isNaN(bid)) {
+    if (bid === "" || !isNaN(bid)) {
       setCustomBid(bid);
-      setError(''); // Clear error message
+      setError(""); // Clear error message
     } else {
       setError(`Bid must be at least PKR ${minimumFare.toFixed(2)}.`);
     }
@@ -206,9 +205,9 @@ const FareEstimator = () => {
         (recommendedFare * currentPromo.discountPercentage) / 100;
       setDiscount(discountAmount);
       setFare(recommendedFare - discountAmount);
-      setError(''); // Clear any previous error
+      setError(""); // Clear any previous error
     } else {
-      setError('Invalid or expired promo code.');
+      setError("Invalid or expired promo code.");
       setDiscount(0); // Reset discount
     }
   };
@@ -228,34 +227,44 @@ const FareEstimator = () => {
       distance,
       userId,
       pickupCoordinates,
-      dropOffCoordinates
+      dropOffCoordinates,
     };
     //implement socket
-    socket.emit('requestRide', data);
-    
+    socket.emit("requestRide", data);
   };
 
   return (
     <Container>
       <FareInfo>
         <FareDetails>
-          <p><Label>Ride Type:</Label> {selectedRide}</p>
-          <p><Label>Distance:</Label> {distance} km</p>
-          <p><Label>Fare:</Label> PKR {recommendedFare.toFixed(2)}</p>
+          <p>
+            <Label>Ride Type:</Label> {selectedRide}
+          </p>
+          <p>
+            <Label>Distance:</Label> {distance} km
+          </p>
+          <p>
+            <Label>Fare:</Label> PKR {recommendedFare.toFixed(2)}
+          </p>
           {discount > 0 && (
-            <p><Label>Discounted Fare:</Label> PKR {(recommendedFare - discount).toFixed(2)}</p>
+            <p>
+              <Label>Discounted Fare:</Label> PKR{" "}
+              {(recommendedFare - discount).toFixed(2)}
+            </p>
           )}
         </FareDetails>
       </FareInfo>
 
       <BidSection>
         <BidInput
-          type="text"  // Allow text input to make typing easier, still ensure it's numeric
-          placeholder={`Minimum bid: PKR ${(recommendedFare - discount).toFixed(2)}`}
+          type="text" // Allow text input to make typing easier, still ensure it's numeric
+          placeholder={`Minimum bid: PKR ${(recommendedFare - discount).toFixed(
+            2
+          )}`}
           value={customBid}
           onChange={handleBidChange}
         />
-        {error && <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>}
+        {error && <p style={{ color: "red", fontSize: "12px" }}>{error}</p>}
         <PromoInput
           type="text"
           placeholder="Enter promo code"

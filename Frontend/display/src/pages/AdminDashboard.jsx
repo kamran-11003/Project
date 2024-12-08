@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import AdminSidebar from '../components/AdminSidebar';
-import UserManagement from '../components/UserManagement';
-import DriverManagement from '../components/DriverManagement';
-import FareManagement from '../components/FareManagement';
-import AnalyticsChart from '../components/AnalyticsChart';
-import DisputeManagement from '../components/DisputeManagement';
-import styled from 'styled-components';
-import { FaBars, FaTimes } from 'react-icons/fa'; // Importing hamburger icon and close icon from react-icons
+import React, { useState, useEffect, useRef } from "react";
+import AdminSidebar from "../components/AdminSidebar";
+import UserManagement from "../components/UserManagement";
+import DriverManagement from "../components/DriverManagement";
+import FareManagement from "../components/FareManagement";
+import AnalyticsChart from "../components/AnalyticsChart";
+import DisputeManagement from "../components/DisputeManagement";
+import styled from "styled-components";
+import { FaBars, FaTimes } from "react-icons/fa"; // Importing hamburger icon and close icon from react-icons
 
 const AdminDashboard = () => {
-  const [selectedPage, setSelectedPage] = useState('dashboard');
+  const [selectedPage, setSelectedPage] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Ref for sidebar to check clicks outside
@@ -38,11 +38,11 @@ const AdminDashboard = () => {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize(); // Call initially to handle first load
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -57,23 +57,23 @@ const AdminDashboard = () => {
 
   // Add event listener for clicks outside the sidebar
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const renderSelectedPage = () => {
     switch (selectedPage) {
-      case 'user-management':
+      case "user-management":
         return <UserManagement />;
-      case 'driver-management':
+      case "driver-management":
         return <DriverManagement />;
-      case 'fare-and-discount':
+      case "fare-and-discount":
         return <FareManagement />;
-      case 'ride-analytics':
+      case "ride-analytics":
         return <AnalyticsChart />;
-      case 'dispute-resolution':
+      case "dispute-resolution":
         return <DisputeManagement />;
       default:
         return (
@@ -96,7 +96,8 @@ const AdminDashboard = () => {
       <ContentContainer isSidebarOpen={isSidebarOpen}>
         <MobileHeader>
           <HamburgerIcon onClick={toggleSidebar}>
-            {isSidebarOpen ? <FaTimes /> : <FaBars />} {/* Switch between hamburger and close icon */}
+            {isSidebarOpen ? <FaTimes /> : <FaBars />}{" "}
+            {/* Switch between hamburger and close icon */}
           </HamburgerIcon>
         </MobileHeader>
         {renderSelectedPage()}
@@ -130,7 +131,8 @@ const SidebarContainer = styled.div`
   transition: width 0.3s ease-in-out;
 
   @media (max-width: 768px) {
-    width: ${({ isOpen }) => (isOpen ? '250px' : '0')}; /* Toggleable on mobile */
+    width: ${({ isOpen }) =>
+      isOpen ? "250px" : "0"}; /* Toggleable on mobile */
     overflow-x: hidden;
   }
 `;
@@ -139,7 +141,8 @@ const ContentContainer = styled.div`
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
-  margin-left: ${({ isSidebarOpen }) => (isSidebarOpen ? '250px' : '0')}; /* Adjust the margin on desktop */
+  margin-left: ${({ isSidebarOpen }) =>
+    isSidebarOpen ? "250px" : "0"}; /* Adjust the margin on desktop */
   transition: margin-left 0.3s ease-in-out;
 
   @media (max-width: 768px) {
@@ -182,7 +185,7 @@ const MobileHeader = styled.div`
 
 const HamburgerIcon = styled.div`
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 2rem;
   padding: 0 1rem;
   color: #333;
 

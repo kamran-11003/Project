@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import { User, Phone, Car, AlertTriangle } from 'lucide-react';
+import React from "react";
+import styled from "styled-components";
+import { User, Phone, Car, AlertTriangle } from "lucide-react";
 
 const Container = styled.div`
   background-color: #ffffff;
@@ -59,7 +59,7 @@ const DriverData = ({ driver }) => {
     return (
       <Container>
         <ErrorMessage>
-          <AlertTriangle size={18} style={{ marginRight: '0.5rem' }} />
+          <AlertTriangle size={18} style={{ marginRight: "0.5rem" }} />
           Driver information is not available.
         </ErrorMessage>
       </Container>
@@ -75,21 +75,21 @@ const DriverData = ({ driver }) => {
             <User size={18} />
           </IconWrapper>
           <Label>Name:</Label>
-          <Value>{driver.firstName || 'N/A'}</Value>
+          <Value>{driver.firstName || "N/A"}</Value>
         </ListItem>
         <ListItem>
           <IconWrapper>
             <Phone size={18} />
           </IconWrapper>
           <Label>Phone:</Label>
-          <Value>{driver.phone || 'N/A'}</Value>
+          <Value>{driver.phone || "N/A"}</Value>
         </ListItem>
         <ListItem>
           <IconWrapper>
             <Car size={18} />
           </IconWrapper>
           <Label>Vehicle:</Label>
-          <Value>{driver.vehicleMake || 'N/A'}</Value>
+          <Value>{driver.vehicleMake || "N/A"}</Value>
         </ListItem>
       </List>
     </Container>
@@ -97,4 +97,3 @@ const DriverData = ({ driver }) => {
 };
 
 export default DriverData;
-

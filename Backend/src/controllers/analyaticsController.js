@@ -1,34 +1,34 @@
 // controllers/analyticsController.js
-const Earnings = require('../models/Earnings'); // Import the Earnings model
-const Ride = require('../models/ride'); // Import the Ride model
+const Earnings = require("../models/Earnings"); // Import the Earnings model
+const Ride = require("../models/ride"); // Import the Ride model
 
 // Function to track total revenue
 const getTotalRevenue = async (req, res) => {
   try {
     const revenue = await Earnings.aggregate([
-      { $group: { _id: null, totalRevenue: { $sum: '$amount' } } }
+      { $group: { _id: null, totalRevenue: { $sum: "$amount" } } },
     ]);
-    
+
     res.status(200).json({
       success: true,
-      totalRevenue: revenue.length > 0 ? revenue[0].totalRevenue : 0
+      totalRevenue: revenue.length > 0 ? revenue[0].totalRevenue : 0,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
 // Function to track completed rides
 const getCompletedRides = async (req, res) => {
   try {
-    const completedRides = await Ride.countDocuments({ status: 'completed' });
+    const completedRides = await Ride.countDocuments({ status: "completed" });
 
     res.status(200).json({
       success: true,
-      completedRides
+      completedRides,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -36,25 +36,25 @@ const getCompletedRides = async (req, res) => {
 const getAnalyticsData = async (req, res) => {
   try {
     const revenue = await Earnings.aggregate([
-      { $group: { _id: null, totalRevenue: { $sum: '$amount' } } }
+      { $group: { _id: null, totalRevenue: { $sum: "$amount" } } },
     ]);
-    
-    const completedRides = await Ride.countDocuments({ status: 'completed' });
+
+    const completedRides = await Ride.countDocuments({ status: "completed" });
 
     res.status(200).json({
       success: true,
       analytics: {
         totalRevenue: revenue.length > 0 ? revenue[0].totalRevenue : 0,
-        completedRides
-      }
+        completedRides,
+      },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
 module.exports = {
   getTotalRevenue,
   getCompletedRides,
-  getAnalyticsData
+  getAnalyticsData,
 };

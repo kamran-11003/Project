@@ -12,10 +12,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 import { RideProvider } from "./context/rideContext"; // Import the RideProvider
 import { SocketProvider } from "./context/SocketContext"; // Import the SocketProvider
-import DriverProfileUpdate from "./components/DriverProfileUpdate";
-import EarningsSummary from "./components/EarningsSummary";
-import CreateDispute from "./components/CreateDispute"; // Import CreateDispute
-import CreateDisputeUser from "./components/CreateDisputeuser";
 
 function App() {
   return (
@@ -56,8 +52,6 @@ function App() {
               </ProtectedRoute>
             }
           />
- 
-
 
           {/* Unauthorized route */}
           <Route path="/unauthorized" element={<Unauthorized />} />

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-import { jwtDecode } from 'jwt-decode';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import styled from "styled-components";
+import { jwtDecode } from "jwt-decode";
 
 // Styled components for the Ride History page
 const RideHistoryContainer = styled.div`
   padding: 2rem;
   background-color: #f9f9f9;
   min-height: 100vh;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 
   @media (max-width: 768px) {
     padding: 1rem;
@@ -100,9 +100,9 @@ const RideHistory = () => {
   useEffect(() => {
     const fetchRideHistory = async () => {
       try {
-        const token = localStorage.getItem('jwtToken');
+        const token = localStorage.getItem("jwtToken");
         if (!token) {
-          setError('User not authenticated. Please log in.');
+          setError("User not authenticated. Please log in.");
           return;
         }
 
@@ -110,14 +110,17 @@ const RideHistory = () => {
         const userId = decodedToken.id;
 
         // Fetching ride history
-        const response = await axios.get(`http://localhost:5000/api/ride/rides/user/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/api/ride/rides/user/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         setRides(response.data);
       } catch (error) {
-        console.error('Error fetching ride history:', error);
-        setError('No Ride Found.');
+        console.error("Error fetching ride history:", error);
+        setError("No Ride Found.");
       }
     };
 
@@ -141,13 +144,15 @@ const RideHistory = () => {
             <RideDetails>
               <Label>Pickup:</Label>
               <Value>
-                Lat: {ride.pickupCoordinates.latitude}, Long: {ride.pickupCoordinates.longitude}
+                Lat: {ride.pickupCoordinates.latitude}, Long:{" "}
+                {ride.pickupCoordinates.longitude}
               </Value>
             </RideDetails>
             <RideDetails>
               <Label>Drop-Off:</Label>
               <Value>
-                Lat: {ride.dropOffCoordinates.latitude}, Long: {ride.dropOffCoordinates.longitude}
+                Lat: {ride.dropOffCoordinates.latitude}, Long:{" "}
+                {ride.dropOffCoordinates.longitude}
               </Value>
             </RideDetails>
             <RideDetails>
