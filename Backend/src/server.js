@@ -147,7 +147,7 @@ io.on('connection', (socket) => {
       }
     }
   });
-
+  
  // Handle user ride requests (example event)
 socket.on('requestRide', async (data) => {
   io.emit('requestLocationUpdate');

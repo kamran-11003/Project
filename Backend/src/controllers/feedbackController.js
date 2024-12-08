@@ -49,7 +49,10 @@ const getFeedbacks = async (req, res) => {
     }
 
     // Fetch all feedbacks for the given driver
-    const feedbacks = await Feedback.find({ driverId });
+    const feedbacks = await Feedback.find({ driverId })
+  .sort({ createdAt: -1 })  // Sort by createdAt in descending order (most recent first)
+  .limit(2);  // Limit to the top 2 feedbacks
+
 
     if (feedbacks.length === 0) {
       return res.status(404).json({ message: 'No feedbacks found for this driver.' });

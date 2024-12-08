@@ -19,7 +19,7 @@ const UserDashboard = () => {
             path="/"
             element={
               <>
-        <DriverMap />
+       
         <RideRequest />
         </>}
         >
