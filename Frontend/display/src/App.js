@@ -39,7 +39,7 @@ function App() {
             }
           />
           <Route
-            path="/driver-dashboard"
+            path="/driver-dashboard/*"
             element={
               <ProtectedRoute allowedRoles={["driver"]}>
                 <DriverDashboard />
@@ -56,35 +56,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/driver-update"
-            element={
-              <ProtectedRoute allowedRoles={["driver"]}>
-                <DriverProfileUpdate />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Earnings Summary Route for Drivers */}
-          <Route
-            path="/earnings"
-            element={
-              <ProtectedRoute allowedRoles={["driver"]}>
-                <EarningsSummary />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* New Create Dispute Route */}
-          <Route
-            path="/create-dispute"
-            element={
-              <ProtectedRoute allowedRoles={["driver"]}>
-                <CreateDispute />
-              </ProtectedRoute>
-            }
-          />
-
+ 
 
 
           {/* Unauthorized route */}

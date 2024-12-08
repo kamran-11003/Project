@@ -297,9 +297,9 @@ const DriverSidebar = () => {
 
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
-    { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" },
-    { icon: <FaCog />, label: "Earnings", to: "/earnings" },
-    { icon: <FaHistory />, label: "Help and Support", to: "/create-dispute" },
+    { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-dashboard/driver-update" },
+    { icon: <FaCog />, label: "Earnings", to: "/driver-dashboard/earnings" },
+    { icon: <FaHistory />, label: "Help and Support", to: "/driver-dashboard/create-dispute" },
   ];
   
   const toggleMobileSidebar = () => {
