@@ -158,6 +158,10 @@ const Title = styled.h1`
   text-align: center;
   font-size: 2rem;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
 `;
 
 const Message = styled.div`
@@ -170,6 +174,11 @@ const NavBar = styled.div`
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const NavButton = styled.button`
@@ -181,9 +190,15 @@ const NavButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin: 5px;
 
   :hover {
     background-color: #b3e2b2;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
   }
 `;
 
@@ -200,6 +215,10 @@ const Section = styled.section`
 const SubTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const UserList = styled.ul`
@@ -218,6 +237,12 @@ const UserDetails = styled.div`
   justify-content: space-between;
   font-size: 1rem;
   line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const NoUsers = styled.p`
@@ -231,6 +256,10 @@ const InputGroup = styled.div`
   gap: 10px;
   max-width: 400px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const Input = styled.input`
@@ -238,6 +267,10 @@ const Input = styled.input`
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Select = styled.select`
@@ -245,6 +278,10 @@ const Select = styled.select`
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Button = styled.button`
@@ -258,6 +295,10 @@ const Button = styled.button`
 
   :hover {
     background-color: #0056b3;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
   }
 `;
 

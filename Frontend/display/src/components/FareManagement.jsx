@@ -173,6 +173,8 @@ const NavBar = styled.div`
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 `;
 
 const NavButton = styled.button`
@@ -236,10 +238,10 @@ const Button = styled.button`
 
 const fadeIn = `
   @keyframes fadeIn {
-    from {
+    0% {
       opacity: 0;
     }
-    to {
+    100% {
       opacity: 1;
     }
   }
@@ -247,13 +249,23 @@ const fadeIn = `
 
 const slideIn = `
   @keyframes slideIn {
-    from {
-      transform: translateX(-20px);
-      opacity: 0;
+    0% {
+      transform: translateX(-100%);
     }
-    to {
+    100% {
       transform: translateX(0);
-      opacity: 1;
+    }
+  }
+`;
+
+// Responsive media query
+const mediaQueries = `
+  @media (max-width: 768px) {
+    .title {
+      font-size: 1.5rem;
+    }
+    .button {
+      width: 100%;
     }
   }
 `;

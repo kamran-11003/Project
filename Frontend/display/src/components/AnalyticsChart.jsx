@@ -122,8 +122,6 @@ const AnalyticsChart = () => {
           <Bar 
             data={totalRevenueChartData} 
             options={chartOptions} 
-            height={400} 
-            width={300} 
           />
         </ChartContainer>
 
@@ -132,8 +130,6 @@ const AnalyticsChart = () => {
           <Bar 
             data={completedRidesChartData} 
             options={chartOptions} 
-            height={400} 
-            width={300} 
           />
         </ChartContainer>
 
@@ -142,8 +138,6 @@ const AnalyticsChart = () => {
           <Bar 
             data={activeUsersChartData} 
             options={chartOptions} 
-            height={400} 
-            width={300} 
           />
         </ChartContainer>
       </ChartWrapper>
@@ -159,18 +153,21 @@ const ChartsContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  padding: 20px;
+  width: 100%;
 `;
 
 const ChartWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  flex-wrap: wrap;
   width: 100%;
-  max-width: 1000px; /* Limit the total width of the charts */
+  max-width: 1200px; /* Limit the total width of the charts */
 `;
 
 const ChartContainer = styled.div`
-  width: 300px;
+  flex: 1;
   height: 400px;
   display: flex;
   flex-direction: column;
@@ -180,4 +177,31 @@ const ChartContainer = styled.div`
   border-radius: 8px;
   padding: 10px;
   background-color: #f9f9f9;
+  max-width: 500px; /* Set a maximum width for larger screens */
+  width: 100%; /* Allow the chart to take up available width */
+
+  @media (max-width: 1200px) {
+    height: 350px; /* Slightly smaller on medium-sized screens */
+  }
+
+  @media (max-width: 1024px) {
+    height: 300px; /* Smaller on tablets */
+    max-width: 450px;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 350px; /* Reduce size for smaller screens */
+    height: 250px;
+  }
+
+  @media (max-width: 480px) {
+    height: 200px; /* Further reduce height for very small screens */
+    max-width: 100%;
+  }
+`;
+
+const ChartTitle = styled.h3`
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  text-align: center;
 `;

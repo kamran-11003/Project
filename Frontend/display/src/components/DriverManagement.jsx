@@ -119,28 +119,16 @@ const DriverManagement = () => {
       {message && <Message>{message}</Message>}
 
       <NavBar>
-        <NavButton
-          onClick={() => setCurrentSection(1)}
-          isActive={currentSection === 1}
-        >
+        <NavButton onClick={() => setCurrentSection(1)} isActive={currentSection === 1}>
           Suspended or Banned Drivers
         </NavButton>
-        <NavButton
-          onClick={() => setCurrentSection(2)}
-          isActive={currentSection === 2}
-        >
+        <NavButton onClick={() => setCurrentSection(2)} isActive={currentSection === 2}>
           Update Driver Status
         </NavButton>
-        <NavButton
-          onClick={() => setCurrentSection(3)}
-          isActive={currentSection === 3}
-        >
+        <NavButton onClick={() => setCurrentSection(3)} isActive={currentSection === 3}>
           Approve Driver
         </NavButton>
-        <NavButton
-          onClick={() => setCurrentSection(4)}
-          isActive={currentSection === 4}
-        >
+        <NavButton onClick={() => setCurrentSection(4)} isActive={currentSection === 4}>
           Delete Driver
         </NavButton>
       </NavBar>
@@ -155,8 +143,8 @@ const DriverManagement = () => {
                 drivers.map((driver) => (
                   <ListItem key={driver._id}>
                     <DriverDetails>
-                      <span>{driver.firstName} {driver.lastName}</span> - 
-                      <span>{driver._id}</span> - 
+                      <span>{driver.firstName} {driver.lastName}</span> -
+                      <span>{driver._id}</span> -
                       <span>{driver.suspensionStatus}</span>
                     </DriverDetails>
                   </ListItem>
@@ -232,12 +220,20 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
   animation: fadeIn 1s ease-in-out;
+  
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const Title = styled.h1`
   text-align: center;
   font-size: 2rem;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Message = styled.div`
@@ -250,6 +246,7 @@ const NavBar = styled.div`
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 `;
 
 const NavButton = styled.button`
@@ -261,9 +258,15 @@ const NavButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin: 5px;
 
   :hover {
     background-color: #b3e2b2;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
   }
 `;
 
@@ -280,88 +283,74 @@ const Section = styled.section`
 const SubTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const DriverList = styled.ul`
-  list-style: none;
+  list-style-type: none;
   padding: 0;
 `;
 
 const ListItem = styled.li`
   padding: 10px;
-  background-color: #f4f4f4;
+  background-color: #f1f1f1;
   margin: 5px 0;
 `;
 
 const DriverDetails = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 1rem;
-  line-height: 1.5;
 `;
 
 const NoDrivers = styled.p`
-  font-size: 1rem;
-  color: #666;
+  text-align: center;
+  color: gray;
 `;
 
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 400px;
-  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
 `;
 
 const Input = styled.input`
   padding: 10px;
   font-size: 1rem;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Select = styled.select`
   padding: 10px;
   font-size: 1rem;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 5px;
 `;
 
 const Button = styled.button`
   padding: 10px 20px;
-  font-size: 1rem;
   background-color: #C1F11D;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 1rem;
 
   :hover {
-    background-color: #0056b3;
-  }
-`;
-
-const fadeIn = `
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-`;
-
-const slideIn = `
-  @keyframes slideIn {
-    from {
-      transform: translateX(-20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+    background-color: #4b9b4b;
   }
 `;
 
