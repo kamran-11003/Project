@@ -36,6 +36,7 @@ const DriverDashboard = () => {
   );
 };
 
+
 const Container = styled.div`
   display: flex;
   height: 100vh;
