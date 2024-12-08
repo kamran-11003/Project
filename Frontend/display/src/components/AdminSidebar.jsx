@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Ensure this import is correct
 import {
   FaHome,
   FaUsers,
@@ -14,7 +14,7 @@ import {
 
 // Sidebar container
 const SidebarContainer = styled.div`
-  width: 250px; /* Default width for desktop */
+  width: 250px; /* Fixed width for larger screens */
   background: #f8f9fa;
   height: 100vh;
   display: flex;
