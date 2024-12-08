@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { jwtDecode } from "jwt-decode";
 const Container = styled.div`
   max-width: 600px;
   margin: 2rem auto;
@@ -89,7 +89,6 @@ const ErrorMessage = styled.p`
 `;
 
 const CreateDispute = () => {
-  const [driverId, setDriverId] = useState("");
   const [issueDescription, setIssueDescription] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -98,6 +97,8 @@ const CreateDispute = () => {
     e.preventDefault();
 
     const token = localStorage.getItem("jwtToken");
+    const decodedTokens=jwtDecode(token);
+    const driverId = decodedTokens.id;
     if (!token) {
       setError("Authentication token is missing. Please log in.");
       return;
@@ -131,16 +132,7 @@ const CreateDispute = () => {
     <Container>
       <Title>Create a Dispute</Title>
       <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Driver ID</Label>
-          <Input
-            type="text"
-            placeholder="Enter driver ID"
-            value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
-            required
-          />
-        </FormGroup>
+        
 
         <FormGroup>
           <Label>Issue Description</Label>

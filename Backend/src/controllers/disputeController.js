@@ -31,19 +31,13 @@ exports.getDisputes = async (req, res) => {
 
 // Create a dispute
 exports.createDispute = (req, res) => {
-    const { driverId, issueDescription } = req.body;
-    const userId = req.user._id; // Extract user ID from the JWT token (already decoded)
+    const { driverId,userId, issueDescription } = req.body;
   
     // Check if driverId and issueDescription are provided
-    if (!driverId || !issueDescription) {
+    if ( !issueDescription) {
       return res.status(400).json({ message: 'Driver ID and issue description are required' });
     }
   
-    // Ensure that the user is either a user or a driver, depending on your business logic
-    const userRole = req.user.role; // This should be set in the JWT payload
-    if (userRole !== 'user' && userRole !== 'driver') {
-      return res.status(403).json({ message: 'Access denied. Only users or drivers can create disputes.' });
-    }
   
     // Create a new dispute document
     const dispute = new Dispute({
