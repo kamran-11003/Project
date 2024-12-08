@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import styled from "styled-components";
 
 const DriverManagement = () => {
   const [drivers, setDrivers] = useState([]);
-  const [status, setStatus] = useState('');
-  const [driverId, setDriverId] = useState('');
-  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState("");
+  const [driverId, setDriverId] = useState("");
+  const [message, setMessage] = useState("");
   const [currentSection, setCurrentSection] = useState(1); // Track the current section
 
   // Get JWT Token from localStorage
   const getJwtToken = () => {
-    return localStorage.getItem('jwtToken');
+    return localStorage.getItem("jwtToken");
   };
 
   // Axios instance with JWT token
   const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: "http://localhost:5000/api",
   });
 
   // Interceptor to include JWT in Authorization header
@@ -24,7 +24,7 @@ const DriverManagement = () => {
     (config) => {
       const jwtToken = getJwtToken();
       if (jwtToken) {
-        config.headers['Authorization'] = `Bearer ${jwtToken}`;
+        config.headers["Authorization"] = `Bearer ${jwtToken}`;
       }
       return config;
     },
@@ -36,79 +36,83 @@ const DriverManagement = () => {
   // Fetch suspended or banned drivers
   useEffect(() => {
     axiosInstance
-      .get('/admin/suspended-banned-drivers')
+      .get("/admin/suspended-banned-drivers")
       .then((response) => {
         const driversData = response.data.drivers;
-        console.log('Driver Info:', driversData); // Log the driver info before displaying it
+        console.log("Driver Info:", driversData); // Log the driver info before displaying it
         setDrivers(driversData);
       })
       .catch((error) => {
-        console.error('Error fetching drivers:', error);
-        setMessage('Error fetching suspended/banned drivers');
+        console.error("Error fetching drivers:", error);
+        setMessage("Error fetching suspended/banned drivers");
       });
   }, []);
 
   // Handle driver status update
   const handleDriverStatusUpdate = () => {
     if (!driverId || !status) {
-      return setMessage('Please provide both Driver ID and Status');
+      return setMessage("Please provide both Driver ID and Status");
     }
 
     // Optional: Validate the driverId before sending the request
     if (!/^[0-9a-fA-F]{24}$/.test(driverId)) {
-      return setMessage('Invalid Driver ID');
+      return setMessage("Invalid Driver ID");
     }
 
     axiosInstance
-      .put('/admin/driver/status', { driverId, status })
+      .put("/admin/driver/status", { driverId, status })
       .then((response) => {
         setMessage(response.data.message);
         // Update the status locally
         setDrivers((prevDrivers) =>
           prevDrivers.map((driver) =>
-            driver._id === driverId ? { ...driver, suspensionStatus: status } : driver
+            driver._id === driverId
+              ? { ...driver, suspensionStatus: status }
+              : driver
           )
         );
       })
       .catch((error) => {
         console.error(error);
-        setMessage('Error updating driver status');
+        setMessage("Error updating driver status");
       });
   };
 
   // Handle driver approval
   const handleApproveDriver = () => {
     if (!driverId) {
-      return setMessage('Please provide a Driver ID');
+      return setMessage("Please provide a Driver ID");
     }
 
     axiosInstance
-      .put('/admin/driver/approve', { driverId })
+      .put("/admin/driver/approve", { driverId })
       .then((response) => {
         setMessage(response.data.message);
       })
       .catch((error) => {
         console.error(error);
-        setMessage('Error approving driver');
+        setMessage("Error approving driver");
       });
   };
 
   // Handle driver deletion
   const handleDeleteDriver = () => {
     if (!driverId) {
-      return setMessage('Please provide a Driver ID');
+      return setMessage("Please provide a Driver ID");
     }
 
     axiosInstance
-      .delete('/admin/driver/delete', { data: { driverId } })
+      .delete("/admin/driver/delete", { data: { driverId } })
       .then((response) => {
         setMessage(response.data.message);
         // Remove the driver from the local state
-        setDrivers((prevDrivers) => prevDrivers.filter((driver) => driver._id !== driverId));
+        setDrivers((prevDrivers) =>
+          prevDrivers.filter((driver) => driver._id !== driverId)
+        );
       })
       .catch((error) => {
         console.error(error);
-        setMessage('Error deleting driver');
+        setMessage("Error deleting driver");
       });
   };
 
@@ -119,16 +123,28 @@ const DriverManagement = () => {
       {message && <Message>{message}</Message>}
 
       <NavBar>
-        <NavButton onClick={() => setCurrentSection(1)} isActive={currentSection === 1}>
+        <NavButton
+          onClick={() => setCurrentSection(1)}
+          isActive={currentSection === 1}
+        >
           Suspended or Banned Drivers
         </NavButton>
-        <NavButton onClick={() => setCurrentSection(2)} isActive={currentSection === 2}>
+        <NavButton
+          onClick={() => setCurrentSection(2)}
+          isActive={currentSection === 2}
+        >
           Update Driver Status
         </NavButton>
-        <NavButton onClick={() => setCurrentSection(3)} isActive={currentSection === 3}>
+        <NavButton
+          onClick={() => setCurrentSection(3)}
+          isActive={currentSection === 3}
+        >
           Approve Driver
         </NavButton>
-        <NavButton onClick={() => setCurrentSection(4)} isActive={currentSection === 4}>
+        <NavButton
+          onClick={() => setCurrentSection(4)}
+          isActive={currentSection === 4}
+        >
           Delete Driver
         </NavButton>
       </NavBar>
@@ -143,8 +159,10 @@ const DriverManagement = () => {
                 drivers.map((driver) => (
                   <ListItem key={driver._id}>
                     <DriverDetails>
-                      <span>{driver.firstName} {driver.lastName}</span> -
-                      <span>{driver._id}</span> -
+                      <span>
+                        {driver.firstName} {driver.lastName}
+                      </span>{" "}
+                      -<span>{driver._id}</span> -
                       <span>{driver.suspensionStatus}</span>
                     </DriverDetails>
                   </ListItem>
@@ -167,7 +185,10 @@ const DriverManagement = () => {
                 value={driverId}
                 onChange={(e) => setDriverId(e.target.value)}
               />
-              <Select onChange={(e) => setStatus(e.target.value)} value={status}>
+              <Select
+                onChange={(e) => setStatus(e.target.value)}
+                value={status}
+              >
                 <option value="">Select Status</option>
                 <option value="active">Active</option>
                 <option value="suspended">Suspended</option>
@@ -220,7 +241,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
   animation: fadeIn 1s ease-in-out;
-  
+
   @media (max-width: 768px) {
     padding: 15px;
   }
@@ -252,8 +273,8 @@ const NavBar = styled.div`
 const NavButton = styled.button`
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: ${(props) => (props.isActive ? '#C1F11D' : '#ddd')};
-  color: ${(props) => (props.isActive ? 'black' : 'gray')};
+  background-color: ${(props) => (props.isActive ? "#C1F11D" : "#ddd")};
+  color: ${(props) => (props.isActive ? "black" : "gray")};
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -342,7 +363,7 @@ const Select = styled.select`
 
 const Button = styled.button`
   padding: 10px 20px;
-  background-color: #C1F11D;
+  background-color: #c1f11d;
   color: white;
   border: none;
   border-radius: 5px;

@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 // Rating Component
 const RatingStar = ({ driverId }) => {
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState(0);
-  const [newFeedback, setNewFeedback] = useState('');
+  const [newFeedback, setNewFeedback] = useState("");
 
   const submitRating = async () => {
     try {
-      const token = localStorage.getItem('jwtToken');
+      const token = localStorage.getItem("jwtToken");
       await axios.post(
         `http://localhost:5000/api/rating/rate`,
         { driverId, rating: userRating },
@@ -22,13 +22,13 @@ const RatingStar = ({ driverId }) => {
         { driverId, feedback: newFeedback },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert('Rating and feedback submitted!');
-      setNewFeedback('');
+      alert("Rating and feedback submitted!");
+      setNewFeedback("");
       setUserRating(0);
-      navigate('/user-dashboard');
+      navigate("/user-dashboard");
     } catch (error) {
-      console.error('Error submitting rating:', error);
-      alert('Failed to submit rating.');
+      console.error("Error submitting rating:", error);
+      alert("Failed to submit rating.");
     }
   };
 
@@ -40,8 +40,8 @@ const RatingStar = ({ driverId }) => {
           key={index}
           onClick={() => setRating(index + 1)}
           style={{
-            color: index < rating ? '#FFD700' : '#E0E0E0',
-            cursor: 'pointer',
+            color: index < rating ? "#FFD700" : "#E0E0E0",
+            cursor: "pointer",
           }}
         >
           ★
@@ -77,12 +77,18 @@ const RideCompleted = ({ driver, fare, distance }) => {
       <ReceiptHeader>
         <h1>Ride Receipt</h1>
         <p className="driver-info">Driver: {driver.name}</p>
-        <p className="ride-status">{isCompleted ? 'Ride Completed' : 'Ride in Progress'}</p>
+        <p className="ride-status">
+          {isCompleted ? "Ride Completed" : "Ride in Progress"}
+        </p>
       </ReceiptHeader>
 
       <ReceiptDetails>
-        <p>Fare: <strong>${fare}</strong></p>
-        <p>Distance: <strong>{distance} km</strong></p>
+        <p>
+          Fare: <strong>${fare}</strong>
+        </p>
+        <p>
+          Distance: <strong>{distance} km</strong>
+        </p>
       </ReceiptDetails>
 
       <ReceiptFooter>
@@ -104,7 +110,7 @@ const ReceiptContainer = styled.div`
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
@@ -158,16 +164,16 @@ const RatingSection = styled.div`
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
   }
 
   textarea:focus {
-    outline-color: #4CAF50;
+    outline-color: #4caf50;
   }
 `;
 
 const SubmitButton = styled.button`
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 10px 20px;
   border: none;

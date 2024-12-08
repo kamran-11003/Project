@@ -1,9 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const FareSchema = new mongoose.Schema({
   rideType: {
     type: String,
-    enum: ['Ride AC', 'Ride Mini', 'Motoride', 'Horse', 'Spiderman', 'Superman'],
+    enum: [
+      "Ride AC",
+      "Ride Mini",
+      "Motoride",
+      "Horse",
+      "Spiderman",
+      "Superman",
+    ],
     required: true,
   },
   fareMultiplier: {
@@ -31,6 +38,6 @@ const FareSchema = new mongoose.Schema({
 });
 
 // Use PascalCase for the model name
-const Fare = mongoose.model('Fare', FareSchema);
+const Fare = mongoose.model("Fare", FareSchema);
 
 module.exports = Fare;

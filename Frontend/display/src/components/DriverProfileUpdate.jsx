@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import styled from 'styled-components';
-import { User, Mail, Phone, Car, Lock, UserCheck } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import styled from "styled-components";
+import { User, Mail, Phone, Car, Lock, UserCheck } from "lucide-react";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -85,43 +85,46 @@ const ErrorMessage = styled.div`
 
 const DriverProfileUpdate = () => {
   const [driver, setDriver] = useState({
-    firstName: '',
-    lastName: '',
-    email: '', 
-    phone: '',
-    vehicleDetails: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    vehicleDetails: "",
+    password: "",
   });
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState(null);
   const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('jwtToken');
+    const storedToken = localStorage.getItem("jwtToken");
     if (storedToken) {
       setToken(storedToken);
       const decoded = jwtDecode(storedToken);
       setDriverId(decoded.id);
 
-      axios.get(`http://localhost:5000/api/driver/driver/${decoded.id}`, {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        }
-      }).then((response) => {
-        const driverData = response.data;
-        setDriver({
-          firstName: driverData.firstName,
-          lastName: driverData.lastName,
-          email: driverData.email,
-          phone: driverData.phone,
-          vehicleDetails: driverData.vehicleDetails,
-          password: '',
+      axios
+        .get(`http://localhost:5000/api/driver/driver/${decoded.id}`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        })
+        .then((response) => {
+          const driverData = response.data;
+          setDriver({
+            firstName: driverData.firstName,
+            lastName: driverData.lastName,
+            email: driverData.email,
+            phone: driverData.phone,
+            vehicleDetails: driverData.vehicleDetails,
+            password: "",
+          });
+        })
+        .catch((err) => {
+          setError("Failed to load driver data.");
         });
-      }).catch(err => {
-        setError('Failed to load driver data.');
-      });
     }
   }, []);
 
@@ -133,7 +136,7 @@ const DriverProfileUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       await axios.put(
@@ -142,15 +145,15 @@ const DriverProfileUpdate = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
       setIsLoading(false);
-      alert('Profile updated successfully');
+      alert("Profile updated successfully");
     } catch (error) {
       setIsLoading(false);
-      setError('Failed to update profile.');
+      setError("Failed to update profile.");
     }
   };
 
@@ -158,13 +161,16 @@ const DriverProfileUpdate = () => {
     <Container>
       <FormWrapper>
         <Title>
-          <UserCheck size={24} style={{ marginRight: '0.5rem' }} />
+          <UserCheck size={24} style={{ marginRight: "0.5rem" }} />
           Update Driver Profile
         </Title>
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <Form onSubmit={handleSubmit}>
           <InputWrapper>
-            <User size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <User
+              size={18}
+              style={{ marginRight: "0.5rem", color: "#718096" }}
+            />
             <Input
               type="text"
               name="firstName"
@@ -175,7 +181,10 @@ const DriverProfileUpdate = () => {
             />
           </InputWrapper>
           <InputWrapper>
-            <User size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <User
+              size={18}
+              style={{ marginRight: "0.5rem", color: "#718096" }}
+            />
             <Input
               type="text"
               name="lastName"
@@ -186,7 +195,10 @@ const DriverProfileUpdate = () => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Mail size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Mail
+              size={18}
+              style={{ marginRight: "0.5rem", color: "#718096" }}
+            />
             <Input
               type="email"
               name="email"
@@ -197,7 +209,10 @@ const DriverProfileUpdate = () => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Phone size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Phone
+              size={18}
+              style={{ marginRight: "0.5rem", color: "#718096" }}
+            />
             <Input
               type="tel"
               name="phone"
@@ -209,7 +224,10 @@ const DriverProfileUpdate = () => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Car size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Car
+              size={18}
+              style={{ marginRight: "0.5rem", color: "#718096" }}
+            />
             <Input
               type="text"
               name="vehicleDetails"
@@ -220,7 +238,10 @@ const DriverProfileUpdate = () => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Lock size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Lock
+              size={18}
+              style={{ marginRight: "0.5rem", color: "#718096" }}
+            />
             <Input
               type="password"
               name="password"
@@ -231,7 +252,7 @@ const DriverProfileUpdate = () => {
             />
           </InputWrapper>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Updating...' : 'Update Profile'}
+            {isLoading ? "Updating..." : "Update Profile"}
           </Button>
         </Form>
       </FormWrapper>
@@ -240,4 +261,3 @@ const DriverProfileUpdate = () => {
 };
 
 export default DriverProfileUpdate;
-

@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const EarningsSchema = new mongoose.Schema({
   driverId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Driver', 
+    ref: "Driver",
     required: true,
   },
   amount: {
@@ -16,9 +16,8 @@ const EarningsSchema = new mongoose.Schema({
     required: true,
     default: Date.now, // Default to the current date and time
   },
-
 });
 
-const Earnings = mongoose.model('Earnings', EarningsSchema);
+const Earnings = mongoose.model("Earnings", EarningsSchema);
 
 module.exports = Earnings;

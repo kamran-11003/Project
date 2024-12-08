@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const driverSchema = new mongoose.Schema(
   {
@@ -30,7 +30,7 @@ const driverSchema = new mongoose.Schema(
           // Simple regex for phone number (you can customize it as needed)
           return /\+?[0-9]{7,15}/.test(v);
         },
-        message: 'Invalid phone number format',
+        message: "Invalid phone number format",
       },
     },
 
@@ -77,8 +77,8 @@ const driverSchema = new mongoose.Schema(
     },
     suspensionStatus: {
       type: String,
-      enum: ['active', 'suspended', 'banned'],
-      default: 'active', // Default to active status
+      enum: ["active", "suspended", "banned"],
+      default: "active", // Default to active status
     },
     availability: {
       type: Boolean,
@@ -89,32 +89,32 @@ const driverSchema = new mongoose.Schema(
     location: {
       type: {
         type: String,
-        enum: ['Point'],  // GeoJSON type
-        default: 'Point',
+        enum: ["Point"], // GeoJSON type
+        default: "Point",
       },
       coordinates: {
-        type: [Number],  // Array of numbers: [longitude, latitude]
-        required: false,  // Location is optional
+        type: [Number], // Array of numbers: [longitude, latitude]
+        required: false, // Location is optional
         validate: {
           validator: function (v) {
-            return !v || (v.length === 2);  // Ensure it's valid if provided
+            return !v || v.length === 2; // Ensure it's valid if provided
           },
-          message: 'Coordinates must be an array of [longitude, latitude].'
+          message: "Coordinates must be an array of [longitude, latitude].",
         },
       },
     },
     availability: {
-  type: Boolean,
-  default: true, // Default to available
-},
+      type: Boolean,
+      default: true, // Default to available
+    },
   },
-  
+
   { timestamps: true }
 );
 
 // Create a 2dsphere index for geospatial queries
-driverSchema.index({ location: '2dsphere' });
+driverSchema.index({ location: "2dsphere" });
 
-const Driver = mongoose.model('Driver', driverSchema);
+const Driver = mongoose.model("Driver", driverSchema);
 
 module.exports = Driver;

@@ -30,6 +30,7 @@ const DriverDashboard = () => {
           <Route path="/driver-update" element={<DriverProfileUpdate />} />
           <Route path="/earnings" element={<EarningsSummary />} />
           <Route path="/create-dispute" element={<CreateDispute />} />
+          
         </Routes>
       </MainContent>
     </Container>

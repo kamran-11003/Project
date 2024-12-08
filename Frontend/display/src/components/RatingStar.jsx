@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 const RatingStar = ({ driverId }) => {
   const [averageRating, setAverageRating] = useState(0);
 
@@ -9,7 +9,7 @@ const RatingStar = ({ driverId }) => {
       try {
         const token = localStorage.getItem("jwtToken");
         const decoded = jwtDecode(token);
-        const driverId=decoded.id;
+        const driverId = decoded.id;
         console.log(driverId);
         const response = await axios.get(
           `http://localhost:5000/api/rating/average-rating/${driverId}`,
@@ -17,7 +17,7 @@ const RatingStar = ({ driverId }) => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        
+
         setAverageRating(response.data.averageRating);
       } catch (error) {
         console.error("Error fetching rating:", error);
@@ -31,7 +31,10 @@ const RatingStar = ({ driverId }) => {
     return Array(5)
       .fill(0)
       .map((_, index) => (
-        <span key={index} style={{ color: index < averageRating ? '#FFD700' : '#E0E0E0' }}>
+        <span
+          key={index}
+          style={{ color: index < averageRating ? "#FFD700" : "#E0E0E0" }}
+        >
           ★
         </span>
       ));

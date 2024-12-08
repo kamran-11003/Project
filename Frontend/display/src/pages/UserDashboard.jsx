@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useRideContext } from '../context/rideContext';
-import { useSocket } from '../context/SocketContext';
-import Sidebar from '../components/Sidebar';
-import MapComponent from '../components/MapComponent';
-import PickupDropOffComponent from '../components/PickupDropOffComponent';
-import RideSelector from '../components/RideSelector';
-import FareEstimator from '../components/FareEstimator';
+import React, { useState, useEffect } from "react";
+import { useRideContext } from "../context/rideContext";
+import { useSocket } from "../context/SocketContext";
+import Sidebar from "../components/Sidebar";
+import MapComponent from "../components/MapComponent";
+import PickupDropOffComponent from "../components/PickupDropOffComponent";
+import RideSelector from "../components/RideSelector";
+import FareEstimator from "../components/FareEstimator";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import ProfileUpdate from '../components/ProfileUpdate';
-import RideHistory from '../components/RideHistory';
-import RideMap from '../components/RideMap';
-import DriverData from '../components/DriverData';
-import RideCompleted from '../components/RideComplete';
-import CreateDisputeUser from '../components/CreateDisputeuser';
-import styled from 'styled-components';
+import ProfileUpdate from "../components/ProfileUpdate";
+import RideHistory from "../components/RideHistory";
+import RideMap from "../components/RideMap";
+import DriverData from "../components/DriverData";
+import RideCompleted from "../components/RideComplete";
+import CreateDisputeUser from "../components/CreateDisputeuser";
+import styled from "styled-components";
 
 const UserDashboard = () => {
-  const [driverLocation, setDriverLocation] = useState([73.0580, 33.6841]); // Example: Driver's location
+  const [driverLocation, setDriverLocation] = useState([73.058, 33.6841]); // Example: Driver's location
   const [driver, setDriver] = useState({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -50,39 +50,43 @@ const UserDashboard = () => {
 
   useEffect(() => {
     if (socket && userId) {
-      socket.emit('userConnected', { userId });
+      socket.emit("userConnected", { userId });
 
       const handleRideStarted = (data, driverDetails) => {
         try {
           if (!data) {
-            throw new Error('Invalid data received');
+            throw new Error("Invalid data received");
           }
           setDriver(driverDetails);
           navigate("/user-dashboard/ride");
         } catch (error) {
-          console.error('Error handling rideStarted event:', error);
+          console.error("Error handling rideStarted event:", error);
         }
       };
 
-      socket.on('rideStarted', handleRideStarted);
-      socket.on('DriverArrived', (data) => {
+      socket.on("rideStarted", handleRideStarted);
+      socket.on("DriverArrived", (data) => {
         alert(data.message);
       });
-      socket.on('rideCompleted', (driverId) => {
+      socket.on("rideCompleted", (driverId) => {
         navigate("/user-dashboard/rate");
       });
 
       const handleLocationUpdate = (newLocation) => {
-        if (newLocation && Array.isArray(newLocation) && newLocation.length === 2) {
+        if (
+          newLocation &&
+          Array.isArray(newLocation) &&
+          newLocation.length === 2
+        ) {
           setDriverLocation(newLocation);
         }
       };
 
-      socket.on('location', handleLocationUpdate);
+      socket.on("location", handleLocationUpdate);
 
       return () => {
-        socket.off('rideStarted', handleRideStarted);
-        socket.off('location', handleLocationUpdate);
+        socket.off("rideStarted", handleRideStarted);
+        socket.off("location", handleLocationUpdate);
       };
     }
   }, [socket, userId, navigate]);
@@ -118,15 +122,34 @@ const UserDashboard = () => {
           <Route path="history" element={<RideHistory />} />
           <Route path="driver-data" element={<DriverData driver={driver} />} />
           <Route path="create-dispute-user" element={<CreateDisputeUser />} />
-          <Route path="rate" element={<RideCompleted driver={driver} fare={fare} distance={distance} />} />
+          <Route
+            path="rate"
+            element={
+              <RideCompleted driver={driver} fare={fare} distance={distance} />
+            }
+          />
           <Route
             path="ride"
             element={
               <>
                 <RideMap
                   driverLocation={driverLocation}
-                  pickup={pickupCoordinates ? [pickupCoordinates.longitude, pickupCoordinates.latitude] : null}
-                  dropOff={dropOffCoordinates ? [dropOffCoordinates.longitude, dropOffCoordinates.latitude] : null}
+                  pickup={
+                    pickupCoordinates
+                      ? [
+                          pickupCoordinates.longitude,
+                          pickupCoordinates.latitude,
+                        ]
+                      : null
+                  }
+                  dropOff={
+                    dropOffCoordinates
+                      ? [
+                          dropOffCoordinates.longitude,
+                          dropOffCoordinates.latitude,
+                        ]
+                      : null
+                  }
                 />
                 <DriverData driver={driver} />
               </>
@@ -152,11 +175,12 @@ const MainContent = styled.div`
   flex: 1;
   padding: 10px;
   overflow-y: auto;
-  margin-left: ${props => props.isSidebarOpen ? '250px' : '70px'};
+  margin-left: ${(props) => (props.isSidebarOpen ? "250px" : "70px")};
   transition: margin-left 0.3s ease;
 
   @media (min-width: 1024px) {
-    margin-left: ${props => props.isSidebarOpen ? '300px' : '100px'}; /* Adjust for larger screens */
+    margin-left: ${(props) =>
+      props.isSidebarOpen ? "300px" : "100px"}; /* Adjust for larger screens */
   }
 
   @media (max-width: 768px) {

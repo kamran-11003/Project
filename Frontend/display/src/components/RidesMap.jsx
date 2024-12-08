@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
+import React, { useEffect, useRef, useState } from "react";
+import mapboxgl from "mapbox-gl";
+import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 
-const MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
+const MapboxDirections = require("@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions");
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ';
+mapboxgl.accessToken =
+  "pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ";
 
 const RideMaps = ({ driverLocation, pickup, dropOff, setDistance }) => {
   const mapContainerRef = useRef(null);
@@ -13,25 +14,28 @@ const RideMaps = ({ driverLocation, pickup, dropOff, setDistance }) => {
 
   useEffect(() => {
     const initializeMap = () => {
-      const newMap = new mapboxgl.Map({
-        container: mapContainerRef.current,
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: driverLocation, // Default to driverLocation coordinates
-        zoom: 12,
-      },[driverLocation]);
+      const newMap = new mapboxgl.Map(
+        {
+          container: mapContainerRef.current,
+          style: "mapbox://styles/mapbox/streets-v11",
+          center: driverLocation, // Default to driverLocation coordinates
+          zoom: 12,
+        },
+        [driverLocation]
+      );
 
       // Add Mapbox Directions Control
       directionsRef.current = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
-        unit: 'metric',
-        profile: 'mapbox/driving',
+        unit: "metric",
+        profile: "mapbox/driving",
         controls: {
           inputs: false,
           instructions: false,
         },
       });
 
-      newMap.addControl(directionsRef.current, 'top-left');
+      newMap.addControl(directionsRef.current, "top-left");
       setMap(newMap);
 
       return newMap;
@@ -50,9 +54,9 @@ const RideMaps = ({ driverLocation, pickup, dropOff, setDistance }) => {
       directionsRef.current.setDestination(dropOff); // Set drop-off as destination
 
       // Add Markers
-      addMarker(driverLocation, 'green'); // Driver
-      addMarker(pickup, 'red'); // Pickup
-      addMarker(dropOff, 'blue'); // Drop-off
+      addMarker(driverLocation, "green"); // Driver
+      addMarker(pickup, "red"); // Pickup
+      addMarker(dropOff, "blue"); // Drop-off
 
       // Fetch distance
       fetchDistance(pickup, dropOff);
@@ -72,10 +76,10 @@ const RideMaps = ({ driverLocation, pickup, dropOff, setDistance }) => {
           const distanceInKm = (distanceInMeters / 1000).toFixed(2);
           setDistance(distanceInKm);
         } else {
-          console.error('No route found');
+          console.error("No route found");
         }
       })
-      .catch((error) => console.error('Error fetching distance:', error));
+      .catch((error) => console.error("Error fetching distance:", error));
   };
 
   const addMarker = (location, color) => {
@@ -88,12 +92,12 @@ const RideMaps = ({ driverLocation, pickup, dropOff, setDistance }) => {
   };
 
   const createCustomMarker = (color) => {
-    const marker = document.createElement('div');
+    const marker = document.createElement("div");
     marker.style.backgroundColor = color;
-    marker.style.borderRadius = '50%';
-    marker.style.width = '20px';
-    marker.style.height = '20px';
-    marker.style.border = '2px solid white';
+    marker.style.borderRadius = "50%";
+    marker.style.width = "20px";
+    marker.style.height = "20px";
+    marker.style.border = "2px solid white";
     return marker;
   };
 
@@ -102,10 +106,10 @@ const RideMaps = ({ driverLocation, pickup, dropOff, setDistance }) => {
 
 const styles = {
   mapContainer: {
-    width: '100%',
-    height: '400px',
-    borderRadius: '8px',
-    overflow: 'hidden',
+    width: "100%",
+    height: "400px",
+    borderRadius: "8px",
+    overflow: "hidden",
   },
 };
 

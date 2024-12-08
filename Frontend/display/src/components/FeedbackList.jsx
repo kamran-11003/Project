@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import RatingStar from './RatingStar'; // Assuming this component is for showing ratings
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import RatingStar from "./RatingStar"; // Assuming this component is for showing ratings
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const FeedbackContainer = styled.div`
   display: flex;
@@ -41,10 +41,12 @@ const FeedbackList = ({ driverId }) => {
     const fetchFeedbacks = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        const decoded = jwtDecode(token); 
+        const decoded = jwtDecode(token);
         const driverIdFromToken = decoded.id; // Get driverId from JWT token if needed
-        const driverId=driverIdFromToken;   
-        const response = await axios.get(`http://localhost:5000/api/feedbacks/feedbacks/${driverId}`);
+        const driverId = driverIdFromToken;
+        const response = await axios.get(
+          `http://localhost:5000/api/feedbacks/feedbacks/${driverId}`
+        );
         console.log(response);
         setFeedbacks(response.data.feedbacks);
       } catch (error) {
@@ -66,12 +68,15 @@ const FeedbackList = ({ driverId }) => {
 
   return (
     <FeedbackContainer>
-    <h3>Feedback</h3>
+      <h3>Feedback</h3>
       {feedbacks.map((feedback) => (
         <FeedbackItem key={feedback._id}>
-          <CustomerName>Customer</CustomerName> {/* Replace with actual customer name if available */}
+          <CustomerName>Customer</CustomerName>{" "}
+          {/* Replace with actual customer name if available */}
           <Comment>{feedback.feedback}</Comment>
-          <DateStyled>{new Date(feedback.date).toLocaleDateString()}</DateStyled>
+          <DateStyled>
+            {new Date(feedback.date).toLocaleDateString()}
+          </DateStyled>
         </FeedbackItem>
       ))}
     </FeedbackContainer>

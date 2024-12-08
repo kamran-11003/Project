@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import styled from 'styled-components';
-import { DollarSign, Calendar, Loader } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import styled from "styled-components";
+import { DollarSign, Calendar, Loader } from "lucide-react";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -40,7 +40,7 @@ const ButtonGroup = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: ${props => props.active ? '#a8d619' : '#c1f11d'};
+  background-color: ${(props) => (props.active ? "#a8d619" : "#c1f11d")};
   color: #1a1c18;
   border: none;
   padding: 0.5rem 1rem;
@@ -51,7 +51,7 @@ const Button = styled.button`
   transition: background-color 0.2s, transform 0.1s;
 
   &:hover {
-    background-color: ${props => props.active ? '#95bd16' : '#b1df1b'};
+    background-color: ${(props) => (props.active ? "#95bd16" : "#b1df1b")};
     transform: translateY(-1px);
   }
 
@@ -108,39 +108,42 @@ const LoadingWrapper = styled.div`
 `;
 
 const EarningsSummary = () => {
-  const [timeframe, setTimeframe] = useState('daily');
+  const [timeframe, setTimeframe] = useState("daily");
   const [summary, setSummary] = useState({ totalEarnings: 0, details: [] });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('jwtToken');
-        
+        const token = localStorage.getItem("jwtToken");
+
         if (!token) {
-          setError('No JWT token found');
+          setError("No JWT token found");
           return;
         }
 
         const decodedToken = jwtDecode(token);
         const driverId = decodedToken.id;
-        
+
         if (!driverId) {
-          setError('Driver ID not found in the token');
+          setError("Driver ID not found in the token");
           return;
         }
 
-        const response = await axios.get('http://localhost:5000/api/earnings/summary', {
-          params: {
-            driverId: driverId,
-            period: timeframe,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:5000/api/earnings/summary",
+          {
+            params: {
+              driverId: driverId,
+              period: timeframe,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setSummary({
           totalEarnings: response.data.totalEarnings,
@@ -149,8 +152,8 @@ const EarningsSummary = () => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        setError('Error fetching earnings: ' + error.message);
-        console.error('Error fetching earnings:', error);
+        setError("Error fetching earnings: " + error.message);
+        console.error("Error fetching earnings:", error);
       }
     };
 
@@ -161,17 +164,29 @@ const EarningsSummary = () => {
     <Container>
       <SummaryWrapper>
         <Title>
-          <DollarSign size={24} style={{ marginRight: '0.5rem' }} />
+          <DollarSign size={24} style={{ marginRight: "0.5rem" }} />
           Earnings Summary
         </Title>
         <ButtonGroup>
-          <Button onClick={() => setTimeframe('daily')} active={timeframe === 'daily'} disabled={timeframe === 'daily'}>
+          <Button
+            onClick={() => setTimeframe("daily")}
+            active={timeframe === "daily"}
+            disabled={timeframe === "daily"}
+          >
             Daily
           </Button>
-          <Button onClick={() => setTimeframe('weekly')} active={timeframe === 'weekly'} disabled={timeframe === 'weekly'}>
+          <Button
+            onClick={() => setTimeframe("weekly")}
+            active={timeframe === "weekly"}
+            disabled={timeframe === "weekly"}
+          >
             Weekly
           </Button>
-          <Button onClick={() => setTimeframe('monthly')} active={timeframe === 'monthly'} disabled={timeframe === 'monthly'}>
+          <Button
+            onClick={() => setTimeframe("monthly")}
+            active={timeframe === "monthly"}
+            disabled={timeframe === "monthly"}
+          >
             Monthly
           </Button>
         </ButtonGroup>
@@ -184,20 +199,30 @@ const EarningsSummary = () => {
           <ErrorMessage>{error}</ErrorMessage>
         ) : (
           <>
-            <TotalEarnings>Total Earnings: ${summary.totalEarnings.toFixed(2)}</TotalEarnings>
+            <TotalEarnings>
+              Total Earnings: ${summary.totalEarnings.toFixed(2)}
+            </TotalEarnings>
             <EarningsList>
               {summary.details.length > 0 ? (
                 summary.details.map((record) => (
                   <EarningsItem key={record._id}>
                     <span>${record.amount.toFixed(2)}</span>
                     <span>
-                      <Calendar size={14} style={{ marginRight: '0.25rem', verticalAlign: 'middle' }} />
+                      <Calendar
+                        size={14}
+                        style={{
+                          marginRight: "0.25rem",
+                          verticalAlign: "middle",
+                        }}
+                      />
                       {new Date(record.date).toLocaleDateString()}
                     </span>
                   </EarningsItem>
                 ))
               ) : (
-                <EarningsItem>No earnings data available for this timeframe.</EarningsItem>
+                <EarningsItem>
+                  No earnings data available for this timeframe.
+                </EarningsItem>
               )}
             </EarningsList>
           </>
@@ -208,4 +233,3 @@ const EarningsSummary = () => {
 };
 
 export default EarningsSummary;
-

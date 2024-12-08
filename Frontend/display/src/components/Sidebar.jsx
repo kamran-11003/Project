@@ -2,21 +2,21 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { 
-  FaHome, 
-  FaHistory, 
-  FaSignOutAlt, 
-  FaUser, 
-  FaBars, 
-  FaTimes 
+import {
+  FaHome,
+  FaHistory,
+  FaSignOutAlt,
+  FaUser,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
 const Overlay = styled.div`
   display: none;
-  
+
   @media (max-width: 768px) {
-    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
+    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
     position: fixed;
     top: 0;
     left: 0;
@@ -41,7 +41,8 @@ const SidebarContainer = styled.div`
   transition: transform 0.3s ease-in-out;
 
   @media (max-width: 768px) {
-    transform: ${({ $isOpen }) => $isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+    transform: ${({ $isOpen }) =>
+      $isOpen ? "translateX(0)" : "translateX(-100%)"};
     width: 100%;
     max-width: 300px;
   }
@@ -49,7 +50,7 @@ const SidebarContainer = styled.div`
 
 const MobileHeader = styled.div`
   display: none;
-  
+
   @media (max-width: 768px) {
     display: flex;
     justify-content: space-between;
@@ -62,7 +63,7 @@ const MobileHeader = styled.div`
 
 const HamburgerIcon = styled.div`
   display: none;
-  
+
   @media (max-width: 768px) {
     display: block;
     cursor: pointer;
@@ -91,7 +92,6 @@ const Name = styled.h4`
   display: flex;
   align-items: center;
 `;
-
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -174,11 +174,14 @@ const Sidebar = () => {
 
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
-        const response = await axios.get(`http://localhost:5000/api/user/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/api/user/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setUser({
           name: `${response.data.firstName} ${response.data.lastName}`,
@@ -203,8 +206,16 @@ const Sidebar = () => {
 
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", path: "/user-dashboard" },
-    { icon: <FaHistory />, label: "Ride History", path: "/user-dashboard/history" },
-    { icon: <FaHistory />, label: "Help and Support", path: "/user-dashboard/create-dispute-user" },
+    {
+      icon: <FaHistory />,
+      label: "Ride History",
+      path: "/user-dashboard/history",
+    },
+    {
+      icon: <FaHistory />,
+      label: "Help and Support",
+      path: "/user-dashboard/create-dispute-user",
+    },
   ];
 
   return (
@@ -217,10 +228,14 @@ const Sidebar = () => {
 
       <SidebarContainer $isOpen={isMobileSidebarOpen}>
         <ProfileSection>
-          <FaUser style={{ fontSize: '2rem', marginRight: '1rem', color: '#4a5568' }} />
+          <FaUser
+            style={{ fontSize: "2rem", marginRight: "1rem", color: "#4a5568" }}
+          />
           <ProfileInfo>
             <Name>{user.name}</Name>
-            <EditProfileButton onClick={() => navigate("/user-dashboard/edit-profile")}>
+            <EditProfileButton
+              onClick={() => navigate("/user-dashboard/edit-profile")}
+            >
               Edit Profile
             </EditProfileButton>
           </ProfileInfo>
@@ -229,9 +244,9 @@ const Sidebar = () => {
         <ContentWrapper>
           <Navigation>
             {navigationItems.map((item) => (
-              <NavLink 
-                key={item.path} 
-                to={item.path} 
+              <NavLink
+                key={item.path}
+                to={item.path}
                 onClick={() => setIsMobileSidebarOpen(false)}
               >
                 {item.icon}
@@ -240,8 +255,8 @@ const Sidebar = () => {
             ))}
           </Navigation>
 
-          <LogoutLink 
-            as="div" 
+          <LogoutLink
+            as="div"
             onClick={() => {
               handleLogout();
               setIsMobileSidebarOpen(false);

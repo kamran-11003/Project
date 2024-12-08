@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -26,12 +26,12 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    match: [/^\d{11}$/, 'Phone number must be 10 digits'], // Example validation
+    match: [/^\d{11}$/, "Phone number must be 10 digits"], // Example validation
   },
   suspensionStatus: {
     type: String,
-    enum: ['active', 'suspended', 'banned'],
-    default: 'active', // Default to active status
+    enum: ["active", "suspended", "banned"],
+    default: "active", // Default to active status
   },
   createdAt: {
     type: Date,
@@ -43,4 +43,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

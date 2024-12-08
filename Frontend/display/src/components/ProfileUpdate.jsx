@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode'; // Don't forget to install jwt-decode
-import styled from 'styled-components'; // Import styled-components
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode"; // Don't forget to install jwt-decode
+import styled from "styled-components"; // Import styled-components
 
 const ProfileUpdate = () => {
   const [user, setUser] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
   });
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -32,19 +32,20 @@ const ProfileUpdate = () => {
       setUserId(userId);
 
       // Fetch user profile data if token and userId are found
-      axios.get('http://localhost:5000/api/user/profile', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      axios
+        .get("http://localhost:5000/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           setUser(response.data);
         })
         .catch((err) => {
-          setError('Failed to fetch user profile.');
+          setError("Failed to fetch user profile.");
         });
     } catch (err) {
-      setError('Invalid token.');
+      setError("Invalid token.");
     }
   }, []); // Empty dependency array means this runs once when the component mounts
 
@@ -56,17 +57,17 @@ const ProfileUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       // Make sure token and userId are available before making the request
       if (!token || !userId) {
-        setError('Unauthorized: Missing token or user ID');
+        setError("Unauthorized: Missing token or user ID");
         return;
       }
 
       // Sending updated user data to the server
-      await axios.put('http://localhost:5000/api/user/profile', user, {
+      await axios.put("http://localhost:5000/api/user/profile", user, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -74,10 +75,10 @@ const ProfileUpdate = () => {
       });
 
       setIsLoading(false);
-      alert('Profile updated successfully!');
+      alert("Profile updated successfully!");
     } catch (err) {
       setIsLoading(false);
-      setError('Failed to update profile.');
+      setError("Failed to update profile.");
     }
   };
 
@@ -137,7 +138,7 @@ const ProfileUpdate = () => {
         </FormGroup>
 
         <SubmitButton type="submit" disabled={isLoading}>
-          {isLoading ? 'Updating...' : 'Update Profile'}
+          {isLoading ? "Updating..." : "Update Profile"}
         </SubmitButton>
       </Form>
     </ProfileUpdateContainer>
@@ -204,7 +205,7 @@ const FormInput = styled.input`
 `;
 
 const SubmitButton = styled.button`
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 12px 20px;
   font-size: 1rem;
