@@ -17,6 +17,7 @@ import CreateDisputeUser from '../components/CreateDisputeuser';
 const UserDashboard = () => {
   const [driverLocation, setDriverLocation] = useState([73.0580, 33.6841]); // Example: Driver's location
   const [driver, setDriver] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const {
     pickup,
@@ -85,10 +86,14 @@ const UserDashboard = () => {
     }
   }, [socket, userId, navigate]);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div style={styles.container}>
-      <Sidebar />
-      <div style={styles.mainContent}>
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div style={styles.mainContent(isSidebarOpen)}>
         <Routes>
           <Route
             path="/"
@@ -138,14 +143,28 @@ const styles = {
     height: '100vh',
     backgroundColor: '#f9f9f9',
     flexDirection: 'row',
+    transition: 'all 0.3s ease',
   },
-  mainContent: {
+  mainContent: (isSidebarOpen) => ({
     flex: 1,
     padding: '10px',
     overflowY: 'auto',
-    marginLeft: '250px',  // Adjust this based on sidebar width
+    marginLeft: isSidebarOpen ? '250px' : '70px', // Sidebar width adjustment
     transition: 'margin-left 0.3s ease',
-  },
+  }),
 };
+
+// Responsive styles via CSS
+const mediaStyles = `
+  @media (max-width: 750px) {
+    .sidebar {
+      width: 70px !important; // Adjusted for smaller screens
+    }
+    .mainContent {
+      margin-left: 70px !important;
+      padding: 5px; // Reduce padding for smaller screens
+    }
+  }
+`;
 
 export default UserDashboard;
