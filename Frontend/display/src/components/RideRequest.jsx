@@ -3,7 +3,8 @@ import { useSocket } from '../context/SocketContext';
 import styled from 'styled-components';
 import { jwtDecode } from 'jwt-decode';
 import { MapPin, Navigation, DollarSign, AlertCircle, Check, X, Bell, Flag } from 'lucide-react';
-
+import DriverMap from '../components/DriverMap';
+import RideMaps from '../components/RideMaps';
 const Container = styled.div`
   font-family: Arial, sans-serif;
   max-width: 500px;
@@ -111,13 +112,14 @@ const RideRequest = () => {
   const [rideRequest, setRideRequest] = useState(null);
   const [rideData, setRideData] = useState(null);
   const [driverId, setDriverId] = useState("");
+  const [driverLocation, setDriverLocation] =useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     const decoded = jwtDecode(token);
     const driverIdFromToken = decoded.id;
     setDriverId(driverIdFromToken);
-
+    console.log(rideData);
     if (userType === 'driver' && socket) {
       if (!socket.connected) {
         console.log('Socket not connected, waiting for connection...');
@@ -139,6 +141,7 @@ const RideRequest = () => {
           try {
             // Retrieve driver location and token from localStorage
             const currentLocation = JSON.parse(localStorage.getItem('driverLocation'));
+            setDriverLocation(currentLocation);
             const token = localStorage.getItem('jwtToken');
             console.log('driver location:', currentLocation, 'token:', token);
             if (!currentLocation || !token) {
@@ -187,7 +190,22 @@ const RideRequest = () => {
   };
 
   return (
-    <Container>
+    <>
+    {rideData ? (
+      <RideMaps
+      pickup={{
+        longitude: rideData.pickupCoordinates.longitude,
+        latitude: rideData.pickupCoordinates.latitude
+      }}
+      dropOff={{
+        longitude: rideData.dropOffCoordinates.longitude,
+        latitude: rideData.dropOffCoordinates.latitude
+      }}
+    />
+    ) : (
+      <DriverMap></DriverMap>
+    )}
+       <Container>
       {rideData ? (
         <Section>
           <Title>
@@ -275,6 +293,7 @@ const RideRequest = () => {
         )
       )}
     </Container>
+    </>
   );
 };
 
