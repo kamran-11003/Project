@@ -136,9 +136,38 @@ const RideRequest = () => {
         setRideRequest(null);
 
         const locationEmitter = setInterval(() => {
-          const currentLocation = JSON.parse(localStorage.getItem('driverLocation'));
-          socket.emit('locationUpdate', currentLocation);
-        }, 5000);
+          try {
+            // Retrieve driver location and token from localStorage
+            const currentLocation = JSON.parse(localStorage.getItem('driverLocation'));
+            const token = localStorage.getItem('jwtToken');
+            console.log('driver location:', currentLocation, 'token:', token);
+            if (!currentLocation || !token) {
+              console.error('Driver location or token is missing.');
+              return;
+            }
+        
+            // Decode the JWT token to get the driver ID
+            const decoded = jwtDecode(token);
+            const driverIdFromToken = decoded.id;
+            console.log('Driver ID:', driverIdFromToken);
+            if (!driverIdFromToken) {
+              console.error('Driver ID is missing from the token.');
+              return;
+            }
+        
+            console.log('Emitting location update for driver:', driverIdFromToken); // Add logging for debugging
+        
+            // Emit location update with driverId, longitude, and latitude
+            socket.emit('locationUpdate', {
+              driverId: driverIdFromToken,
+              longitude: currentLocation.longitude,
+              latitude: currentLocation.latitude,
+            });
+          } catch (error) {
+            console.error('Error emitting location update:', error);
+          }
+        }, 5000); // 5000 ms = 5 seconds
+        
 
         socket.on('rideEnded', () => {
           clearInterval(locationEmitter);
