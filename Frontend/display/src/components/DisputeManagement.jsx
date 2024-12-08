@@ -211,10 +211,10 @@ const DisputeCard = styled.div`
 
 const ResolutionSection = styled.div`
   margin-top: 20px;
-  background-color: #C1F11D;
+  background-color: #fff;
   padding: 20px;
   border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(193, 241, 29, 0.6);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
   animation: fadeIn 1s ease-in-out;
   transform: scale(1.02);
 
@@ -239,8 +239,8 @@ const TextArea = styled.textarea`
 const ResolveButton = styled.button`
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #fff;
-  color: #C1F11D;
+  background-color: #C1F11D;
+  color: #000000;
   border: 1px solid #C1F11D;
   border-radius: 5px;
   cursor: pointer;
@@ -260,7 +260,7 @@ const ResolveButton = styled.button`
 const ResolutionMessage = styled.p`
   margin-top: 20px;
   font-size: 1rem;
-  color: #333;
+  color: #000;
 
   @media (max-width: 768px) {
     font-size: 0.9rem;
