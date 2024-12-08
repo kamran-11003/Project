@@ -33,7 +33,7 @@ const Overlay = styled.div`
 `;
 
 const SidebarContainer = styled.div`
-  width: 200px;
+  width: 250px;
   background: #f8f9fa;
   height: 100vh;
   display: flex;
@@ -46,8 +46,8 @@ const SidebarContainer = styled.div`
   transition: transform 0.3s ease-in-out;
 
   @media (max-width: 768px) {
+    width: 80px;
     transform: ${({ $isOpen }) => $isOpen ? 'translateX(0)' : 'translateX(-100%)'};
-    width: 100%;
     max-width: 300px;
   }
 `;
@@ -81,11 +81,23 @@ const ProfileSection = styled.div`
   margin-bottom: 1rem;
   padding: 1rem;
   border-bottom: 1px solid #e9ecef;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+  }
 `;
 
 const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    display: ${({ $isOpen }) => $isOpen ? 'flex' : 'none'};
+    align-items: center;
+    margin-top: 0.5rem;
+  }
 `;
 
 const Name = styled.h4`
@@ -95,12 +107,22 @@ const Name = styled.h4`
   color: #2d3748;
   display: flex;
   align-items: center;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Email = styled.p`
   margin: 0.25rem 0 0;
   font-size: 0.875rem;
   color: #718096;
+
+  @media (max-width: 768px) {
+    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
+    font-size: 0.75rem;
+    text-align: center;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -116,6 +138,11 @@ const Navigation = styled.nav`
   gap: 0.5rem;
   padding: 0 1rem;
   margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 0;
+    align-items: center;
+  }
 `;
 
 const NavLink = styled(Link)`
@@ -138,6 +165,19 @@ const NavLink = styled(Link)`
     margin-right: 0.75rem;
     font-size: 1.25rem;
   }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    justify-content: center;
+
+    span {
+      display: none;
+    }
+
+    svg {
+      margin-right: 0;
+    }
+  }
 `;
 
 const LogoutLink = styled(NavLink)`
@@ -149,6 +189,11 @@ const LogoutLink = styled(NavLink)`
   &:hover {
     background: #fff5f5;
     color: #c53030;
+  }
+
+  @media (max-width: 768px) {
+    border-top: none;
+    padding-top: 0.75rem;
   }
 `;
 
@@ -167,11 +212,22 @@ const ToggleButton = styled.button`
   &:hover {
     background-color: ${({ active }) => (active ? "#38a169" : "#c53030")};
   }
+
+  @media (max-width: 768px) {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
 `;
 
 const FeedbackSection = styled.div`
   padding: 0 1rem;
   margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
+    padding: 0 0.5rem;
+  }
 `;
 
 const DriverSidebar = () => {
@@ -258,12 +314,17 @@ const DriverSidebar = () => {
         </HamburgerIcon>
       </MobileHeader>
 
+      <Overlay 
+        $isOpen={isMobileSidebarOpen} 
+        onClick={toggleMobileSidebar} 
+      />
+
       <SidebarContainer $isOpen={isMobileSidebarOpen}>
         <ProfileSection>
           <FaUser style={{ fontSize: '2rem', marginRight: '1rem', color: '#4a5568' }} />
-          <ProfileInfo>
+          <ProfileInfo $isOpen={isMobileSidebarOpen}>
             <Name>{user.name}</Name>
-            <Email>{user.email}</Email>
+            <Email $isOpen={isMobileSidebarOpen}>{user.email}</Email>
           </ProfileInfo>
         </ProfileSection>
 
@@ -276,25 +337,23 @@ const DriverSidebar = () => {
                 onClick={() => setIsMobileSidebarOpen(false)}
               >
                 {item.icon}
-                {item.label}
+                <span>{item.label}</span>
               </NavLink>
             ))}
           </Navigation>
-
 
           <ToggleButton active={isActive} onClick={toggleActivation}>
             {isActive ? "Active" : "Inactive"}
           </ToggleButton>
 
-          <FeedbackSection>
+          <FeedbackSection $isOpen={isMobileSidebarOpen}>
             <FeedbackList />
             <RatingStar />
           </FeedbackSection>
 
-          
           <LogoutLink onClick={() => setIsMobileSidebarOpen(false)}>
             <FaSignOutAlt />
-            Logout
+            <span>Logout</span>
           </LogoutLink>
         </ContentWrapper>
       </SidebarContainer>

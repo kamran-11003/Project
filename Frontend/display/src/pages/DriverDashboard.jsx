@@ -11,11 +11,11 @@ const UserDashboard = () => {
         <DriverMap />
         <RideRequest />
       </div>
-    </div>
+    </div>  
   );
 };
 
-const styles = {
+const styles = {  
   container: {
     display: 'flex',
     height: '100vh',
@@ -25,6 +25,7 @@ const styles = {
     flex: 1,
     padding: '10px',
     overflowY: 'auto',
+    
   },
 };
 
