@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { 
-  FaHome, 
-  FaHistory, 
-  FaCog, 
-  FaSignOutAlt, 
-  FaUserEdit, 
-  FaBars, 
-  FaTimes, 
-  FaUser 
+import {
+  FaHome,
+  FaHistory,
+  FaCog,
+  FaSignOutAlt,
+  FaUserEdit,
+  FaBars,
+  FaTimes,
+  FaUser,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import FeedbackList from './FeedbackList';
-import RatingStar from './RatingStar';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
+import FeedbackList from "./FeedbackList";
+import RatingStar from "./RatingStar";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const Overlay = styled.div`
   display: none;
-  
+
   @media (max-width: 768px) {
-    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
+    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
     position: fixed;
     top: 0;
     left: 0;
@@ -46,15 +46,16 @@ const SidebarContainer = styled.div`
   transition: transform 0.3s ease-in-out;
 
   @media (max-width: 768px) {
-    width: 80px;
-    transform: ${({ $isOpen }) => $isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+    width: 250px;
+    transform: ${({ $isOpen }) =>
+      $isOpen ? "translateX(0)" : "translateX(-100%)"};
     max-width: 300px;
   }
 `;
 
 const MobileHeader = styled.div`
   display: none;
-  
+
   @media (max-width: 768px) {
     display: flex;
     justify-content: space-between;
@@ -67,7 +68,7 @@ const MobileHeader = styled.div`
 
 const HamburgerIcon = styled.div`
   display: none;
-  
+
   @media (max-width: 768px) {
     display: block;
     cursor: pointer;
@@ -83,9 +84,11 @@ const ProfileSection = styled.div`
   border-bottom: 1px solid #e9ecef;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* Ensure items are in a row for small screens */
+    align-items: flex-start; /* Align to the top-left */
+    justify-content: flex-start; /* Ensure the section starts from the left */
     padding: 0.5rem;
+    gap: 0.5rem; /* Add spacing between items */
   }
 `;
 
@@ -94,9 +97,9 @@ const ProfileInfo = styled.div`
   flex-direction: column;
 
   @media (max-width: 768px) {
-    display: ${({ $isOpen }) => $isOpen ? 'flex' : 'none'};
-    align-items: center;
-    margin-top: 0.5rem;
+    display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
+    align-items: flex-start; /* Align profile info to the left */
+    margin-top: 0;
   }
 `;
 
@@ -110,6 +113,7 @@ const Name = styled.h4`
 
   @media (max-width: 768px) {
     font-size: 0.9rem;
+    text-align: left; /* Align text to the left */
   }
 `;
 
@@ -119,11 +123,12 @@ const Email = styled.p`
   color: #718096;
 
   @media (max-width: 768px) {
-    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
+    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
     font-size: 0.75rem;
-    text-align: center;
+    text-align: left; /* Align text to the left */
   }
 `;
+
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -140,8 +145,8 @@ const Navigation = styled.nav`
   margin-bottom: 1rem;
 
   @media (max-width: 768px) {
-    padding: 0;
-    align-items: center;
+    padding: 0 0.5rem; /* Add some padding for small screens */
+    align-items: flex-start; /* Align items to the left */
   }
 `;
 
@@ -167,18 +172,11 @@ const NavLink = styled(Link)`
   }
 
   @media (max-width: 768px) {
-    padding: 0.75rem;
-    justify-content: center;
-
-    span {
-      display: none;
-    }
-
-    svg {
-      margin-right: 0;
-    }
+    padding: 0.75rem 1rem; /* Ensure enough padding on small screens */
+    justify-content: flex-start; /* Align content to the left */
   }
 `;
+
 
 const LogoutLink = styled(NavLink)`
   color: #e53e3e;
@@ -197,26 +195,42 @@ const LogoutLink = styled(NavLink)`
   }
 `;
 
-const ToggleButton = styled.button`
-  margin: 1rem;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 0.5rem;
+const ToggleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 500;
+`;
+
+const StatusText = styled.span`
+  color: #2d3748;
+`;
+
+const ToggleSwitch = styled.button`
+  width: 50px;
+  height: 25px;
+  border-radius: 50px;
+  border: none;
   background-color: ${({ active }) => (active ? "#48bb78" : "#e53e3e")};
+  position: relative;
   cursor: pointer;
-  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: ${({ active }) => (active ? "flex-end" : "flex-start")};
+  padding: 0 5px;
+  transition: background-color 0.3s, justify-content 0.3s;
 
-  &:hover {
-    background-color: ${({ active }) => (active ? "#38a169" : "#c53030")};
-  }
-
-  @media (max-width: 768px) {
-    margin: 0.5rem;
-    padding: 0.5rem;
-    font-size: 0.8rem;
+  &:before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    display: block;
+    transition: background-color 0.3s;
   }
 `;
 
@@ -225,7 +239,7 @@ const FeedbackSection = styled.div`
   margin-top: 1rem;
 
   @media (max-width: 768px) {
-    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
+    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
     padding: 0 0.5rem;
   }
 `;
@@ -248,12 +262,16 @@ const DriverSidebar = () => {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id;
 
-        const response = await axios.get(`http://localhost:5000/api/driver/driver/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const { firstName, lastName, email, availability } = response.data.driver;
+        const response = await axios.get(
+          `http://localhost:5000/api/driver/driver/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const { firstName, lastName, email, availability } =
+          response.data.driver;
         setUser({
           name: `${firstName} ${lastName}`,
           email: email,
@@ -275,7 +293,7 @@ const DriverSidebar = () => {
         console.error("Token not found in localStorage");
         return;
       }
-      
+
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.id;
 
@@ -297,11 +315,19 @@ const DriverSidebar = () => {
 
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
-    { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-dashboard/driver-update" },
+    {
+      icon: <FaUserEdit />,
+      label: "Edit Profile",
+      to: "/driver-dashboard/driver-update",
+    },
     { icon: <FaCog />, label: "Earnings", to: "/driver-dashboard/earnings" },
-    { icon: <FaHistory />, label: "Help and Support", to: "/driver-dashboard/create-dispute" },
+    {
+      icon: <FaHistory />,
+      label: "Help and Support",
+      to: "/driver-dashboard/create-dispute",
+    },
   ];
-  
+
   const toggleMobileSidebar = () => {
     setIsMobileSidebarOpen(!isMobileSidebarOpen);
   };
@@ -314,14 +340,13 @@ const DriverSidebar = () => {
         </HamburgerIcon>
       </MobileHeader>
 
-      <Overlay 
-        $isOpen={isMobileSidebarOpen} 
-        onClick={toggleMobileSidebar} 
-      />
+      <Overlay $isOpen={isMobileSidebarOpen} onClick={toggleMobileSidebar} />
 
       <SidebarContainer $isOpen={isMobileSidebarOpen}>
         <ProfileSection>
-          <FaUser style={{ fontSize: '2rem', marginRight: '1rem', color: '#4a5568' }} />
+          <FaUser
+            style={{ fontSize: "2rem", marginRight: "1rem", color: "#4a5568" }}
+          />
           <ProfileInfo $isOpen={isMobileSidebarOpen}>
             <Name>{user.name}</Name>
             <Email $isOpen={isMobileSidebarOpen}>{user.email}</Email>
@@ -331,9 +356,9 @@ const DriverSidebar = () => {
         <ContentWrapper>
           <Navigation>
             {navigationItems.map((item) => (
-              <NavLink 
-                key={item.to} 
-                to={item.to} 
+              <NavLink
+                key={item.to}
+                to={item.to}
                 onClick={() => setIsMobileSidebarOpen(false)}
               >
                 {item.icon}
@@ -342,9 +367,10 @@ const DriverSidebar = () => {
             ))}
           </Navigation>
 
-          <ToggleButton active={isActive} onClick={toggleActivation}>
-            {isActive ? "Active" : "Inactive"}
-          </ToggleButton>
+          <ToggleContainer>
+            <StatusText>{isActive ? "Active" : "Inactive"}</StatusText>
+            <ToggleSwitch active={isActive} onClick={toggleActivation} />
+          </ToggleContainer>
 
           <FeedbackSection $isOpen={isMobileSidebarOpen}>
             <FeedbackList />
