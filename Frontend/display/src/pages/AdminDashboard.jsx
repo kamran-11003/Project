@@ -182,7 +182,7 @@ const MobileHeader = styled.div`
 
 const HamburgerIcon = styled.div`
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 1.5rem;
   padding: 0 1rem;
   color: #333;
 

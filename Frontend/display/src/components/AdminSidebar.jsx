@@ -68,7 +68,7 @@ const NavLink = styled(Link)`
   border-radius: 0.5rem;
   transition: all 0.2s ease-in-out;
   font-weight: 500;
-
+  
   &:hover {
     background: #c1f11d;
     color: #000000;
