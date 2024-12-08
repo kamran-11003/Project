@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode'; // Don't forget to install jwt-decode
+import { jwtDecode } from 'jwt-decode'; // Don't forget to install jwt-decode
+import styled from 'styled-components'; // Import styled-components
 
 const ProfileUpdate = () => {
   const [user, setUser] = useState({
@@ -29,7 +30,7 @@ const ProfileUpdate = () => {
       const userId = decodedToken.id;
       setToken(token);
       setUserId(userId);
-      
+
       // Fetch user profile data if token and userId are found
       axios.get('http://localhost:5000/api/user/profile', {
         headers: {
@@ -81,13 +82,13 @@ const ProfileUpdate = () => {
   };
 
   return (
-    <div className="profile-update">
-      <h2>Update Profile</h2>
-      {error && <div className="error">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="firstName">First Name</label>
-          <input
+    <ProfileUpdateContainer>
+      <ProfileUpdateTitle>Update Profile</ProfileUpdateTitle>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <Form onSubmit={handleSubmit}>
+        <FormGroup>
+          <FormLabel htmlFor="firstName">First Name</FormLabel>
+          <FormInput
             type="text"
             id="firstName"
             name="firstName"
@@ -95,11 +96,11 @@ const ProfileUpdate = () => {
             onChange={handleChange}
             required
           />
-        </div>
+        </FormGroup>
 
-        <div className="form-group">
-          <label htmlFor="lastName">Last Name</label>
-          <input
+        <FormGroup>
+          <FormLabel htmlFor="lastName">Last Name</FormLabel>
+          <FormInput
             type="text"
             id="lastName"
             name="lastName"
@@ -107,11 +108,11 @@ const ProfileUpdate = () => {
             onChange={handleChange}
             required
           />
-        </div>
+        </FormGroup>
 
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
+        <FormGroup>
+          <FormLabel htmlFor="email">Email</FormLabel>
+          <FormInput
             type="email"
             id="email"
             name="email"
@@ -120,11 +121,11 @@ const ProfileUpdate = () => {
             required
             disabled
           />
-        </div>
+        </FormGroup>
 
-        <div className="form-group">
-          <label htmlFor="phone">Phone</label>
-          <input
+        <FormGroup>
+          <FormLabel htmlFor="phone">Phone</FormLabel>
+          <FormInput
             type="text"
             id="phone"
             name="phone"
@@ -133,15 +134,91 @@ const ProfileUpdate = () => {
             required
             pattern="^\d{11}$"
           />
-        </div>
+        </FormGroup>
 
-
-        <button type="submit" disabled={isLoading}>
+        <SubmitButton type="submit" disabled={isLoading}>
           {isLoading ? 'Updating...' : 'Update Profile'}
-        </button>
-      </form>
-    </div>
+        </SubmitButton>
+      </Form>
+    </ProfileUpdateContainer>
   );
 };
 
 export default ProfileUpdate;
+
+// Styled-components
+
+const ProfileUpdateContainer = styled.div`
+  width: 100%;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ProfileUpdateTitle = styled.h2`
+  text-align: center;
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+`;
+
+const ErrorMessage = styled.div`
+  color: #ff4d4d;
+  background-color: #ffcccc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 15px;
+`;
+
+const FormLabel = styled.label`
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+`;
+
+const FormInput = styled.input`
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:disabled {
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+  }
+`;
+
+const SubmitButton = styled.button`
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #45a049;
+  }
+
+  &:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+`;

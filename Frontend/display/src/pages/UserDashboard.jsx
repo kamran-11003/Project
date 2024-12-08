@@ -13,9 +13,11 @@ import RideMap from '../components/RideMap';
 import DriverData from '../components/DriverData';
 import RideCompleted from '../components/RideComplete';
 import CreateDisputeUser from '../components/CreateDisputeuser';
+
 const UserDashboard = () => {
   const [driverLocation, setDriverLocation] = useState([73.0580, 33.6841]); // Example: Driver's location
-  const [driver, setDriver] = useState({}); // Changed to an object
+  const [driver, setDriver] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const {
     pickup,
@@ -47,18 +49,14 @@ const UserDashboard = () => {
 
   useEffect(() => {
     if (socket && userId) {
-      // Notify server of user connection
       socket.emit('userConnected', { userId });
 
-      // Register listener for 'rideStarted'
       const handleRideStarted = (data, driverDetails) => {
         try {
           if (!data) {
             throw new Error('Invalid data received');
           }
-          console.log(driverDetails);
-          setDriver(driverDetails); // Set driver details
-          console.log('Ride request received:', data);
+          setDriver(driverDetails);
           navigate("/user-dashboard/ride");
         } catch (error) {
           console.error('Error handling rideStarted event:', error);
@@ -67,38 +65,36 @@ const UserDashboard = () => {
 
       socket.on('rideStarted', handleRideStarted);
       socket.on('DriverArrived', (data) => {
-        console.log('Driver Arrival Notification Received:', data);
-        alert(data.message); // Show an alert message
-    });
-    socket.on('rideCompleted',(driverId)=>{
-      console.log('Ride completed:', driverId);
-      navigate("/user-dashboard/rate");
-    })
-      // Listen for driver's location updates
+        alert(data.message);
+      });
+      socket.on('rideCompleted', (driverId) => {
+        navigate("/user-dashboard/rate");
+      });
+
       const handleLocationUpdate = (newLocation) => {
         if (newLocation && Array.isArray(newLocation) && newLocation.length === 2) {
-          setDriverLocation(newLocation); // Update the driver's location
+          setDriverLocation(newLocation);
         }
-        console.log(driverLocation, pickupCoordinates, dropOffCoordinates);
       };
 
       socket.on('location', handleLocationUpdate);
 
-      // Cleanup on unmount or dependency change
       return () => {
         socket.off('rideStarted', handleRideStarted);
         socket.off('location', handleLocationUpdate);
       };
     }
-  }, [socket, userId, navigate, driverLocation, pickupCoordinates, dropOffCoordinates]);
+  }, [socket, userId, navigate]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div style={styles.container}>
-      <Sidebar />
-      <div style={styles.mainContent}>
-
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div style={styles.mainContent(isSidebarOpen)}>
         <Routes>
-          
           <Route
             path="/"
             element={
@@ -119,27 +115,19 @@ const UserDashboard = () => {
           />
           <Route path="edit-profile" element={<ProfileUpdate />} />
           <Route path="history" element={<RideHistory />} />
-          <Route path="driver-data" element={<DriverData driver={driver} />} /> 
-          <Route path="create-dispute-user" element={<CreateDisputeUser></CreateDisputeUser>}/>
-          <Route path="rate" element={<RideCompleted  driver={driver} fare={fare} distance={distance} />} />
+          <Route path="driver-data" element={<DriverData driver={driver} />} />
+          <Route path="create-dispute-user" element={<CreateDisputeUser />} />
+          <Route path="rate" element={<RideCompleted driver={driver} fare={fare} distance={distance} />} />
           <Route
             path="ride"
             element={
               <>
                 <RideMap
                   driverLocation={driverLocation}
-                  pickup={
-                    pickupCoordinates
-                      ? [pickupCoordinates.longitude, pickupCoordinates.latitude]
-                      : null
-                  }
-                  dropOff={
-                    dropOffCoordinates
-                      ? [dropOffCoordinates.longitude, dropOffCoordinates.latitude]
-                      : null
-                  }
+                  pickup={pickupCoordinates ? [pickupCoordinates.longitude, pickupCoordinates.latitude] : null}
+                  dropOff={dropOffCoordinates ? [dropOffCoordinates.longitude, dropOffCoordinates.latitude] : null}
                 />
-                <DriverData driver={driver} /> 
+                <DriverData driver={driver} />
               </>
             }
           />
@@ -154,12 +142,29 @@ const styles = {
     display: 'flex',
     height: '100vh',
     backgroundColor: '#f9f9f9',
+    flexDirection: 'row',
+    transition: 'all 0.3s ease',
   },
-  mainContent: {
+  mainContent: (isSidebarOpen) => ({
     flex: 1,
     padding: '10px',
     overflowY: 'auto',
-  },
+    marginLeft: isSidebarOpen ? '250px' : '70px', // Sidebar width adjustment
+    transition: 'margin-left 0.3s ease',
+  }),
 };
+
+// Responsive styles via CSS
+const mediaStyles = `
+  @media (max-width: 750px) {
+    .sidebar {
+      width: 70px !important; // Adjusted for smaller screens
+    }
+    .mainContent {
+      margin-left: 70px !important;
+      padding: 5px; // Reduce padding for smaller screens
+    }
+  }
+`;
 
 export default UserDashboard;
