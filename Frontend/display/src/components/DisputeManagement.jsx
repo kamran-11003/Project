@@ -90,6 +90,15 @@ const DisputeManagement = () => {
       ) : (
         filteredDisputes.map(dispute => (
           <DisputeCard key={dispute._id} isPending={dispute.status === 'Pending'}>
+           <p1>
+  {dispute.driver 
+    ? `${dispute.driver.firstName} ${dispute.driver.lastName} ${dispute.driver._id}`
+    : dispute.user 
+    ? `${dispute.user.firstName} ${dispute.user.lastName} ${dispute.user._id}`
+    : "No driver or user available"
+  }
+</p1>
+
             <h3>Issue: {dispute.issueDescription}</h3>
             <p>Status: {dispute.status}</p>
 
