@@ -118,15 +118,34 @@ const DriverManagement = () => {
 
       {message && <Message>{message}</Message>}
 
-      <FormContainer>
-        {/* Section Navigation */}
-        <NavButtons>
-          <Button onClick={() => setCurrentSection(1)}>Suspended or Banned Drivers</Button>
-          <Button onClick={() => setCurrentSection(2)}>Update Driver Status</Button>
-          <Button onClick={() => setCurrentSection(3)}>Approve Driver</Button>
-          <Button onClick={() => setCurrentSection(4)}>Delete Driver</Button> {/* Added button for delete */}
-        </NavButtons>
+      <NavBar>
+        <NavButton
+          onClick={() => setCurrentSection(1)}
+          isActive={currentSection === 1}
+        >
+          Suspended or Banned Drivers
+        </NavButton>
+        <NavButton
+          onClick={() => setCurrentSection(2)}
+          isActive={currentSection === 2}
+        >
+          Update Driver Status
+        </NavButton>
+        <NavButton
+          onClick={() => setCurrentSection(3)}
+          isActive={currentSection === 3}
+        >
+          Approve Driver
+        </NavButton>
+        <NavButton
+          onClick={() => setCurrentSection(4)}
+          isActive={currentSection === 4}
+        >
+          Delete Driver
+        </NavButton>
+      </NavBar>
 
+      <FormContainer>
         {/* Suspended or Banned Drivers Section */}
         {currentSection === 1 && (
           <Section>
@@ -212,6 +231,7 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  animation: fadeIn 1s ease-in-out;
 `;
 
 const Title = styled.h1`
@@ -226,6 +246,27 @@ const Message = styled.div`
   text-align: center;
 `;
 
+const NavBar = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+`;
+
+const NavButton = styled.button`
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: ${(props) => (props.isActive ? '#C1F11D' : '#ddd')};
+  color: ${(props) => (props.isActive ? 'black' : 'gray')};
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  :hover {
+    background-color: #b3e2b2;
+  }
+`;
+
 const FormContainer = styled.div`
   width: 100%;
   padding: 20px;
@@ -233,6 +274,7 @@ const FormContainer = styled.div`
 
 const Section = styled.section`
   margin: 20px 0;
+  animation: slideIn 1s ease-in-out;
 `;
 
 const SubTitle = styled.h2`
@@ -293,15 +335,34 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
   :hover {
     background-color: #0056b3;
   }
 `;
 
-const NavButtons = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
+const fadeIn = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
+const slideIn = `
+  @keyframes slideIn {
+    from {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 `;
 
 export default DriverManagement;
