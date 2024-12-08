@@ -3,49 +3,52 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { AlertTriangle, Send } from 'lucide-react';
+
 const Container = styled.div`
-  max-width: 600px;
-  margin: 2rem auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 2rem;
-  background: #f9f9f9;
-  border: 1px solid #e9ecef;
+  background-color: #f7fafc;
+`;
+
+const FormWrapper = styled.div`
+  max-width: 500px;
+  width: 100%;
+  background-color: white;
+  padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
   text-align: center;
   color: #2d3748;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Label = styled.label`
-  display: block;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
   color: #4a5568;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  font-size: 1rem;
-  color: #2d3748;
-
-  &:focus {
-    outline: none;
-    border-color: #3182ce;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
-  }
+  margin-bottom: 0.5rem;
 `;
 
 const Textarea = styled.textarea`
@@ -56,28 +59,44 @@ const Textarea = styled.textarea`
   font-size: 1rem;
   color: #2d3748;
   resize: vertical;
+  min-height: 100px;
 
   &:focus {
     outline: none;
-    border-color: #3182ce;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+    border-color: #a8d619;
+    box-shadow: 0 0 0 3px rgba(168, 214, 25, 0.3);
   }
 `;
 
 const Button = styled.button`
-  width: 100%;
+  background-color: #c1f11d;
+  color: #1a1c18;
+  border: none;
   padding: 0.75rem;
-  background-color: #3182ce;
-  color: white;
+  border-radius: 4px;
   font-size: 1rem;
   font-weight: 600;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  margin-top: 1rem;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background-color: #2b6cb0;
+    background-color: #a8d619;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    background-color: #e0e7c7;
+    color: #8c9183;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
   }
 `;
 
@@ -86,25 +105,33 @@ const ErrorMessage = styled.p`
   font-size: 0.875rem;
   margin-top: 0.5rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const CreateDispute = () => {
   const [issueDescription, setIssueDescription] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
 
     const token = localStorage.getItem("jwtToken");
-    const decodedTokens=jwtDecode(token);
-    const driverId = decodedTokens.id;
     if (!token) {
       setError("Authentication token is missing. Please log in.");
+      setIsSubmitting(false);
       return;
     }
 
     try {
+      const decodedToken = jwtDecode(token);
+      const driverId = decodedToken.id;
+
       const response = await axios.post(
         "http://localhost:5000/api/disputes/dispute",
         {
@@ -120,36 +147,51 @@ const CreateDispute = () => {
 
       if (response.status === 201) {
         alert("Dispute created successfully!");
-        navigate("/driver-dashboard"); // Navigate back to the dashboard after success
+        navigate("/driver-dashboard");
       }
     } catch (error) {
       console.error("Error creating dispute:", error);
       setError(error.response?.data?.message || "An unexpected error occurred.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <Container>
-      <Title>Create a Dispute</Title>
-      <form onSubmit={handleSubmit}>
-        
+      <FormWrapper>
+        <Title>
+          <AlertTriangle size={24} style={{ marginRight: '0.5rem' }} />
+          Create a Dispute
+        </Title>
+        <Form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label htmlFor="issueDescription">Issue Description</Label>
+            <Textarea
+              id="issueDescription"
+              rows="4"
+              placeholder="Describe the issue in detail..."
+              value={issueDescription}
+              onChange={(e) => setIssueDescription(e.target.value)}
+              required
+            />
+          </FormGroup>
 
-        <FormGroup>
-          <Label>Issue Description</Label>
-          <Textarea
-            rows="4"
-            placeholder="Describe the issue..."
-            value={issueDescription}
-            onChange={(e) => setIssueDescription(e.target.value)}
-            required
-          />
-        </FormGroup>
-
-        <Button type="submit">Submit Dispute</Button>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-      </form>
+          <Button type="submit" disabled={isSubmitting}>
+            <Send size={18} style={{ marginRight: '0.5rem' }} />
+            {isSubmitting ? 'Submitting...' : 'Submit Dispute'}
+          </Button>
+          {error && (
+            <ErrorMessage>
+              <AlertTriangle size={18} style={{ marginRight: '0.5rem' }} />
+              {error}
+            </ErrorMessage>
+          )}
+        </Form>
+      </FormWrapper>
     </Container>
   );
 };
 
 export default CreateDispute;
+

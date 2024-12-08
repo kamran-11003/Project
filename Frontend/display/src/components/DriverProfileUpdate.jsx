@@ -1,16 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import styled from 'styled-components';
+import { User, Mail, Phone, Car, Lock, UserCheck } from 'lucide-react';
 
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Car, 
-  Lock, 
-  UserCheck 
-} from 'lucide-react';
+const Container = styled.div`
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f7fafc;
+`;
 
+const FormWrapper = styled.div`
+  max-width: 400px;
+  width: 100%;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  color: #2d3748;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: #edf2f7;
+  border-radius: 4px;
+  padding: 0.5rem;
+`;
+
+const Input = styled.input`
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const Button = styled.button`
+  background-color: #c1f11d;
+  color: black;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #3182ce;
+  }
+
+  &:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: #e53e3e;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+`;
 
 const DriverProfileUpdate = () => {
   const [driver, setDriver] = useState({
@@ -28,14 +99,12 @@ const DriverProfileUpdate = () => {
   const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('jwtToken'); // Assuming the token is stored in localStorage
+    const storedToken = localStorage.getItem('jwtToken');
     if (storedToken) {
       setToken(storedToken);
       const decoded = jwtDecode(storedToken);
-      console.log(decoded.id);
-      setDriverId(decoded.id); // Assuming the token contains the driver's ID
+      setDriverId(decoded.id);
 
-      // Fetch the driver details initially
       axios.get(`http://localhost:5000/api/driver/driver/${decoded.id}`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
@@ -48,13 +117,13 @@ const DriverProfileUpdate = () => {
           email: driverData.email,
           phone: driverData.phone,
           vehicleDetails: driverData.vehicleDetails,
-          password: '', // Don't fetch the password for security reasons
+          password: '',
         });
       }).catch(err => {
         setError('Failed to load driver data.');
       });
     }
-  }, [token]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,12 +132,11 @@ const DriverProfileUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:5000/api/driver/driver/${driverId}`,
         driver,
         {
@@ -87,122 +155,89 @@ const DriverProfileUpdate = () => {
   };
 
   return (
-    <div className="login-container">
-      {/* Animated Background */}
-      <div className="login-background">
-        <div className="bg-overlay"></div>
-        <div className="bg-shapes">
-          <div className="shape shape-1"></div>
-          <div className="shape shape-2"></div>
-          <div className="shape shape-3"></div>
-        </div>
-      </div>  
-
-      <div className="driver-profile-wrapper">
-        <div className="driver-profile-header">
-          <UserCheck size={40} className="driver-profile-icon" />
-          <h2>Update Driver Profile</h2>
-        </div>
-        
-        {error && <div className="driver-error-message">{error}</div>}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="driver-form-group">
-            <label htmlFor="firstName">
-              <User size={20} className="input-icon" /> First Name
-            </label>
-            <input
+    <Container>
+      <FormWrapper>
+        <Title>
+          <UserCheck size={24} style={{ marginRight: '0.5rem' }} />
+          Update Driver Profile
+        </Title>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <Form onSubmit={handleSubmit}>
+          <InputWrapper>
+            <User size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Input
               type="text"
-              id="firstName"
               name="firstName"
+              placeholder="First Name"
               value={driver.firstName}
               onChange={handleChange}
               required
             />
-          </div>
-
-          <div className="driver-form-group">
-            <label htmlFor="lastName">
-              <User size={20} className="input-icon" /> Last Name
-            </label>
-            <input
+          </InputWrapper>
+          <InputWrapper>
+            <User size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Input
               type="text"
-              id="lastName"
               name="lastName"
+              placeholder="Last Name"
               value={driver.lastName}
               onChange={handleChange}
               required
             />
-          </div>
-
-          <div className="driver-form-group">
-            <label htmlFor="email">
-              <Mail size={20} className="input-icon" /> Email
-            </label>
-            <input
+          </InputWrapper>
+          <InputWrapper>
+            <Mail size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Input
               type="email"
-              id="email"
               name="email"
+              placeholder="Email"
               value={driver.email}
               onChange={handleChange}
               required
             />
-          </div>
-
-          <div className="driver-form-group">
-            <label htmlFor="phone">
-              <Phone size={20} className="input-icon" /> Phone
-            </label>
-            <input
-              type="text"
-              id="phone"
+          </InputWrapper>
+          <InputWrapper>
+            <Phone size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Input
+              type="tel"
               name="phone"
+              placeholder="Phone"
               value={driver.phone}
               onChange={handleChange}
               required
               pattern="^\d{11}$"
             />
-          </div>
-
-          <div className="driver-form-group">
-            <label htmlFor="vehicleDetails">
-              <Car size={20} className="input-icon" /> Vehicle Details
-            </label>
-            <input
+          </InputWrapper>
+          <InputWrapper>
+            <Car size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Input
               type="text"
-              id="vehicleDetails"
               name="vehicleDetails"
+              placeholder="Vehicle Details"
               value={driver.vehicleDetails}
               onChange={handleChange}
               required
             />
-          </div>
-
-          <div className="driver-form-group">
-            <label htmlFor="password">
-              <Lock size={20} className="input-icon" /> Password
-            </label>
-            <input
+          </InputWrapper>
+          <InputWrapper>
+            <Lock size={18} style={{ marginRight: '0.5rem', color: '#718096' }} />
+            <Input
               type="password"
-              id="password"
               name="password"
+              placeholder="Password (leave blank to keep unchanged)"
               value={driver.password}
               onChange={handleChange}
               minLength="6"
             />
-          </div>
-
-          <button 
-            type="submit" 
-            className="driver-profile-submit" 
-            disabled={isLoading}
-          >
+          </InputWrapper>
+          <Button type="submit" disabled={isLoading}>
             {isLoading ? 'Updating...' : 'Update Profile'}
-          </button>
-        </form>
-      </div>
-    </div>
+          </Button>
+        </Form>
+      </FormWrapper>
+    </Container>
   );
 };
 
 export default DriverProfileUpdate;
+
