@@ -128,8 +128,12 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #fafafa; /* Light background */
+  background-color: #fafafa; 
   animation: fadeIn 1s ease-in-out;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const Title = styled.h1`
@@ -137,6 +141,10 @@ const Title = styled.h1`
   font-size: 2.5rem;
   margin-bottom: 30px;
   color: #333;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const Message = styled.div`
@@ -144,6 +152,10 @@ const Message = styled.div`
   margin-bottom: 1rem;
   text-align: center;
   font-size: 1.2rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const FilterContainer = styled.div`
@@ -151,12 +163,22 @@ const FilterContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const FilterLabel = styled.label`
   font-size: 1.2rem;
   margin-right: 10px;
   color: #333;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const FilterSelect = styled.select`
@@ -166,6 +188,11 @@ const FilterSelect = styled.select`
   border-radius: 5px;
   background-color: #fff;
   color: #333;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    font-size: 1rem;
+  }
 `;
 
 const DisputeCard = styled.div`
@@ -176,6 +203,10 @@ const DisputeCard = styled.div`
   box-shadow:  0 2px 10px rgb(0, 0, 0);
   border-left: 5px solid #C1F11D ;
   animation: slideIn 1s ease-in-out;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const ResolutionSection = styled.div`
@@ -186,6 +217,10 @@ const ResolutionSection = styled.div`
   box-shadow: 0 2px 10px rgba(193, 241, 29, 0.6);
   animation: fadeIn 1s ease-in-out;
   transform: scale(1.02);
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const TextArea = styled.textarea`
@@ -195,6 +230,10 @@ const TextArea = styled.textarea`
   border: 1px solid #ccc;
   border-radius: 5px;
   resize: vertical;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const ResolveButton = styled.button`
@@ -212,12 +251,20 @@ const ResolveButton = styled.button`
     background-color: #C1F11D;
     color: white;
   }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const ResolutionMessage = styled.p`
   margin-top: 20px;
   font-size: 1rem;
   color: #333;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Divider = styled.hr`
