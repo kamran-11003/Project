@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import {
   FaHome,
   FaUsers,
@@ -9,30 +9,12 @@ import {
   FaChartBar,
   FaExclamationCircle,
   FaSignOutAlt,
-  FaUser,
-  FaBars,
-  FaTimes
+  FaUser
 } from 'react-icons/fa';
-
-// Sidebar overlay background
-const Overlay = styled.div`
-  display: none;
-
-  @media (max-width: 768px) {
-    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-  }
-`;
 
 // Sidebar container
 const SidebarContainer = styled.div`
-  width: 300px;
+  width: 250px; /* Default width for desktop */
   background: #f8f9fa;
   height: 100vh;
   display: flex;
@@ -41,36 +23,11 @@ const SidebarContainer = styled.div`
   top: 0;
   left: 0;
   z-index: 1000;
-  transform: ${({ $isOpen }) => $isOpen ? 'translateX(0)' : 'translateX(-100%)'};
-  transition: transform 0.3s ease-in-out;
+  transition: width 0.3s ease-in-out;
 
-  @media (min-width: 769px) {
-    transform: translateX(0);
-  }
-`;
-
-
-const MobileHeader = styled.div`
-  display: none;
-  
   @media (max-width: 768px) {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-  }
-`;
-
-// Mobile hamburger menu positioned vertically
-const HamburgerIcon = styled.div`
-  display: none;
-  
-  @media (max-width: 768px) {
-    display: block;
-    cursor: pointer;
-    font-size: 1.5rem;
+    width: ${({ isOpen }) => (isOpen ? '250px' : '0')}; /* Toggleable width on mobile */
+    overflow-x: hidden; /* Hide overflow */
   }
 `;
 
@@ -136,9 +93,7 @@ const LogoutLink = styled(NavLink)`
   }
 `;
 
-const AdminSidebar = ({ onSelectPage, onLogout }) => {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
+const AdminSidebar = ({ isOpen, onSelectPage, onLogout }) => {
   const navigationItems = [
     { icon: <FaHome />, label: 'Dashboard', page: 'dashboard' },
     { icon: <FaUsers />, label: 'User Management', page: 'user-management' },
@@ -148,52 +103,31 @@ const AdminSidebar = ({ onSelectPage, onLogout }) => {
     { icon: <FaExclamationCircle />, label: 'Dispute Resolution', page: 'dispute-resolution' },
   ];
 
-  const toggleMobileSidebar = () => {
-    setIsMobileSidebarOpen(!isMobileSidebarOpen);
-  };
-
   const handlePageSelect = (page) => {
     onSelectPage(page);
-    setIsMobileSidebarOpen(false);
   };
 
   return (
-    <>
-   <MobileHeader>
-        <HamburgerIcon onClick={toggleMobileSidebar}>
-          {isMobileSidebarOpen ? <FaTimes /> : <FaBars />}
-        </HamburgerIcon>
-      </MobileHeader>
-      {/* Sidebar */}
-      <SidebarContainer $isOpen={isMobileSidebarOpen}>
-        <ProfileSection>
-          <FaUser style={{ fontSize: '2rem', marginRight: '1rem', color: '#4a5568' }} />
-          <ProfileInfo>
-            <Name>Admin</Name>
-          </ProfileInfo>
-        </ProfileSection>
-        <Navigation>
-          {navigationItems.map((item) => (
-            <NavLink 
-              key={item.page} 
-              onClick={() => handlePageSelect(item.page)}
-            >
-              {item.icon}
-              {item.label}
-            </NavLink>
-          ))}
-        </Navigation>
-        <LogoutLink 
-          onClick={() => {
-            onLogout();
-          }}
-        >
-          <FaSignOutAlt />
-          Logout
-        </LogoutLink>
-      </SidebarContainer>
-     
-    </>
+    <SidebarContainer isOpen={isOpen}>
+      <ProfileSection>
+        <FaUser style={{ fontSize: '2rem', marginRight: '1rem', color: '#4a5568' }} />
+        <ProfileInfo>
+          <Name>Admin</Name>
+        </ProfileInfo>
+      </ProfileSection>
+      <Navigation>
+        {navigationItems.map((item) => (
+          <NavLink key={item.page} onClick={() => handlePageSelect(item.page)}>
+            {item.icon}
+            {item.label}
+          </NavLink>
+        ))}
+      </Navigation>
+      <LogoutLink onClick={onLogout}>
+        <FaSignOutAlt />
+        Logout
+      </LogoutLink>
+    </SidebarContainer>
   );
 };
 
