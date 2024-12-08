@@ -13,6 +13,7 @@ import RideMap from '../components/RideMap';
 import DriverData from '../components/DriverData';
 import RideCompleted from '../components/RideComplete';
 import CreateDisputeUser from '../components/CreateDisputeuser';
+import styled from 'styled-components';
 
 const UserDashboard = () => {
   const [driverLocation, setDriverLocation] = useState([73.0580, 33.6841]); // Example: Driver's location
@@ -91,9 +92,9 @@ const UserDashboard = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <Container>
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div style={styles.mainContent(isSidebarOpen)}>
+      <MainContent isSidebarOpen={isSidebarOpen}>
         <Routes>
           <Route
             path="/"
@@ -132,38 +133,34 @@ const UserDashboard = () => {
             }
           />
         </Routes>
-      </div>
-    </div>
+      </MainContent>
+    </Container>
   );
 };
 
-const styles = {
-  container: {
-    display: 'flex',
-    height: '100vh',
-    backgroundColor: '#f9f9f9',
-    flexDirection: 'row',
-    transition: 'all 0.3s ease',
-  },
-  mainContent: (isSidebarOpen) => ({
-    flex: 1,
-    padding: '10px',
-    overflowY: 'auto',
-    marginLeft: isSidebarOpen ? '250px' : '70px', // Sidebar width adjustment
-    transition: 'margin-left 0.3s ease',
-  }),
-};
+// Styled-components
 
-// Responsive styles via CSS
-const mediaStyles = `
-  @media (max-width: 750px) {
-    .sidebar {
-      width: 70px !important; // Adjusted for smaller screens
-    }
-    .mainContent {
-      margin-left: 70px !important;
-      padding: 5px; // Reduce padding for smaller screens
-    }
+const Container = styled.div`
+  display: flex;
+  height: 100vh;
+  background-color: #f9f9f9;
+  flex-direction: row;
+  transition: all 0.3s ease;
+`;
+
+const MainContent = styled.div`
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  margin-left: ${props => props.isSidebarOpen ? '250px' : '70px'};
+  transition: margin-left 0.3s ease;
+
+  @media (min-width: 1024px) {
+    margin-left: ${props => props.isSidebarOpen ? '300px' : '100px'}; /* Adjust for larger screens */
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 0; /* Adjust for smaller screens (mobile) */
   }
 `;
 
