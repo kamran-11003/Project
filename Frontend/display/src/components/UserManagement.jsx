@@ -17,6 +17,7 @@ const UserManagement = () => {
   const [status, setStatus] = useState('');
   const [userId, setUserId] = useState('');
   const [message, setMessage] = useState('');
+  const [currentSection, setCurrentSection] = useState(1);
 
   useEffect(() => {
     axios
@@ -70,57 +71,77 @@ const UserManagement = () => {
 
       {message && <Message>{message}</Message>}
 
-      <Section>
-        <SubTitle>Suspended or Banned Users</SubTitle>
-        <UserList>
-          {users.length > 0 ? (
-            users.map((user) => (
-              <ListItem key={user._id}>
-                <UserDetails>
-                  <strong>ID:</strong> {user._id} | <strong>{user.firstName} {user.lastName}</strong> | 
-                  <strong>Email:</strong> {user.email} | 
-                  <strong>Phone:</strong> {user.phone} | 
-                  <strong>Status:</strong> {user.suspensionStatus}
-                </UserDetails>
-              </ListItem>
-            ))
-          ) : (
-            <NoUsers>No suspended or banned users found</NoUsers>
-          )}
-        </UserList>
-      </Section>
+      <NavBar>
+        <NavButton onClick={() => setCurrentSection(1)} isActive={currentSection === 1}>
+          Suspended or Banned Users
+        </NavButton>
+        <NavButton onClick={() => setCurrentSection(2)} isActive={currentSection === 2}>
+          Update User Status
+        </NavButton>
+        <NavButton onClick={() => setCurrentSection(3)} isActive={currentSection === 3}>
+          Delete User
+        </NavButton>
+      </NavBar>
 
-      <Section>
-        <SubTitle>Update User Status</SubTitle>
-        <InputGroup>
-          <Input
-            type="text"
-            placeholder="User ID"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-          />
-          <Select onChange={(e) => setStatus(e.target.value)} value={status}>
-            <option value="">Select Status</option>
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
-            <option value="banned">Banned</option>
-          </Select>
-          <Button onClick={handleStatusUpdate}>Update Status</Button>
-        </InputGroup>
-      </Section>
+      <FormContainer>
+        {currentSection === 1 && (
+          <Section>
+            <SubTitle>Suspended or Banned Users</SubTitle>
+            <UserList>
+              {users.length > 0 ? (
+                users.map((user) => (
+                  <ListItem key={user._id}>
+                    <UserDetails>
+                      <strong>ID:</strong> {user._id} | <strong>{user.firstName} {user.lastName}</strong> |
+                      <strong>Email:</strong> {user.email} |
+                      <strong>Phone:</strong> {user.phone} |
+                      <strong>Status:</strong> {user.suspensionStatus}
+                    </UserDetails>
+                  </ListItem>
+                ))
+              ) : (
+                <NoUsers>No suspended or banned users found</NoUsers>
+              )}
+            </UserList>
+          </Section>
+        )}
 
-      <Section>
-        <SubTitle>Delete User</SubTitle>
-        <InputGroup>
-          <Input
-            type="text"
-            placeholder="User ID"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-          />
-          <Button onClick={handleDeleteUser}>Delete User</Button>
-        </InputGroup>
-      </Section>
+        {currentSection === 2 && (
+          <Section>
+            <SubTitle>Update User Status</SubTitle>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="User ID"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+              />
+              <Select onChange={(e) => setStatus(e.target.value)} value={status}>
+                <option value="">Select Status</option>
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+                <option value="banned">Banned</option>
+              </Select>
+              <Button onClick={handleStatusUpdate}>Update Status</Button>
+            </InputGroup>
+          </Section>
+        )}
+
+        {currentSection === 3 && (
+          <Section>
+            <SubTitle>Delete User</SubTitle>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="User ID"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+              />
+              <Button onClick={handleDeleteUser}>Delete User</Button>
+            </InputGroup>
+          </Section>
+        )}
+      </FormContainer>
     </Container>
   );
 };
@@ -130,13 +151,17 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  animation: fadeIn 1s ease-in-out;
 `;
 
 const Title = styled.h1`
   text-align: center;
   font-size: 2rem;
   margin-bottom: 20px;
-  color: #333;
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
 `;
 
 const Message = styled.div`
@@ -145,14 +170,55 @@ const Message = styled.div`
   text-align: center;
 `;
 
+const NavBar = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const NavButton = styled.button`
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: ${(props) => (props.isActive ? '#C1F11D' : '#ddd')};
+  color: ${(props) => (props.isActive ? 'black' : 'gray')};
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+
+  :hover {
+    background-color: #b3e2b2;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+  }
+`;
+
+const FormContainer = styled.div`
+  width: 100%;
+  padding: 20px;
+`;
+
 const Section = styled.section`
   margin: 20px 0;
+  animation: slideIn 1s ease-in-out;
 `;
 
 const SubTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 10px;
-  color: #444;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const UserList = styled.ul`
@@ -164,12 +230,19 @@ const ListItem = styled.li`
   padding: 10px;
   background-color: #f4f4f4;
   margin: 5px 0;
-  border-radius: 5px;
 `;
 
 const UserDetails = styled.div`
+  display: flex;
+  justify-content: space-between;
   font-size: 1rem;
   line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const NoUsers = styled.p`
@@ -183,6 +256,10 @@ const InputGroup = styled.div`
   gap: 10px;
   max-width: 400px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const Input = styled.input`
@@ -190,6 +267,10 @@ const Input = styled.input`
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Select = styled.select`
@@ -197,6 +278,10 @@ const Select = styled.select`
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Button = styled.button`
@@ -207,8 +292,37 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
   :hover {
     background-color: #0056b3;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+`;
+
+const fadeIn = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
+const slideIn = `
+  @keyframes slideIn {
+    from {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 `;
 

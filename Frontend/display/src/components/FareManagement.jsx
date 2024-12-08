@@ -8,7 +8,7 @@ const FareManagement = () => {
   const [promotionCode, setPromotionCode] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState('');
   const [validUntil, setValidUntil] = useState('');
-  const [currentPage, setCurrentPage] = useState(0); // State to track the current form page
+  const [activeSection, setActiveSection] = useState(0); // Track active section
 
   // Function to get the JWT token from localStorage
   const getJwtToken = () => {
@@ -24,7 +24,7 @@ const FareManagement = () => {
         { rideType, fareMultiplier },
         {
           headers: {
-            Authorization: `Bearer ${token}`,  // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
           },
         }
       )
@@ -41,7 +41,7 @@ const FareManagement = () => {
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {
-            Authorization: `Bearer ${token}`,  // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
           },
         }
       )
@@ -58,7 +58,7 @@ const FareManagement = () => {
         { data: { rideType, promotionCode } },
         {
           headers: {
-            Authorization: `Bearer ${token}`,  // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
           },
         }
       )
@@ -75,7 +75,7 @@ const FareManagement = () => {
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {
-            Authorization: `Bearer ${token}`,  // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
           },
         }
       )
@@ -83,25 +83,24 @@ const FareManagement = () => {
       .catch((error) => alert('Error updating promotion'));
   };
 
-  // Handle page change (pagination)
-  const goToNextPage = () => {
-    if (currentPage < 3) { // Only 4 pages in total (0-3)
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
+  // Handle section change (using buttons)
+  const handleSectionChange = (sectionIndex) => {
+    setActiveSection(sectionIndex);
   };
 
   return (
     <Container>
       <Title>Fare Management</Title>
+      <NavBar>
+        <NavButton onClick={() => handleSectionChange(0)} isActive={activeSection === 0}>Update Fare</NavButton>
+        <NavButton onClick={() => handleSectionChange(1)} isActive={activeSection === 1}>Add Promotion</NavButton>
+        <NavButton onClick={() => handleSectionChange(2)} isActive={activeSection === 2}>Remove Promotion</NavButton>
+        <NavButton onClick={() => handleSectionChange(3)} isActive={activeSection === 3}>Update Promotion</NavButton>
+      </NavBar>
+
       <FormContainer>
         {/* Section 1: Update Fare */}
-        {currentPage === 0 && (
+        {activeSection === 0 && (
           <Section>
             <SubTitle>Update Fare</SubTitle>
             <FormGroup>
@@ -113,7 +112,7 @@ const FareManagement = () => {
         )}
 
         {/* Section 2: Add Promotion */}
-        {currentPage === 1 && (
+        {activeSection === 1 && (
           <Section>
             <SubTitle>Add Promotion</SubTitle>
             <FormGroup>
@@ -127,7 +126,7 @@ const FareManagement = () => {
         )}
 
         {/* Section 3: Remove Promotion */}
-        {currentPage === 2 && (
+        {activeSection === 2 && (
           <Section>
             <SubTitle>Remove Promotion</SubTitle>
             <FormGroup>
@@ -139,7 +138,7 @@ const FareManagement = () => {
         )}
 
         {/* Section 4: Update Promotion */}
-        {currentPage === 3 && (
+        {activeSection === 3 && (
           <Section>
             <SubTitle>Update Promotion</SubTitle>
             <FormGroup>
@@ -151,12 +150,6 @@ const FareManagement = () => {
             </FormGroup>
           </Section>
         )}
-
-        {/* Pagination Arrows */}
-        <PaginationArrows>
-          <ArrowIcon onClick={goToPreviousPage} disabled={currentPage === 0}>&#8592;</ArrowIcon> {/* Left Arrow */}
-          <ArrowIcon onClick={goToNextPage} disabled={currentPage === 3}>&#8594;</ArrowIcon> {/* Right Arrow */}
-        </PaginationArrows>
       </FormContainer>
     </Container>
   );
@@ -164,23 +157,39 @@ const FareManagement = () => {
 
 // Styled-components
 const Container = styled.div`
-  max-width: 100%;
-  min-height: 100vh;
-  margin: 0;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  overflow-y: auto;
+  animation: fadeIn 1s ease-in-out;
 `;
 
 const Title = styled.h1`
   text-align: center;
-  color: #333;
   font-size: 2rem;
   margin-bottom: 20px;
+`;
+
+const NavBar = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
+
+const NavButton = styled.button`
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: ${(props) => (props.isActive ? '#C1F11D' : '#ddd')};
+  color: ${(props) => (props.isActive ? 'black' : 'gray')};
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  :hover {
+    background-color: #b3e2b2;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -189,17 +198,13 @@ const FormContainer = styled.div`
 `;
 
 const Section = styled.section`
-  background-color: #fff;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  animation: slideIn 1s ease-in-out;
 `;
 
 const SubTitle = styled.h2`
-  color: #333;
   font-size: 1.5rem;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 `;
 
 const FormGroup = styled.div`
@@ -231,26 +236,37 @@ const Button = styled.button`
   width: 100%;
 `;
 
-const PaginationArrows = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  gap: 20px;
+const fadeIn = `
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 `;
 
-const ArrowIcon = styled.span`
-  font-size: 2rem;
-  cursor: pointer;
-  color: #333;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.2);
+const slideIn = `
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
   }
+`;
 
-  &:disabled {
-    color: #aaa;
-    cursor: not-allowed;
+// Responsive media query
+const mediaQueries = `
+  @media (max-width: 768px) {
+    .title {
+      font-size: 1.5rem;
+    }
+    .button {
+      width: 100%;
+    }
   }
 `;
 
