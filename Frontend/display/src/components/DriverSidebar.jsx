@@ -1,36 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
-import { FaHome, FaHistory, FaCog, FaSignOutAlt, FaUserEdit } from "react-icons/fa";
+import { 
+  FaHome, 
+  FaHistory, 
+  FaCog, 
+  FaSignOutAlt, 
+  FaUserEdit, 
+  FaBars, 
+  FaTimes, 
+  FaUser 
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import FeedbackList from './FeedbackList';
 import RatingStar from './RatingStar';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+
+const Overlay = styled.div`
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+`;
 
 const SidebarContainer = styled.div`
-  width: 250px;
+  width: 200px;
   background: #f8f9fa;
-  padding: 1.5rem;
   height: 100vh;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e9ecef;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    transform: ${({ $isOpen }) => $isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+    width: 100%;
+    max-width: 300px;
+  }
+`;
+
+const MobileHeader = styled.div`
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+  }
+`;
+
+const HamburgerIcon = styled.div`
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: block;
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
 `;
 
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
   border-bottom: 1px solid #e9ecef;
-`;
-
-const ProfileImage = styled.img`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  margin-right: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const ProfileInfo = styled.div`
@@ -43,6 +93,8 @@ const Name = styled.h4`
   font-size: 1rem;
   font-weight: 600;
   color: #2d3748;
+  display: flex;
+  align-items: center;
 `;
 
 const Email = styled.p`
@@ -54,15 +106,16 @@ const Email = styled.p`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 100px);
+  height: calc(100% - 150px);
+  overflow-y: auto;
 `;
 
 const Navigation = styled.nav`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  padding: 0 1rem;
   margin-bottom: 1rem;
-  overflow-y: auto;
 `;
 
 const NavLink = styled(Link)`
@@ -76,8 +129,8 @@ const NavLink = styled(Link)`
   font-weight: 500;
 
   &:hover {
-    background: #edf2f7;
-    color: #2b6cb0;
+    background: #c1f11d;
+    color: #000000;
     transform: translateX(4px);
   }
 
@@ -91,7 +144,7 @@ const LogoutLink = styled(NavLink)`
   color: #e53e3e;
   border-top: 1px solid #e9ecef;
   padding-top: 1rem;
-  margin-top: -10px;
+  margin-top: 1rem;
 
   &:hover {
     background: #fff5f5;
@@ -100,7 +153,7 @@ const LogoutLink = styled(NavLink)`
 `;
 
 const ToggleButton = styled.button`
-  margin-top: 1rem;
+  margin: 1rem;
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 0.5rem;
@@ -117,19 +170,15 @@ const ToggleButton = styled.button`
 `;
 
 const FeedbackSection = styled.div`
+  padding: 0 1rem;
   margin-top: 1rem;
 `;
 
-const FeedbackTitle = styled.h5`
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #4a5568;
-`;
-
 const DriverSidebar = () => {
-  const [user, setUser] = useState({ name: "Loading...", email: "Loading...", profileImage: "" });
-  const [isActive, setIsActive] = useState(false); // Track availability status
+  const navigate = useNavigate();
+  const [user, setUser] = useState({ name: "Loading...", email: "Loading..." });
+  const [isActive, setIsActive] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -141,21 +190,20 @@ const DriverSidebar = () => {
         }
 
         const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id; // Assuming `userId` exists in the token
+        const userId = decodedToken.id;
 
         const response = await axios.get(`http://localhost:5000/api/driver/driver/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        const { firstName, lastName, email, profileImage, availability } = response.data.driver;
+        const { firstName, lastName, email, availability } = response.data.driver;
         setUser({
           name: `${firstName} ${lastName}`,
           email: email,
-          profileImage: profileImage || "https://via.placeholder.com/50",
         });
 
-        setIsActive(availability); // Set the initial state of the toggle based on the user's availability
+        setIsActive(availability);
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
       }
@@ -164,7 +212,6 @@ const DriverSidebar = () => {
     fetchUserProfile();
   }, []);
 
-  // Function to toggle availability
   const toggleActivation = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -174,12 +221,11 @@ const DriverSidebar = () => {
       }
       
       const decodedToken = jwtDecode(token);
-      const userId = decodedToken.id; // Assuming `userId` exists in the token
+      const userId = decodedToken.id;
 
-      // Send PUT request to update the availability
       await axios.put(
         `http://localhost:5000/api/driver/drivers/${userId}/toggle-availability`,
-        { availability: !isActive }, // Toggle the availability
+        { availability: !isActive },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -187,7 +233,6 @@ const DriverSidebar = () => {
         }
       );
 
-      // Update the local state to reflect the change
       setIsActive((prev) => !prev);
     } catch (error) {
       console.error("Failed to update availability:", error);
@@ -198,46 +243,62 @@ const DriverSidebar = () => {
     { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
     { icon: <FaUserEdit />, label: "Edit Profile", to: "/driver-update" },
     { icon: <FaCog />, label: "Earnings", to: "/earnings" },
-    { icon: <FaHistory />, label: "Help and Support", to: "/create-dispute" }, // New Help and Support Link
+    { icon: <FaHistory />, label: "Help and Support", to: "/create-dispute" },
   ];
   
-  
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  };
+
   return (
-    <SidebarContainer>
-      <ProfileSection>
-        <ProfileImage src={user.profileImage} alt="Profile" />
-        <ProfileInfo>
-          <Name>{user.name}</Name>
-          <Email>{user.email}</Email>
-        </ProfileInfo>
-      </ProfileSection>
+    <>
+      <MobileHeader>
+        <HamburgerIcon onClick={toggleMobileSidebar}>
+          {isMobileSidebarOpen ? <FaTimes /> : <FaBars />}
+        </HamburgerIcon>
+      </MobileHeader>
 
-      <ContentWrapper>
-        <Navigation>
-          {navigationItems.map((item) => (
-            <NavLink key={item.to} to={item.to}>
-              {item.icon}
-              {item.label}
-            </NavLink>
-          ))}
-        </Navigation>
+      <SidebarContainer $isOpen={isMobileSidebarOpen}>
+        <ProfileSection>
+          <FaUser style={{ fontSize: '2rem', marginRight: '1rem', color: '#4a5568' }} />
+          <ProfileInfo>
+            <Name>{user.name}</Name>
+            <Email>{user.email}</Email>
+          </ProfileInfo>
+        </ProfileSection>
 
-        <LogoutLink to="/logout">
-          <FaSignOutAlt />
-          Logout
-        </LogoutLink>
+        <ContentWrapper>
+          <Navigation>
+            {navigationItems.map((item) => (
+              <NavLink 
+                key={item.to} 
+                to={item.to} 
+                onClick={() => setIsMobileSidebarOpen(false)}
+              >
+                {item.icon}
+                {item.label}
+              </NavLink>
+            ))}
+          </Navigation>
 
-        <ToggleButton active={isActive} onClick={toggleActivation}>
-          {isActive ? "Active" : "Inactive"}
-        </ToggleButton>
 
-        <FeedbackSection>
-          <FeedbackTitle>Feedback</FeedbackTitle>
-          <FeedbackList />
-          <RatingStar />
-        </FeedbackSection>
-      </ContentWrapper>
-    </SidebarContainer>
+          <ToggleButton active={isActive} onClick={toggleActivation}>
+            {isActive ? "Active" : "Inactive"}
+          </ToggleButton>
+
+          <FeedbackSection>
+            <FeedbackList />
+            <RatingStar />
+          </FeedbackSection>
+
+          
+          <LogoutLink onClick={() => setIsMobileSidebarOpen(false)}>
+            <FaSignOutAlt />
+            Logout
+          </LogoutLink>
+        </ContentWrapper>
+      </SidebarContainer>
+    </>
   );
 };
 
