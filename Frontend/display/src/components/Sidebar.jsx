@@ -11,7 +11,6 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import API_BASE_URL from '../config/api';
 
 const Overlay = styled.div`
   display: none;
@@ -168,21 +167,28 @@ const Sidebar = () => {
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        if (!token) return;
+        if (!token) {
+          console.error("Token not found in localStorage");
+          return;
+        }
 
-        const decoded = jwtDecode(token);
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
         const response = await axios.get(
-          `${API_BASE_URL}/user/profile`,
+          `http://localhost:5000/api/user/profile`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
+
         setUser({
           name: `${response.data.firstName} ${response.data.lastName}`,
           wallet: response.data.wallet,
         });
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("Failed to fetch user profile:", error);
       }
     };
 

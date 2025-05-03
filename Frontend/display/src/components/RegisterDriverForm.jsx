@@ -10,10 +10,6 @@ import {
   Image,
   FileText,
 } from "lucide-react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import API_BASE_URL from '../config/api';
 
 const DriverRegisterForm = () => {
   const [step, setStep] = useState(1);
@@ -40,8 +36,6 @@ const DriverRegisterForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +60,6 @@ const DriverRegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     if (step !== 3) {
       return;
@@ -75,17 +68,31 @@ const DriverRegisterForm = () => {
     setLoading(true);
     setMessage("");
     console.log(formData);
+    const formDataToSubmit = new FormData();
+
+    // Append form fields to FormData
+    Object.keys(formData).forEach((key) => {
+      formDataToSubmit.append(key, formData[key]);
+    });
 
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/auth/register-driver`,
-        formData
+      const response = await fetch(
+        "http://localhost:5000/api/auth/register-driver",
+        {
+          method: "POST",
+          body: formDataToSubmit, // Use FormData instead of JSON.stringify
+        }
       );
-      console.log("Registration successful:", response.data);
-      navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
-      console.error("Registration failed:", err);
+
+      if (response.ok) {
+        setMessage("Registration successful!");
+      } else {
+        setMessage("Registration failed. Please try again.");
+      }
+      console.log("Response:", response);
+    } catch (error) {
+      setMessage("Registration failed. Please try again.");
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
@@ -332,7 +339,6 @@ const DriverRegisterForm = () => {
           </div>
 
           {message && <p className="error-message">{message}</p>}
-          {error && <p className="error-message">{error}</p>}
 
           {step === 1 && renderStepOne()}
           {step === 2 && renderStepTwo()}

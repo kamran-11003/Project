@@ -3,7 +3,6 @@ import styled from "styled-components";
 import RatingStar from "./RatingStar"; // Assuming this component is for showing ratings
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import API_BASE_URL from '../config/api';
 
 const FeedbackContainer = styled.div`
   display: flex;
@@ -42,15 +41,17 @@ const FeedbackList = ({ driverId }) => {
     const fetchFeedbacks = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
+        const decoded = jwtDecode(token);
+        const driverIdFromToken = decoded.id; // Get driverId from JWT token if needed
+        const driverId = driverIdFromToken;
         const response = await axios.get(
-          `${API_BASE_URL}/feedbacks/feedbacks/${driverId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          `http://localhost:5000/api/feedbacks/feedbacks/${driverId}`
         );
-        setFeedbacks(response.data);
+        console.log(response);
+        setFeedbacks(response.data.feedbacks);
       } catch (error) {
         console.error("Error fetching feedbacks:", error);
+        setError("Failed to load feedbacks.");
       }
     };
 

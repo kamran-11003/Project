@@ -3,7 +3,6 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import styled from "styled-components";
 import { DollarSign, Calendar, Loader } from "lucide-react";
-import API_BASE_URL from '../config/api';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -115,23 +114,51 @@ const EarningsSummary = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchEarningsSummary = async () => {
+    const fetchEarnings = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("jwtToken");
+
+        if (!token) {
+          setError("No JWT token found");
+          return;
+        }
+
+        const decodedToken = jwtDecode(token);
+        const driverId = decodedToken.id;
+
+        if (!driverId) {
+          setError("Driver ID not found in the token");
+          return;
+        }
+
         const response = await axios.get(
-          `${API_BASE_URL}/earnings/summary`,
+          "http://localhost:5000/api/earnings/summary",
           {
-            headers: { Authorization: `Bearer ${token}` },
+            params: {
+              driverId: driverId,
+              period: timeframe,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-        setSummary(response.data);
+
+        setSummary({
+          totalEarnings: response.data.totalEarnings,
+          details: response.data.data,
+        });
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching earnings summary:", error);
+        setLoading(false);
+        setError("Error fetching earnings: " + error.message);
+        console.error("Error fetching earnings:", error);
       }
     };
 
-    fetchEarningsSummary();
-  }, []);
+    fetchEarnings();
+  }, [timeframe]);
 
   return (
     <Container>

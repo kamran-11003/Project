@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, UserCheck } from "lucide-react";
-import API_BASE_URL from '../config/api';
 
 function LoginForm({ type }) {
   const [email, setEmail] = useState("");
@@ -13,11 +12,11 @@ function LoginForm({ type }) {
   const getApiEndpoint = (type) => {
     switch (type) {
       case "admin":
-        return `${API_BASE_URL}/auth/login-admin`;
+        return "http://localhost:5000/api/auth/login-admin";
       case "user":
-        return `${API_BASE_URL}/auth/login-user`;
+        return "http://localhost:5000/api/auth/login-user";
       case "driver":
-        return `${API_BASE_URL}/auth/login-driver`;
+        return "http://localhost:5000/api/auth/login-driver";
       default:
         throw new Error("Invalid user type");
     }

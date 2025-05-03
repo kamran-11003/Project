@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import API_BASE_URL from '../config/api';
-
 const RatingStar = ({ driverId }) => {
   const [averageRating, setAverageRating] = useState(0);
 
@@ -14,7 +12,7 @@ const RatingStar = ({ driverId }) => {
         const driverId = decoded.id;
         console.log(driverId);
         const response = await axios.get(
-          `${API_BASE_URL}/rating/average-rating/${driverId}`,
+          `http://localhost:5000/api/rating/average-rating/${driverId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

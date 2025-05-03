@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode"; // Don't forget to install jwt-decode
 import styled from "styled-components"; // Import styled-components
-import API_BASE_URL from '../config/api';
 
 const ProfileUpdate = () => {
   const [user, setUser] = useState({
@@ -34,7 +33,7 @@ const ProfileUpdate = () => {
 
       // Fetch user profile data if token and userId are found
       axios
-        .get(`${API_BASE_URL}/user/profile`, {
+        .get("http://localhost:5000/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -68,7 +67,7 @@ const ProfileUpdate = () => {
       }
 
       // Sending updated user data to the server
-      await axios.put(`${API_BASE_URL}/user/profile`, user, {
+      await axios.put("http://localhost:5000/api/user/profile", user, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

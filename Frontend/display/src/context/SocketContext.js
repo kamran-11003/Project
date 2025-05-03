@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode'; // Import the jwt-decode library
 
 const SocketContext = createContext();
@@ -17,7 +17,7 @@ export const SocketProvider = ({ children }) => {
   // Initialize socket connection
   useEffect(() => {
     // Initialize socket connection
-    socketRef.current = io({
+    socketRef.current = io('http://localhost:5000', {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,

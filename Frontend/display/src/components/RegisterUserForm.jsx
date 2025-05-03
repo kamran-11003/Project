@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { User, Mail, Lock, Phone, UserPlus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import API_BASE_URL from '../config/api';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -16,8 +13,6 @@ const RegisterForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,18 +23,17 @@ const RegisterForm = () => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-    setError("");
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/auth/register-user`,
+        "http://localhost:5000/api/auth/register-user",
         formData
       );
-      console.log("Registration successful:", response.data);
-      navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
-      console.error("Registration failed:", err);
+      setMessage("Registration successful!");
+      console.log("Response:", response.data);
+    } catch (error) {
+      setMessage("Registration failed. Please try again.");
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
@@ -66,7 +60,6 @@ const RegisterForm = () => {
           </div>
 
           {message && <p className="error-message">{message}</p>}
-          {error && <p className="error-message">{error}</p>}
 
           <div className="form-group">
             <User size={20} className="input-icon" />

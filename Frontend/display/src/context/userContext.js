@@ -1,8 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
-import { jwtDecode } from 'jwt-decode';
+import { createContext, useContext, useState, useEffect } from 'react';
+import io from 'socket.io-client';
+import {jwtDecode} from 'jwt-decode';
 
-export const UserContext = createContext();
+const UserContext = createContext();
+
+export const useUserContext = () => {
+  return useContext(UserContext);
+};
 
 export const UserProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
@@ -10,7 +14,7 @@ export const UserProvider = ({ children }) => {
 
   // Initialize socket connection
   useEffect(() => {
-    const socketConnection = io({
+    const socketConnection = io('http://localhost:5000', {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,

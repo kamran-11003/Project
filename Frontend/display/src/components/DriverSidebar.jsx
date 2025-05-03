@@ -15,7 +15,6 @@ import FeedbackList from "./FeedbackList";
 import RatingStar from "./RatingStar";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import API_BASE_URL from '../config/api';
 
 const Overlay = styled.div`
   display: none;
@@ -249,20 +248,27 @@ const DriverSidebar = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const fetchDriverProfile = async () => {
+    const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        if (!token) return;
+        if (!token) {
+          console.error("Token not found in localStorage");
+          return;
+        }
 
-        const decoded = jwtDecode(token);
-        const userId = decoded.id;
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.id;
+
         const response = await axios.get(
-          `${API_BASE_URL}/driver/driver/${userId}`,
+          `http://localhost:5000/api/driver/driver/${userId}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-        const { firstName, lastName, email, availability } = response.data.driver;
+        const { firstName, lastName, email, availability } =
+          response.data.driver;
         setUser({
           name: `${firstName} ${lastName}`,
           email: email,
@@ -270,38 +276,47 @@ const DriverSidebar = () => {
 
         setIsActive(availability);
       } catch (error) {
-        console.error("Error fetching driver profile:", error);
+        console.error("Failed to fetch user profile:", error);
       }
     };
 
-    fetchDriverProfile();
+    fetchUserProfile();
   }, []);
 
-  const toggleAvailability = async () => {
+  const toggleActivation = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
-      if (!token) return;
+      if (!token) {
+        console.error("Token not found in localStorage");
+        return;
+      }
 
-      const decoded = jwtDecode(token);
-      const userId = decoded.id;
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+
       await axios.put(
-        `${API_BASE_URL}/driver/drivers/${userId}/toggle-availability`,
-        {},
+        `http://localhost:5000/api/driver/drivers/${userId}/toggle-availability`,
+        { availability: !isActive },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
+
       setIsActive((prev) => !prev);
     } catch (error) {
-      console.error("Error toggling availability:", error);
+      console.error("Failed to update availability:", error);
     }
   };
 
-  const handleLogout = () => {
-    console.log("Logging out..."); // Debugging log
-    localStorage.removeItem("jwtToken");
-    navigate("/login-driver");  // Or try window.location.href = "/login";
-  };
+ const handleLogout = () => {
+  console.log("Logging out..."); // Debugging log
+  localStorage.removeItem("jwtToken");
+  navigate("/login-driver");  // Or try window.location.href = "/login";
+
+};
+
 
   const navigationItems = [
     { icon: <FaHome />, label: "Dashboard", to: "/driver-dashboard" },
@@ -316,6 +331,7 @@ const DriverSidebar = () => {
       label: "Help and Support",
       to: "/driver-dashboard/create-dispute",
     },
+    
   ];
 
   const toggleMobileSidebar = () => {
@@ -359,7 +375,7 @@ const DriverSidebar = () => {
 
           <ToggleContainer>
             <StatusText>{isActive ? "Active" : "Inactive"}</StatusText>
-            <ToggleSwitch active={isActive} onClick={toggleAvailability} />
+            <ToggleSwitch active={isActive} onClick={toggleActivation} />
           </ToggleContainer>
 
           <FeedbackSection $isOpen={isMobileSidebarOpen}>
