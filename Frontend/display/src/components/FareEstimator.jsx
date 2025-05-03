@@ -142,7 +142,7 @@ const FareEstimator = () => {
   useEffect(() => {
     const fetchFareData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/fare/fares");
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/fare/fares`);
         const data = await response.json();
 
         const multipliers = {};

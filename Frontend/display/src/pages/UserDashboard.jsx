@@ -31,9 +31,6 @@ const UserDashboard = () => {
     fare,
     pickupCoordinates,
     dropOffCoordinates,
-    setPickupCoordinates,
-    setDropOffCoordinates,
-    setDistance,
   } = useRideContext();
 
   const navigate = useNavigate();
@@ -98,7 +95,7 @@ const UserDashboard = () => {
   return (
     <Container>
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <MainContent isSidebarOpen={isSidebarOpen}>
+      <MainContent $isSidebarOpen={isSidebarOpen}>
         <Routes>
           <Route
             path="/"
@@ -175,12 +172,12 @@ const MainContent = styled.div`
   flex: 1;
   padding: 10px;
   overflow-y: auto;
-  margin-left: ${(props) => (props.isSidebarOpen ? "250px" : "70px")};
+  margin-left: ${(props) => (props.$isSidebarOpen ? "250px" : "70px")};
   transition: margin-left 0.3s ease;
 
   @media (min-width: 1024px) {
     margin-left: ${(props) =>
-      props.isSidebarOpen ? "300px" : "100px"}; /* Adjust for larger screens */
+      props.$isSidebarOpen ? "300px" : "100px"}; /* Adjust for larger screens */
   }
 
   @media (max-width: 768px) {

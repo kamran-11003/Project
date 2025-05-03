@@ -3,7 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 
 // Set up Axios defaults for global token handling
-axios.defaults.baseURL = "http://localhost:5000/api";
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || "/api";
 axios.interceptors.request.use((config) => {
   const jwtToken = localStorage.getItem("jwtToken"); // Retrieve the token from localStorage
   if (jwtToken) {
@@ -81,19 +81,19 @@ const UserManagement = () => {
       <NavBar>
         <NavButton
           onClick={() => setCurrentSection(1)}
-          isActive={currentSection === 1}
+          $isActive={currentSection === 1}
         >
           Suspended or Banned Users
         </NavButton>
         <NavButton
           onClick={() => setCurrentSection(2)}
-          isActive={currentSection === 2}
+          $isActive={currentSection === 2}
         >
           Update User Status
         </NavButton>
         <NavButton
           onClick={() => setCurrentSection(3)}
-          isActive={currentSection === 3}
+          $isActive={currentSection === 3}
         >
           Delete User
         </NavButton>
@@ -173,6 +173,14 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
   animation: fadeIn 1s ease-in-out;
 `;
 
@@ -206,8 +214,8 @@ const NavBar = styled.div`
 const NavButton = styled.button`
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: ${(props) => (props.isActive ? "#C1F11D" : "#ddd")};
-  color: ${(props) => (props.isActive ? "black" : "gray")};
+  background-color: ${(props) => (props.$isActive ? "#C1F11D" : "#ddd")};
+  color: ${(props) => (props.$isActive ? "black" : "gray")};
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -231,6 +239,16 @@ const FormContainer = styled.div`
 
 const Section = styled.section`
   margin: 20px 0;
+  @keyframes slideIn {
+    from {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
   animation: slideIn 1s ease-in-out;
 `;
 
@@ -321,30 +339,6 @@ const Button = styled.button`
 
   @media (max-width: 768px) {
     font-size: 0.9rem;
-  }
-`;
-
-const fadeIn = `
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-`;
-
-const slideIn = `
-  @keyframes slideIn {
-    from {
-      transform: translateX(-20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
   }
 `;
 

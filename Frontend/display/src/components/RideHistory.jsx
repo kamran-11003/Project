@@ -111,7 +111,7 @@ const RideHistory = () => {
 
         // Fetching ride history
         const response = await axios.get(
-          `http://localhost:5000/api/ride/rides/user/${userId}`,
+          `${process.env.REACT_APP_API_URL}/api/ride/rides/user/${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

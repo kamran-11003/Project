@@ -13,7 +13,7 @@ const DisputeManagement = () => {
     const fetchDisputes = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/disputes/admin/disputes",
+          `${process.env.REACT_APP_API_URL}/api/disputes/admin/disputes`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -55,7 +55,7 @@ const DisputeManagement = () => {
 
     try {
       await axios.put(
-        "http://localhost:5000/api/disputes/admin/dispute/resolve",
+        `${process.env.REACT_APP_API_URL}/api/disputes/admin/dispute/resolve`,
         { disputeId, resolutionMessage: message },
         {
           headers: {
@@ -65,7 +65,7 @@ const DisputeManagement = () => {
       );
       alert("Dispute resolved successfully!");
       const response = await axios.get(
-        "http://localhost:5000/api/disputes/admin/disputes",
+        `${process.env.REACT_APP_API_URL}/api/disputes/admin/disputes`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,

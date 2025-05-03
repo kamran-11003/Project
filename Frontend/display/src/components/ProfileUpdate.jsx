@@ -33,7 +33,7 @@ const ProfileUpdate = () => {
 
       // Fetch user profile data if token and userId are found
       axios
-        .get("http://localhost:5000/api/user/profile", {
+        .get(`${process.env.REACT_APP_API_URL}/api/user/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -67,7 +67,7 @@ const ProfileUpdate = () => {
       }
 
       // Sending updated user data to the server
-      await axios.put("http://localhost:5000/api/user/profile", user, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/user/profile`, user, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

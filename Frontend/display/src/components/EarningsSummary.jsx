@@ -133,7 +133,7 @@ const EarningsSummary = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:5000/api/earnings/summary",
+          `${process.env.REACT_APP_API_URL}/api/earnings/summary`,
           {
             params: {
               driverId: driverId,

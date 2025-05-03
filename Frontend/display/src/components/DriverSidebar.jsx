@@ -260,7 +260,7 @@ const DriverSidebar = () => {
         const userId = decodedToken.id;
 
         const response = await axios.get(
-          `http://localhost:5000/api/driver/driver/${userId}`,
+          `${process.env.REACT_APP_API_URL}/api/driver/driver/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -295,7 +295,7 @@ const DriverSidebar = () => {
       const userId = decodedToken.id;
 
       await axios.put(
-        `http://localhost:5000/api/driver/drivers/${userId}/toggle-availability`,
+        `/api/driver/drivers/${userId}/toggle-availability`,
         { availability: !isActive },
         {
           headers: {

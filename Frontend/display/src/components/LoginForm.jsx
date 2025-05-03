@@ -12,11 +12,11 @@ function LoginForm({ type }) {
   const getApiEndpoint = (type) => {
     switch (type) {
       case "admin":
-        return "http://localhost:5000/api/auth/login-admin";
+        return `${process.env.REACT_APP_API_URL}/api/auth/login-admin`;
       case "user":
-        return "http://localhost:5000/api/auth/login-user";
+        return `${process.env.REACT_APP_API_URL}/api/auth/login-user`;
       case "driver":
-        return "http://localhost:5000/api/auth/login-driver";
+        return `${process.env.REACT_APP_API_URL}/api/auth/login-driver`;
       default:
         throw new Error("Invalid user type");
     }

@@ -106,7 +106,7 @@ const DriverProfileUpdate = () => {
       setDriverId(decoded.id);
 
       axios
-        .get(`http://localhost:5000/api/driver/driver/${decoded.id}`, {
+        .get(`${process.env.REACT_APP_API_URL}/api/driver/driver/${decoded.id}`, {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },
@@ -140,7 +140,7 @@ const DriverProfileUpdate = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/driver/driver/${driverId}`,
+        `${process.env.REACT_APP_API_URL}/api/driver/driver/${driverId}`,
         driver,
         {
           headers: {

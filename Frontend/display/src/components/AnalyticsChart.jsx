@@ -14,7 +14,7 @@ const AnalyticsChart = () => {
     const fetchAnalyticsData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/analytic/analytics-data"
+          `${process.env.REACT_APP_API_URL}/api/analytic/analytics-data`
         );
         const data = await response.json();
         if (data.success) {
@@ -32,7 +32,7 @@ const AnalyticsChart = () => {
     const fetchActiveUsersCount = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/activeuser/active-users"
+          `${process.env.REACT_APP_API_URL}/api/activeuser/active-users`
         );
         const data = await response.json();
         if (data.success) {

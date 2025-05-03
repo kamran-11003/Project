@@ -77,10 +77,10 @@ const DriverRegisterForm = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/register-driver",
+        `${process.env.REACT_APP_API_URL}/api/auth/register-driver`,
         {
           method: "POST",
-          body: formDataToSubmit, // Use FormData instead of JSON.stringify
+          body: formDataToSubmit,
         }
       );
 

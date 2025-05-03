@@ -13,12 +13,12 @@ const RatingStar = ({ driverId }) => {
     try {
       const token = localStorage.getItem("jwtToken");
       await axios.post(
-        `http://localhost:5000/api/rating/rate`,
+        `${process.env.REACT_APP_API_URL}/api/rating/rate`,
         { driverId, rating: userRating },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       await axios.post(
-        `http://localhost:5000/api/feedbacks/add`,
+        `${process.env.REACT_APP_API_URL}/api/feedbacks/add`,
         { driverId, feedback: newFeedback },
         { headers: { Authorization: `Bearer ${token}` } }
       );

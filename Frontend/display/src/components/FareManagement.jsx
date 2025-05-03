@@ -20,7 +20,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .put(
-        "http://localhost:5000/api/admin/fare/update",
+        `${process.env.REACT_APP_API_URL}/api/admin/fare/update`,
         { rideType, fareMultiplier },
         {
           headers: {
@@ -37,7 +37,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .post(
-        "http://localhost:5000/api/admin/promotion/add",
+        `${process.env.REACT_APP_API_URL}/api/admin/promotion/add`,
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {
@@ -54,7 +54,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .delete(
-        "http://localhost:5000/api/admin/promotion/remove",
+        `${process.env.REACT_APP_API_URL}/api/admin/promotion/remove`,
         { data: { rideType, promotionCode } },
         {
           headers: {
@@ -71,7 +71,7 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .put(
-        "http://localhost:5000/api/admin/promotion/update",
+        `${process.env.REACT_APP_API_URL}/api/admin/promotion/update`,
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {

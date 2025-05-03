@@ -16,7 +16,7 @@ const DriverManagement = () => {
 
   // Axios instance with JWT token
   const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api",
+    baseURL: process.env.REACT_APP_API_URL || "/api",
   });
 
   // Interceptor to include JWT in Authorization header

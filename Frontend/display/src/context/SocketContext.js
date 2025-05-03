@@ -17,11 +17,7 @@ export const SocketProvider = ({ children }) => {
   // Initialize socket connection
   useEffect(() => {
     // Initialize socket connection
-    socketRef.current = io('http://localhost:5000', {
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
+    socketRef.current = io(process.env.REACT_APP_API_URL);
 
     socketRef.current.on('connect', () => {
       console.log('Connected to socket server');

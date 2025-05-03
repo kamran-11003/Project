@@ -148,7 +148,7 @@ const CreateDisputeUser = () => {
       const userId = decodedToken.id;
 
       const response = await axios.post(
-        "http://localhost:5000/api/disputes/dispute",
+        `${process.env.REACT_APP_API_URL}/api/disputes/dispute`,
         {
           userId,
           issueDescription,

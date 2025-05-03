@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const connectDB = require("./config/db");
 const http = require("http");
 const socketIo = require("socket.io");
+const path = require("path");
 const fetch = require("node-fetch"); // Import fetch for server-side use
 const MAPBOX_ACCESS_TOKEN =
 "pk.eyJ1IjoiYWJkdWxoYW5hbmNoIiwiYSI6ImNtYTg0bjFwaTE1eTAybXNpbnN4ZjhtdDkifQ.OTr8OcuHq7i2ihESOqDMwg";
@@ -50,7 +51,8 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     "default-src 'self'; " +
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static-assets.mapbox.com https://js.stripe.com https://m.stripe.com https://m.stripe.network https://api.segment.io http://cdn.segment.com https://cdn.segment.com http://munchkin.marketo.net https://munchkin.marketo.net https://assets.customer.io https://www.google-analytics.com http://www.google-analytics.com https://connect.facebook.net https://solve-widget.forethought.ai https://risk.clearbit.com/v1/risk.js https://www.gstatic.com https://www.recaptcha.net https://go.mapbox.com *.googletagmanager.com https://googleads.g.doubleclick.net; " +
-    "connect-src 'self' https://www.mapbox.com https://api.mapbox.com https://static-assets.mapbox.com https://fastly-staging.tilestream.net https://cloudfront-staging.tilestream.net https://api.stripe.com https://api.segment.io http://api.segment.io https://sentry.io https://117-nxk-490.mktoresp.com http://117-nxk-490.mktoresp.com https://app.launchdarkly.com https://events.launchdarkly.com https://clientstream.launchdarkly.com ws://*:8080 http://localhost:* https://risk.clearbit.com/v1/fingerprint https://cdn.segment.com https://stats.g.doubleclick.net https://go.mapbox.com *.google-analytics.com *.analytics.google.com *.googletagmanager.com https://www.google.com; " +
+    "worker-src 'self' blob:; " +
+    "connect-src 'self' https://www.mapbox.com https://api.mapbox.com https://static-assets.mapbox.com https://fastly-staging.tilestream.net https://cloudfront-staging.tilestream.net https://api.stripe.com https://api.segment.io http://api.segment.io https://sentry.io https://117-nxk-490.mktoresp.com http://117-nxk-490.mktoresp.com https://app.launchdarkly.com https://events.launchdarkly.com https://clientstream.launchdarkly.com ws://*:8080 http://localhost:* https://risk.clearbit.com/v1/fingerprint https://cdn.segment.com https://stats.g.doubleclick.net https://go.mapbox.com *.google-analytics.com *.analytics.google.com *.googletagmanager.com https://www.google.com https://events.mapbox.com; " +
     "img-src 'self' data: https://*.mapbox.com https://*.google-analytics.com https://*.googletagmanager.com https://*.google.com; " +
     "style-src 'self' 'unsafe-inline' https://*.mapbox.com; " +
     "frame-src 'self' https://*.google.com https://*.googletagmanager.com;"
@@ -84,7 +86,11 @@ app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/analytic", analyticsRoutes);
 app.use("/api/activeuser", router);
 app.use("/api/disputes", disputeRoutes);
+app.use(express.static(path.join(__dirname, '../build')));
 
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../build/index.html'));
+});
 const fetchDistance = (pickupLocation, dropOffLocation) => {
   if (!pickupLocation || !dropOffLocation)
     return Promise.reject("Invalid locations");

@@ -17,7 +17,7 @@ const RideCard = styled.div`
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 2px solid ${(props) => (props.isSelected ? "#4299e1" : "#e2e8f0")};
+  border: 2px solid ${(props) => (props.$isSelected ? "#4299e1" : "#e2e8f0")};
   text-align: center;
 
   &:hover {
@@ -29,7 +29,7 @@ const RideCard = styled.div`
 const IconWrapper = styled.div`
   font-size: 1.75rem;
   margin-bottom: 0.5rem;
-  color: ${(props) => (props.isSelected ? "#4299e1" : "#4a5568")};
+  color: ${(props) => (props.$isSelected ? "#4299e1" : "#4a5568")};
 `;
 
 const RideName = styled.p`
@@ -63,10 +63,10 @@ const RideSelector = ({ selectedRide, onSelectRide }) => {
       {rides.map((ride) => (
         <SwiperSlide key={ride.name}>
           <RideCard
-            isSelected={selectedRide === ride.name}
+            $isSelected={selectedRide === ride.name}
             onClick={() => onSelectRide(ride.name)}
           >
-            <IconWrapper isSelected={selectedRide === ride.name}>
+            <IconWrapper $isSelected={selectedRide === ride.name}>
               <ride.icon />
             </IconWrapper>
             <RideName>{ride.name}</RideName>

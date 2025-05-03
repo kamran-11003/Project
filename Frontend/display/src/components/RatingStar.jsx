@@ -12,7 +12,7 @@ const RatingStar = ({ driverId }) => {
         const driverId = decoded.id;
         console.log(driverId);
         const response = await axios.get(
-          `http://localhost:5000/api/rating/average-rating/${driverId}`,
+          `${process.env.REACT_APP_API_URL}/api/rating/average-rating/${driverId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

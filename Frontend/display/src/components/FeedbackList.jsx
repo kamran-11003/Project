@@ -45,7 +45,7 @@ const FeedbackList = ({ driverId }) => {
         const driverIdFromToken = decoded.id; // Get driverId from JWT token if needed
         const driverId = driverIdFromToken;
         const response = await axios.get(
-          `http://localhost:5000/api/feedbacks/feedbacks/${driverId}`
+          `${process.env.REACT_APP_API_URL}/api/feedbacks/feedbacks/${driverId}`
         );
         console.log(response);
         setFeedbacks(response.data.feedbacks);

@@ -14,11 +14,7 @@ export const UserProvider = ({ children }) => {
 
   // Initialize socket connection
   useEffect(() => {
-    const socketConnection = io('http://localhost:5000', {
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
+    const socketConnection = io(process.env.REACT_APP_API_URL);
     setSocket(socketConnection);
 
     return () => {

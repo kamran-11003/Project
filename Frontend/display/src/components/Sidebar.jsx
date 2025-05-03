@@ -175,7 +175,7 @@ const Sidebar = () => {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
         const response = await axios.get(
-          `http://localhost:5000/api/user/profile`,
+          `${process.env.REACT_APP_API_URL}/api/user/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
