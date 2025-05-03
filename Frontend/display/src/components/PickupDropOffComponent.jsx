@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaMapMarkerAlt, FaLocationArrow } from "react-icons/fa";
 
 const mapboxAccessToken =
-  "pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ";
+"pk.eyJ1IjoiYWJkdWxoYW5hbmNoIiwiYSI6ImNtYTg0bjFwaTE1eTAybXNpbnN4ZjhtdDkifQ.OTr8OcuHq7i2ihESOqDMwg";
 
 const FormContainer = styled.form`
   display: flex;

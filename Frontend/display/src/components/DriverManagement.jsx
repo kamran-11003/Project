@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import API_BASE_URL from '../config/api';
+
+// Set up Axios defaults for global token handling
+axios.defaults.baseURL = API_BASE_URL;
+axios.interceptors.request.use((config) => {
+  const jwtToken = localStorage.getItem("jwtToken");
+  if (jwtToken) {
+    config.headers.Authorization = `Bearer ${jwtToken}`;
+  }
+  return config;
+});
 
 const DriverManagement = () => {
   const [drivers, setDrivers] = useState([]);
@@ -9,33 +20,9 @@ const DriverManagement = () => {
   const [message, setMessage] = useState("");
   const [currentSection, setCurrentSection] = useState(1); // Track the current section
 
-  // Get JWT Token from localStorage
-  const getJwtToken = () => {
-    return localStorage.getItem("jwtToken");
-  };
-
-  // Axios instance with JWT token
-  const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api",
-  });
-
-  // Interceptor to include JWT in Authorization header
-  axiosInstance.interceptors.request.use(
-    (config) => {
-      const jwtToken = getJwtToken();
-      if (jwtToken) {
-        config.headers["Authorization"] = `Bearer ${jwtToken}`;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
-
   // Fetch suspended or banned drivers
   useEffect(() => {
-    axiosInstance
+    axios
       .get("/admin/suspended-banned-drivers")
       .then((response) => {
         const driversData = response.data.drivers;
@@ -59,7 +46,7 @@ const DriverManagement = () => {
       return setMessage("Invalid Driver ID");
     }
 
-    axiosInstance
+    axios
       .put("/admin/driver/status", { driverId, status })
       .then((response) => {
         setMessage(response.data.message);
@@ -84,7 +71,7 @@ const DriverManagement = () => {
       return setMessage("Please provide a Driver ID");
     }
 
-    axiosInstance
+    axios
       .put("/admin/driver/approve", { driverId })
       .then((response) => {
         setMessage(response.data.message);
@@ -101,7 +88,7 @@ const DriverManagement = () => {
       return setMessage("Please provide a Driver ID");
     }
 
-    axiosInstance
+    axios
       .delete("/admin/driver/delete", { data: { driverId } })
       .then((response) => {
         setMessage(response.data.message);

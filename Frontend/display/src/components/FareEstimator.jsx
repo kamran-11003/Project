@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { jwtDecode } from "jwt-decode";
 import { useRideContext } from "../context/rideContext"; // Import the context hook
 import { useSocket } from "../context/SocketContext"; // Import the SocketContext
+import axios from "axios";
+import API_BASE_URL from '../config/api';
 
 // Styled Components
 const Container = styled.div`
@@ -142,7 +144,7 @@ const FareEstimator = () => {
   useEffect(() => {
     const fetchFareData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/fare/fares");
+        const response = await fetch(`${API_BASE_URL}/fare/fares`);
         const data = await response.json();
 
         const multipliers = {};

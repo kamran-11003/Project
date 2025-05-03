@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { jwtDecode } from "jwt-decode";
+import API_BASE_URL from '../config/api';
 
 // Styled components for the Ride History page
 const RideHistoryContainer = styled.div`
@@ -111,7 +112,7 @@ const RideHistory = () => {
 
         // Fetching ride history
         const response = await axios.get(
-          `http://localhost:5000/api/ride/rides/user/${userId}`,
+          `${API_BASE_URL}/ride/rides/user/${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

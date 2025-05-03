@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import API_BASE_URL from '../config/api';
 
 const DisputeManagement = () => {
   const [disputes, setDisputes] = useState([]);
@@ -12,23 +13,22 @@ const DisputeManagement = () => {
   useEffect(() => {
     const fetchDisputes = async () => {
       try {
+        const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
-          "http://localhost:5000/api/disputes/admin/disputes",
+          `${API_BASE_URL}/disputes/admin/disputes`,
           {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setDisputes(response.data.disputes);
-        setFilteredDisputes(response.data.disputes);
+        setDisputes(response.data);
+        setFilteredDisputes(response.data);
       } catch (error) {
         console.error("Error fetching disputes:", error);
       }
     };
 
     fetchDisputes();
-  }, [jwtToken]);
+  }, []);
 
   useEffect(() => {
     if (filter === "All") {
@@ -54,25 +54,22 @@ const DisputeManagement = () => {
     }
 
     try {
-      await axios.put(
-        "http://localhost:5000/api/disputes/admin/dispute/resolve",
+      const token = localStorage.getItem("jwtToken");
+      await axios.post(
+        `${API_BASE_URL}/disputes/admin/dispute/resolve`,
         { disputeId, resolutionMessage: message },
         {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       alert("Dispute resolved successfully!");
       const response = await axios.get(
-        "http://localhost:5000/api/disputes/admin/disputes",
+        `${API_BASE_URL}/disputes/admin/disputes`,
         {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setDisputes(response.data.disputes);
+      setDisputes(response.data);
     } catch (error) {
       console.error("Error resolving dispute:", error);
     }

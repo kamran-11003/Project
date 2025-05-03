@@ -7,7 +7,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const fetch = require("node-fetch"); // Import fetch for server-side use
 const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ";
+"pk.eyJ1IjoiYWJkdWxoYW5hbmNoIiwiYSI6ImNtYTg0bjFwaTE1eTAybXNpbnN4ZjhtdDkifQ.OTr8OcuHq7i2ihESOqDMwg";
 const Driver = require("./models/Driver"); // Driver model
 const Ride = require("./models/ride");
 const Earnings = require("./models/Earnings");
@@ -43,6 +43,21 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
+// Add Content Security Policy headers
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static-assets.mapbox.com https://js.stripe.com https://m.stripe.com https://m.stripe.network https://api.segment.io http://cdn.segment.com https://cdn.segment.com http://munchkin.marketo.net https://munchkin.marketo.net https://assets.customer.io https://www.google-analytics.com http://www.google-analytics.com https://connect.facebook.net https://solve-widget.forethought.ai https://risk.clearbit.com/v1/risk.js https://www.gstatic.com https://www.recaptcha.net https://go.mapbox.com *.googletagmanager.com https://googleads.g.doubleclick.net; " +
+    "connect-src 'self' https://www.mapbox.com https://api.mapbox.com https://static-assets.mapbox.com https://fastly-staging.tilestream.net https://cloudfront-staging.tilestream.net https://api.stripe.com https://api.segment.io http://api.segment.io https://sentry.io https://117-nxk-490.mktoresp.com http://117-nxk-490.mktoresp.com https://app.launchdarkly.com https://events.launchdarkly.com https://clientstream.launchdarkly.com ws://*:8080 http://localhost:* https://risk.clearbit.com/v1/fingerprint https://cdn.segment.com https://stats.g.doubleclick.net https://go.mapbox.com *.google-analytics.com *.analytics.google.com *.googletagmanager.com https://www.google.com; " +
+    "img-src 'self' data: https://*.mapbox.com https://*.google-analytics.com https://*.googletagmanager.com https://*.google.com; " +
+    "style-src 'self' 'unsafe-inline' https://*.mapbox.com; " +
+    "frame-src 'self' https://*.google.com https://*.googletagmanager.com;"
+  );
+  next();
+});
+
 router.get("/active-users", (req, res) => {
   try {
     res.json({
@@ -194,7 +209,7 @@ io.on("connection", (socket) => {
               console.log("Distance from driver to user:", distance);
 
               // Add the driver to nearbyDrivers if within 5 km (5000 meters)
-              if (distance <= 5000) {
+              if (distance <= 500000) {
                 nearbyDrivers.push({
                   driverId: activeDriver.userId,
                   distance,

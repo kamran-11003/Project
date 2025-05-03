@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import API_BASE_URL from '../config/api';
 
 const FareManagement = () => {
   const [rideType, setRideType] = useState("");
@@ -20,11 +21,11 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .put(
-        "http://localhost:5000/api/admin/fare/update",
+        `${API_BASE_URL}/admin/fare/update`,
         { rideType, fareMultiplier },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -37,11 +38,11 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .post(
-        "http://localhost:5000/api/admin/promotion/add",
+        `${API_BASE_URL}/admin/promotion/add`,
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -54,11 +55,11 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .delete(
-        "http://localhost:5000/api/admin/promotion/remove",
+        `${API_BASE_URL}/admin/promotion/remove`,
         { data: { rideType, promotionCode } },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -71,11 +72,11 @@ const FareManagement = () => {
     const token = getJwtToken();
     axios
       .put(
-        "http://localhost:5000/api/admin/promotion/update",
+        `${API_BASE_URL}/admin/promotion/update`,
         { rideType, promotionCode, discountPercentage, validUntil },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Send JWT token as Authorization header
+            Authorization: `Bearer ${token}`,
           },
         }
       )

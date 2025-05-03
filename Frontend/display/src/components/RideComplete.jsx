@@ -2,33 +2,49 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import API_BASE_URL from '../config/api';
 
 // Rating Component
 const RatingStar = ({ driverId }) => {
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState(0);
   const [newFeedback, setNewFeedback] = useState("");
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
-  const submitRating = async () => {
+  const handleRatingSubmit = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
       await axios.post(
-        `http://localhost:5000/api/rating/rate`,
-        { driverId, rating: userRating },
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${API_BASE_URL}/rating/rate`,
+        { driverId, rating: userRating, comment: newFeedback },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      await axios.post(
-        `http://localhost:5000/api/feedbacks/add`,
-        { driverId, feedback: newFeedback },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Rating and feedback submitted!");
+      setRatingSubmitted(true);
       setNewFeedback("");
       setUserRating(0);
       navigate("/user-dashboard");
     } catch (error) {
       console.error("Error submitting rating:", error);
       alert("Failed to submit rating.");
+    }
+  };
+
+  const handleFeedbackSubmit = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      await axios.post(
+        `${API_BASE_URL}/feedbacks/add`,
+        { driverId, feedback: newFeedback },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setFeedbackSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
     }
   };
 
@@ -59,7 +75,7 @@ const RatingStar = ({ driverId }) => {
         onChange={(e) => setNewFeedback(e.target.value)}
         rows="3"
       />
-      <SubmitButton onClick={submitRating}>Submit</SubmitButton>
+      <SubmitButton onClick={handleRatingSubmit}>Submit</SubmitButton>
     </RatingSection>
   );
 };

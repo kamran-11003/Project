@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import styled from "styled-components";
+import API_BASE_URL from '../config/api';
 
 const AnalyticsChart = () => {
   const [analyticsData, setAnalyticsData] = useState(null);
@@ -14,7 +15,7 @@ const AnalyticsChart = () => {
     const fetchAnalyticsData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/analytic/analytics-data"
+          `${API_BASE_URL}/analytic/analytics-data`
         );
         const data = await response.json();
         if (data.success) {
@@ -32,7 +33,7 @@ const AnalyticsChart = () => {
     const fetchActiveUsersCount = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/activeuser/active-users"
+          `${API_BASE_URL}/activeuser/active-users`
         );
         const data = await response.json();
         if (data.success) {

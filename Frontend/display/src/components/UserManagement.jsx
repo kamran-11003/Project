@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import API_BASE_URL from '../config/api';
 
 // Set up Axios defaults for global token handling
-axios.defaults.baseURL = "http://localhost:5000/api";
+axios.defaults.baseURL = API_BASE_URL;
 axios.interceptors.request.use((config) => {
   const jwtToken = localStorage.getItem("jwtToken"); // Retrieve the token from localStorage
   if (jwtToken) {

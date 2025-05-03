@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { AlertTriangle, Send } from "lucide-react";
+import API_BASE_URL from '../config/api';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -133,7 +134,7 @@ const CreateDispute = () => {
       const driverId = decodedToken.id;
 
       const response = await axios.post(
-        "http://localhost:5000/api/disputes/dispute",
+        `${API_BASE_URL}/disputes/dispute`,
         {
           driverId,
           issueDescription,

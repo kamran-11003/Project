@@ -3,6 +3,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import styled from "styled-components";
 import { User, Mail, Phone, Car, Lock, UserCheck } from "lucide-react";
+import API_BASE_URL from '../config/api';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -99,33 +100,33 @@ const DriverProfileUpdate = () => {
   const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("jwtToken");
-    if (storedToken) {
-      setToken(storedToken);
-      const decoded = jwtDecode(storedToken);
-      setDriverId(decoded.id);
+    const fetchDriverProfile = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) return;
 
-      axios
-        .get(`http://localhost:5000/api/driver/driver/${decoded.id}`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-        })
-        .then((response) => {
-          const driverData = response.data;
-          setDriver({
-            firstName: driverData.firstName,
-            lastName: driverData.lastName,
-            email: driverData.email,
-            phone: driverData.phone,
-            vehicleDetails: driverData.vehicleDetails,
-            password: "",
-          });
-        })
-        .catch((err) => {
-          setError("Failed to load driver data.");
+        const decoded = jwtDecode(token);
+        const response = await axios.get(
+          `${API_BASE_URL}/driver/driver/${decoded.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setDriver({
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          email: response.data.email,
+          phone: response.data.phone,
+          vehicleDetails: response.data.vehicleDetails,
+          password: "",
         });
-    }
+        setDriverId(decoded.id);
+      } catch (error) {
+        console.error("Error fetching driver profile:", error);
+      }
+    };
+
+    fetchDriverProfile();
   }, []);
 
   const handleChange = (e) => {
@@ -135,25 +136,22 @@ const DriverProfileUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError("");
-
     try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) return;
+
+      const decoded = jwtDecode(token);
+      const driverId = decoded.id;
       await axios.put(
-        `http://localhost:5000/api/driver/driver/${driverId}`,
+        `${API_BASE_URL}/driver/driver/${driverId}`,
         driver,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setIsLoading(false);
-      alert("Profile updated successfully");
+      alert("Profile updated successfully!");
     } catch (error) {
-      setIsLoading(false);
-      setError("Failed to update profile.");
+      console.error("Error updating driver profile:", error);
     }
   };
 

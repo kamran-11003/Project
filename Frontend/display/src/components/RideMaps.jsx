@@ -5,7 +5,7 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 const MapboxDirections = require("@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions");
 
 mapboxgl.accessToken =
-  "pk.eyJ1Ijoia2FtcmFuLTAwMyIsImEiOiJjbTQzM3NoOWowNzViMnFzNHBwb2wwZ2k0In0.DHxC51GY9USAaRFeqH7awQ";
+"pk.eyJ1IjoiYWJkdWxoYW5hbmNoIiwiYSI6ImNtYTg0bjFwaTE1eTAybXNpbnN4ZjhtdDkifQ.OTr8OcuHq7i2ihESOqDMwg";
 
 const RideMaps = ({ pickup, dropOff }) => {
   const mapContainerRef = useRef(null);
