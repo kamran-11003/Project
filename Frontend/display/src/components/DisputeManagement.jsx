@@ -150,12 +150,15 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #fafafa;
-  animation: fadeIn 1s ease-in-out;
-
-  @media (max-width: 768px) {
-    padding: 15px;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
+  animation: fadeIn 1s ease-in-out;
 `;
 
 const Title = styled.h1`
@@ -292,28 +295,4 @@ const ResolutionMessage = styled.p`
 const Divider = styled.hr`
   margin-top: 20px;
   border: 1px solid #ccc;
-`;
-
-const fadeIn = `
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-`;
-
-const slideIn = `
-  @keyframes slideIn {
-    from {
-      transform: translateX(-20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
 `;

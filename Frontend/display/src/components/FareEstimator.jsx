@@ -123,20 +123,33 @@ const FareEstimator = () => {
     dropOff,
     selectedRide,
     distance,
-    fare,
     setFare,
     pickupCoordinates,
     dropOffCoordinates,
   } = useRideContext();
-  const { userId, socket } = useSocket(); // Get userId and socket from SocketContext
+  const { userId, socket } = useSocket();
+
+  const calculateBaseFare = (rideType, distance) => {
+    const baseFare = 100;
+    const perKmRate = 20;
+    return baseFare + (distance * perKmRate);
+  };
 
   const [fareMultipliers, setFareMultipliers] = useState({});
   const [recommendedFare, setRecommendedFare] = useState(0);
-  const [customBid, setCustomBid] = useState(""); // Initialize as an empty string
+  const [customBid, setCustomBid] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [promotions, setPromotions] = useState([]);
   const [discount, setDiscount] = useState(0);
   const [error, setError] = useState("");
+  const [estimatedFare, setEstimatedFare] = useState(0);
+
+  useEffect(() => {
+    if (distance > 0 && selectedRide) {
+      const baseFare = calculateBaseFare(selectedRide, distance);
+      setEstimatedFare(baseFare);
+    }
+  }, [distance, selectedRide]);
 
   // Fetch fare multipliers from API
   useEffect(() => {
@@ -174,7 +187,7 @@ const FareEstimator = () => {
         setFare(calculatedFare - discount); // Apply discount
       }
     }
-  }, [selectedRide, distance, fareMultipliers, discount]);
+  }, [selectedRide, distance, fareMultipliers, discount, setFare]);
 
   const handleBidChange = (e) => {
     const bid = e.target.value;

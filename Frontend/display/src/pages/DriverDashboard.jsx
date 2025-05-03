@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import DriverSidebar from "../components/DriverSidebar";
-import DriverMap from "../components/DriverMap";
 import RideRequest from "../components/RideRequest";
 import { Routes, Route } from "react-router-dom";
 import DriverProfileUpdate from "../components/DriverProfileUpdate";

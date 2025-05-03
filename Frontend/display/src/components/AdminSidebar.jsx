@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link,navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   FaHome,
   FaUsers,
@@ -94,7 +94,7 @@ const LogoutLink = styled(NavLink)`
 `;
 
 const AdminSidebar = ({ isOpen, onSelectPage, onLogout }) => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const navigationItems = [
     { icon: <FaHome />, label: 'Dashboard', page: 'dashboard' },
     { icon: <FaUsers />, label: 'User Management', page: 'user-management' },

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, UserCheck } from "lucide-react";
 
 function LoginForm({ type }) {
@@ -112,9 +112,9 @@ function LoginForm({ type }) {
           </button>
 
           <div className="form-footerlog">
-            <a href="#" className="forgot-password">
+            <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
               Forgot Password?
-            </a>
+            </Link>
             {/* Conditional render based on user type */}
             {type === "user" && (
               <a href="/register-user" className="create-account">

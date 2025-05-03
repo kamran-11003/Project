@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
 import { useRideContext } from "../context/rideContext";
 
@@ -32,10 +32,64 @@ const geocodeAddress = (address) => {
 const MapComponent = ({ pickup, dropOff }) => {
   const mapContainerRef = useRef(null);
   const directionsRef = useRef(null);
-  const [map, setMap] = useState(null);
+  const [localPickupCoords, setLocalPickupCoords] = useState(null);
+  const [localDropOffCoords, setLocalDropOffCoords] = useState(null);
 
-  const { setDistance, setPickupCoordinates, setDropOffCoordinates } =
-    useRideContext();
+  const { setDistance, setPickupCoordinates, setDropOffCoordinates } = useRideContext();
+
+  const fetchDistance = useCallback((pickupLocation, dropOffLocation) => {
+    if (!pickupLocation || !dropOffLocation) return;
+
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${pickupLocation[0]},${pickupLocation[1]};${dropOffLocation[0]},${dropOffLocation[1]}?access_token=${mapboxgl.accessToken}&geometries=geojson&overview=false&steps=false`;
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          const distanceInMeters = route.distance;
+          const distanceInKm = distanceInMeters / 1000;
+          setDistance(distanceInKm);
+          console.log(`Distance: ${distanceInKm} km`);
+        } else {
+          console.error("No route found");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching distance from Mapbox:", error);
+      });
+  }, [setDistance]);
+
+  useEffect(() => {
+    if (pickup && dropOff) {
+      Promise.all([geocodeAddress(pickup), geocodeAddress(dropOff)]).then(
+        ([pickupCoords, dropOffCoords]) => {
+          if (pickupCoords && dropOffCoords) {
+            setLocalPickupCoords(pickupCoords);
+            setLocalDropOffCoords(dropOffCoords);
+            directionsRef.current.setOrigin(pickupCoords);
+            directionsRef.current.setDestination(dropOffCoords);
+
+            setPickupCoordinates({
+              latitude: pickupCoords[1],
+              longitude: pickupCoords[0],
+            });
+            setDropOffCoordinates({
+              latitude: dropOffCoords[1],
+              longitude: dropOffCoords[0],
+            });
+
+            fetchDistance(pickupCoords, dropOffCoords);
+          }
+        }
+      );
+    }
+  }, [pickup, dropOff, setPickupCoordinates, setDropOffCoordinates, fetchDistance]);
+
+  useEffect(() => {
+    if (localPickupCoords && localDropOffCoords) {
+      fetchDistance(localPickupCoords, localDropOffCoords);
+    }
+  }, [localPickupCoords, localDropOffCoords, fetchDistance]);
 
   useEffect(() => {
     const initializeMap = () => {
@@ -80,8 +134,6 @@ const MapComponent = ({ pickup, dropOff }) => {
         console.log(`User location: ${latitude}, ${longitude}`);
       });
 
-      setMap(newMap);
-
       return newMap;
     };
 
@@ -89,54 +141,6 @@ const MapComponent = ({ pickup, dropOff }) => {
 
     return () => mapInstance.remove();
   }, []);
-
-  useEffect(() => {
-    if (pickup && dropOff) {
-      Promise.all([geocodeAddress(pickup), geocodeAddress(dropOff)]).then(
-        ([pickupCoordinates, dropOffCoordinates]) => {
-          if (pickupCoordinates && dropOffCoordinates) {
-            directionsRef.current.setOrigin(pickupCoordinates);
-            directionsRef.current.setDestination(dropOffCoordinates);
-
-            setPickupCoordinates({
-              latitude: pickupCoordinates[1],
-              longitude: pickupCoordinates[0],
-            });
-            setDropOffCoordinates({
-              latitude: dropOffCoordinates[1],
-              longitude: dropOffCoordinates[0],
-            });
-
-            fetchDistance(pickupCoordinates, dropOffCoordinates);
-          } else {
-            console.error("Error geocoding the addresses.");
-          }
-        }
-      );
-    }
-  }, [pickup, dropOff]);
-
-  const fetchDistance = (pickupLocation, dropOffLocation) => {
-    if (!pickupLocation || !dropOffLocation) return;
-
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${pickupLocation[0]},${pickupLocation[1]};${dropOffLocation[0]},${dropOffLocation[1]}?access_token=${mapboxgl.accessToken}&geometries=geojson&overview=false&steps=false`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.routes && data.routes.length > 0) {
-          const route = data.routes[0];
-          const distanceInMeters = route.distance;
-          const distanceInKm = distanceInMeters / 1000;
-          setDistance(distanceInKm);
-          console.log(`Distance: ${distanceInKm} km`);
-        } else {
-          console.error("No route found");
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching distance from Mapbox:", error);
-      });
-  };
 
   return <div ref={mapContainerRef} style={styles.mapContainer} />;
 };

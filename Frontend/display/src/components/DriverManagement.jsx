@@ -46,7 +46,7 @@ const DriverManagement = () => {
         console.error("Error fetching drivers:", error);
         setMessage("Error fetching suspended/banned drivers");
       });
-  }, []);
+  }, [axiosInstance]);
 
   // Handle driver status update
   const handleDriverStatusUpdate = () => {

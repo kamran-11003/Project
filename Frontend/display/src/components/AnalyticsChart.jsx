@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
+import { Line } from "react-chartjs-2";
 import styled from "styled-components";
 
 const AnalyticsChart = () => {
@@ -123,17 +122,17 @@ const AnalyticsChart = () => {
       <ChartWrapper>
         <ChartContainer>
           <h3>Total Revenue</h3>
-          <Bar data={totalRevenueChartData} options={chartOptions} />
+          <Line data={totalRevenueChartData} options={chartOptions} />
         </ChartContainer>
 
         <ChartContainer>
           <h3>Completed Rides</h3>
-          <Bar data={completedRidesChartData} options={chartOptions} />
+          <Line data={completedRidesChartData} options={chartOptions} />
         </ChartContainer>
 
         <ChartContainer>
           <h3>Active Users</h3>
-          <Bar data={activeUsersChartData} options={chartOptions} />
+          <Line data={activeUsersChartData} options={chartOptions} />
         </ChartContainer>
       </ChartWrapper>
     </ChartsContainer>
@@ -172,31 +171,25 @@ const ChartContainer = styled.div`
   border-radius: 8px;
   padding: 10px;
   background-color: #f9f9f9;
-  max-width: 500px; /* Set a maximum width for larger screens */
-  width: 100%; /* Allow the chart to take up available width */
+  max-width: 500px;
+  width: 100%;
   margin-left: 60px;
   @media (max-width: 1200px) {
-    height: 350px; /* Slightly smaller on medium-sized screens */
+    height: 350px;
   }
 
   @media (max-width: 1024px) {
-    height: 300px; /* Smaller on tablets */
+    height: 300px;
     max-width: 450px;
   }
 
   @media (max-width: 768px) {
-    max-width: 350px; /* Reduce size for smaller screens */
+    max-width: 350px;
     height: 250px;
   }
 
   @media (max-width: 480px) {
-    height: 200px; /* Further reduce height for very small screens */
+    height: 200px;
     max-width: 100%;
   }
-`;
-
-const ChartTitle = styled.h3`
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-  text-align: center;
 `;
