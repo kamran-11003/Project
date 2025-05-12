@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: kamran0003/backend:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGODB_URI
+          value: "mongodb+srv://kamran:5XvG4bRRW6BUbrmg@cluster0.njzbkkr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        - name: PORT
+          value: "5000"
+        - name: NODE_ENV
+          value: "production"
+        - name: JWT_SECRET
+          value: "your_jwt_secret_key_here"
+        - name: JWT_EXPIRE
+          value: "30d"
+        - name: JWT_COOKIE_EXPIRE
+          value: "30" 
