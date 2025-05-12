@@ -1,5 +1,7 @@
- # Build stage
+# Build stage
 FROM node:18-alpine as build
+
+LABEL maintainer="kamran0003"
 
 WORKDIR /app
 
